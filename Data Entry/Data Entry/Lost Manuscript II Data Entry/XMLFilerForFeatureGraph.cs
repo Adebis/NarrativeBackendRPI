@@ -198,6 +198,35 @@ namespace Dialogue_Data_Entry
 							tmp.addSpeak(speak.InnerText);
 						}
                     }
+                    //Timedata
+                    XmlNodeList timedata = node.SelectNodes("timedata");
+                    if (timedata.Count != 0)
+                    {
+                        timedata = timedata[0].SelectNodes("timeobj");
+                        foreach (XmlNode timeobj in timedata)
+                        {
+                            string rel = "";
+                            if (timeobj.Attributes["relationship"] != null)
+                                rel = unEscapeInvalidXML(Convert.ToString(timeobj.Attributes["relationship"].Value));
+                            string val = "";
+                            if (timeobj.Attributes["value"] != null)
+                                val = unEscapeInvalidXML(Convert.ToString(timeobj.Attributes["value"].Value));
+                            tmp.addTimeData(rel, val);
+                        }//end foreach
+                    }//end if
+                    //Geodata
+                    XmlNodeList geodata = node.SelectNodes("geodata");
+                    if (geodata.Count != 0)
+                    {
+                        geodata = geodata[0].SelectNodes("coordinates");
+                        foreach (XmlNode coordinates in geodata)
+                        {
+                            double lat = Convert.ToDouble(coordinates.Attributes["lat"].Value);
+                            double lon = Convert.ToDouble(coordinates.Attributes["lon"].Value);
+                            tmp.addGeoData(lat, lon);
+                        }//end foreach
+                    }//end if
+
                 }//end foreach
 
                 //Connectedness check: check each node's neighbor. If the neighbor does not have

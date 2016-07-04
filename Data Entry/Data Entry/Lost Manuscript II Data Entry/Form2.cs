@@ -24,6 +24,8 @@ namespace Dialogue_Data_Entry
         private float tagKeyWeight;
         private SynchronousSocketListener myServer = null;
         private Thread serverThread = null;
+        //The HTTP Server
+        private SimpleHTTPServer server = null;
         private volatile bool _shouldStop = false;
         private List<TemporalConstraint> temporalConstraintList;
 
@@ -101,8 +103,16 @@ namespace Dialogue_Data_Entry
         private void ServerModeButton_Click(object sender, EventArgs e)
         {
             //Start new thread for server
-            this.serverThread = new Thread(this.DoWork);
-            this.serverThread.Start();
+            //this.serverThread = new Thread(this.DoWork);
+            //this.serverThread.Start();
+            
+            //Start the HTTP Server
+            string myFolder = Directory.GetCurrentDirectory();
+            int port = 8084;
+
+            server = new SimpleHTTPServer(myFolder, port);
+            //SimpleHTTPServer server = new SimpleHTTPServer(myFolder);
+            Console.WriteLine("Server is running on port: " + server.Port.ToString());
         }
 
         public void DoWork()
@@ -262,6 +272,11 @@ namespace Dialogue_Data_Entry
 
         private void StopServerbutton_Click(object sender, EventArgs e)
         {
+            if (server != null)
+            {
+                //Stop the HTTP Server
+                server.Stop();
+            }//end if
             if (myServer != null)
             {
                 //(Doesn't seem to stop the loop)

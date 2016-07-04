@@ -81,6 +81,7 @@
     <Compile Include="HttpRequester.cs" />
     <Compile Include="NarrationCalculator.cs" />
     <Compile Include="NarrationManager.cs" />
+    <Compile Include="SimpleHTTPServer.cs" />
     <Compile Include="SpeakTransform.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="QueryHandler.cs" />

@@ -154,8 +154,8 @@ namespace Dialogue_Data_Entry
             using (var client = new HttpClient())
             {
                 string url = "http://localhost:5000/get_analogy";
-                string url_parameters = "?id=" + source.Id.ToString() 
-                    + "&filename=" + @"C:\Users\Zev\Documents\GitHub\ChineseDialogueSpring2015\data files\roman_empire_500.xml"
+                string url_parameters = "?id=" + source.Id.ToString()
+                    + "&filename=" + @"C:\Users\Zev\Documents\GitHub\NarrativeBackendRPI\data files\roman_empire_500.xml"
                     + "&target_id=" + target.Id.ToString();// +"&port=9000";
 
                 client.BaseAddress = new Uri(url);

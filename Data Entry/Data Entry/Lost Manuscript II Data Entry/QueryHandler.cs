@@ -797,6 +797,29 @@ namespace Dialogue_Data_Entry
 
                     //return_string = "Number of connections: " + connection_count + ", unique relationships: " + relationships.Count;
                 }//end else if
+                else if (split_input[0].Equals("VALID_TIME_GEO"))
+                {
+                    List<Feature> valid_nodes = new List<Feature>();
+                    return_string = "Valid next nodes: ";
+
+                    String string_topic = split_input[1];
+
+                    Feature source_node = FindFeature(string_topic);
+
+                    foreach (Tuple<Feature, double, string> neighbor in source_node.Neighbors)
+                    {
+                        if (neighbor.Item1.Timedata.Count > 0 && neighbor.Item1.Geodata.Count > 0)
+                            valid_nodes.Add(neighbor.Item1);
+                    }//end foreach
+                    foreach (Feature valid_node in valid_nodes)
+                    {
+                        return_string += source_node.getRelationshipNeighbor(valid_node.Name) + " " + valid_node.Name + " (" + valid_node.Id + ") " + " : ";
+                    }//end foreach
+                }//end else if
+                else if (split_input[0].Equals("RESPONSE"))
+                {
+
+                }//end else if
 
 			return return_string;
 		}//end function CommandResponse

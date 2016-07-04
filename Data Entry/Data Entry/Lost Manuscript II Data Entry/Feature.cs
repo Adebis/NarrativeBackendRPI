@@ -18,6 +18,13 @@ namespace Dialogue_Data_Entry
         //Item 1 is the neighbor feature, Item 2 is the weight between it and this feature, and item 3 is the string relationship between the two.
         private List<Tuple<string, string, string>>  tags;       // This is a list of tuples that are used to store the tags (generic, single use pices of information). The first element is the key, and the second element is the id. This will simply operate as a map.
         private List<string> speaks;
+
+        private List<Tuple<string, string>> timedata;       //A node's time data is a list of timeobj tags in the xml.
+                                                            //timeobj is a string relationship and a string value.
+        private List<Tuple<double, double>> geodata;        //A node's geospatial data is a list of coordinates.
+                                                            //First member of tuple is latitude, second is longitude.
+        
+        
         private List<double> shortestDistance;         //list of shortestDistance to all nodes (index is id)
         private int level, dist;
         public bool flag;                                // This is a public general use flag that can be used for things like traversals and stuff like that
@@ -34,6 +41,8 @@ namespace Dialogue_Data_Entry
             this.level = 0;
             this.dist = 0;
             this.shortestDistance = new List<double>();
+            this.timedata = new List<Tuple<string, string>>();
+            this.geodata = new List<Tuple<double, double>>();
         }//end constructor Feature
         public Feature(string name, int id)
         {
@@ -47,6 +56,8 @@ namespace Dialogue_Data_Entry
             this.level = 0;
             this.dist = 0;
             this.shortestDistance = new List<double>();
+            this.timedata = new List<Tuple<string, string>>();
+            this.geodata = new List<Tuple<double, double>>();
         }//end constructor Feature
 
         // This function is used to get a Feature that is a neighbor of this Feature, it takes an string name and preforms a binary search over the list
@@ -358,6 +369,18 @@ namespace Dialogue_Data_Entry
             return false;
         }
 
+        //Add a new piece of time data to this feature
+        public void addTimeData(string relationship, string value)
+        {
+            timedata.Add(new Tuple<string, string>(relationship, value));
+        }//end method setTimeData
+
+        //Add a new piece of geospatial data to this feature
+        public void addGeoData(double latitude, double longitude)
+        {
+            geodata.Add(new Tuple<double, double>(latitude, longitude));
+        }//end method addSpatialData
+
         // This function will check through all of the features that can be reached from its neighbors and if it finds the one that we are looking for it return true, false otherwise
         private bool canReachHelper(int dest_id,bool checkLevel)
         {
@@ -569,6 +592,22 @@ namespace Dialogue_Data_Entry
                 this.tags = value;
             }
         }
+
+        public List<Tuple<string, string>> Timedata
+        {
+            get
+            {
+                return this.timedata;
+            }
+        }
+        public List<Tuple<double, double>> Geodata
+        {
+            get
+            {
+                return this.geodata;
+            }
+        }
+
         public List<string> Speaks
         {
             get

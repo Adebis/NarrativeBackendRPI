@@ -45,7 +45,8 @@ namespace Dialogue_Data_Entry
 		//private string defaultFilename = @"\..\..\..\..\..\..\MandarinProject_01_31_16\Assets\xml\california.xml";
 		//private string defaultFilename = @"\..\..\..\..\..\..\atom-solar.xml";
         //private string defaultFilename = @"\roman_empire_250.xml";
-        private string defaultFilename = @"\roman_empire_500.xml";
+        //private string defaultFilename = @"\roman_empire_500.xml";
+        private string defaultFilename = @"\roman_empire_500_geospatial.xml";
 
 		private string constraintFilename = @"\constraint.txt";
 
