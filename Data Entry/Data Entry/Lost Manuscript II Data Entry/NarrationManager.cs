@@ -80,6 +80,39 @@ namespace Dialogue_Data_Entry
 		}//end method DialogueManager
 
 		//ACCESSIBLE FUNCTIONS 
+        //Present the given feature
+        public string PresentFeature(Feature feature_to_present)
+        {
+            Feature nextTopic = this.topic;
+            string[] newBuffer;
+            string return_string = "";
+
+            //The next topic is given.
+            nextTopic = feature_to_present;
+            //Gets a list of things to say about the topic (speak values or neighbor relations)
+            newBuffer = FindStuffToSay(nextTopic);
+
+            //Set the next topic and reset the buffer to the list
+            //of output strings from function FindStuffToSay
+            SetNextTopic(nextTopic, newBuffer);
+
+            //Get an output string from the buffer.
+            return_string = PullOutputFromBuffer();
+
+            //Adorn the answer, which sends it through speak transforms.
+            return_string = SpeakWithAdornments(this.topic, return_string);
+
+            //Update turn count
+            turn += 1;
+            
+            return return_string;
+        }//end function DefaultNextTopic
+        public Feature getNextChronologicalTopic(Feature previous_topic, DateTime start_date, DateTime end_date)
+        {
+            //Gets the next topic that should be visited whose date lies between the given start and end dates.
+            return calculator.GetNextTopic(previous_topic, this.turn, this.topic_history, start_date, end_date);
+        }//end method getNextChronologicalTopic
+
         /// <summary>
         /// Begins a narration.
         /// The goal of a narration is to visit every anchor node within the set turn limit.

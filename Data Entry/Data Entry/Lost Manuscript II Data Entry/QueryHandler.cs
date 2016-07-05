@@ -598,6 +598,142 @@ namespace Dialogue_Data_Entry
                     else
                         return_string = "Could not set turn limit.";
                 }//end else if
+                //CHRONOLOGY command.
+                //  Generates a story based on a single anchor node.
+                //  The story should be chronological, but can start at the anchor node.
+                else if (split_input[0].Equals("CHRONOLOGY"))
+                {
+                    return_string = "Chronology for: ";
+
+                    Feature anchor_node = null;
+                    //Get the anchor node specified in this command 
+                    if (split_input[1] != null)
+                    {
+                        String string_topic = split_input[1];
+                        //Try to convert the topic to an int to check if it's an id.
+                        int int_topic = -1;
+                        bool parse_success = int.TryParse(string_topic, out int_topic);
+                        if (parse_success)
+                        {
+                            //Check that the new integer topic is a valid id.
+                            anchor_node = graph.getFeature(int_topic);
+                        }//end if
+                        else
+                        {
+                            anchor_node = FindFeature(string_topic);
+                        }//end else
+                        if (anchor_node != null)
+                        {
+                            //If we found an anchor node with this command, assemble the chronology.
+
+                            //For certain story roles, relationships match up with start and end dates.
+                            //For characters, transfer start and end dates to birth and death places.
+                            if (anchor_node.story_role == 1)
+                            {
+                                //Look for a birth place by looking for the word "birth" in any neighbor relationship
+                                Feature birth_place = null;
+                                foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
+                                {
+                                    if (neighbor_tuple.Item3.Contains("birth"))
+                                    {
+                                        birth_place = neighbor_tuple.Item1;
+                                        break;
+                                    }//end if
+                                }//end foreach
+                                //If the birth place is not null, update its date
+                                if (birth_place != null)
+                                {
+                                    birth_place.start_date = anchor_node.start_date;
+                                    birth_place.end_date = anchor_node.start_date;
+                                }//end if
+                                //Look for a death place by looking for the word "death" in any neighbor relationship
+                                Feature death_place = null;
+                                foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
+                                {
+                                    if (neighbor_tuple.Item3.Contains("death"))
+                                    {
+                                        death_place = neighbor_tuple.Item1;
+                                        break;
+                                    }//end if
+                                }//end foreach
+                                //If the death place is not null, update its date
+                                if (death_place != null)
+                                {
+                                    death_place.start_date = anchor_node.end_date;
+                                    death_place.end_date = anchor_node.end_date;
+                                }//end if
+                            }//end if
+
+                            //Find the neighboring node whose date most closely matches the anchor node's start date.
+                            Feature closest_start_neighbor = null;
+                            TimeSpan closest_time_difference = TimeSpan.MaxValue;
+                            foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
+                            {
+                                TimeSpan time_difference = neighbor_tuple.Item1.start_date - anchor_node.start_date;
+                                if (time_difference.Duration() < closest_time_difference.Duration())
+                                {
+                                    closest_start_neighbor = neighbor_tuple.Item1;
+                                    closest_time_difference = time_difference;
+                                }//end if
+                            }//end foreach
+
+                            //Find the neighboring node whose date most closely matches the anchor node's end date.
+                            Feature closest_end_neighbor = null;
+                            closest_time_difference = TimeSpan.MaxValue;
+                            foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
+                            {
+                                TimeSpan time_difference = neighbor_tuple.Item1.end_date - anchor_node.end_date;
+                                if (time_difference.Duration() < closest_time_difference.Duration())
+                                {
+                                    closest_end_neighbor = neighbor_tuple.Item1;
+                                    closest_time_difference = time_difference;
+                                }//end if
+                            }//end foreach
+
+                            //Get the turn limit
+                            int turn_limit = 0;
+                            if (split_input[2] != null)
+                            {
+                                parse_success = int.TryParse(split_input[2], out turn_limit);
+                                if (parse_success)
+                                {
+                                    Console.Out.WriteLine("Turn limit set to " + turn_limit);
+                                }//end if
+                                else
+                                    Console.Out.WriteLine("Could not set turn limit.");
+                            }//end if
+
+                            //Make a temporary graph to create the chronology's order before presenting it.
+                            FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(graph);
+
+                            return_string = "";
+
+                            //Turns should be spent talking about nodes between the start and end dates of the anchor node.
+                            //First, talk about the anchor node.
+                            NarrationManager temp_manager = new NarrationManager(temp_graph, temporalConstraintList);
+                            return_string += temp_manager.PresentFeature(anchor_node);
+                            //Next, talk about the start neighbor.
+                            return_string += temp_manager.PresentFeature(closest_start_neighbor);
+                            Feature last_feature = closest_start_neighbor;
+                            Feature current_feature = closest_start_neighbor;
+                            
+                            //Take up the rest of the turns talking about items in between the start and end dates.
+                            while (temp_manager.Turn < turn_limit)
+                            {
+                                //Determine the next feature from the previous one
+                                current_feature = temp_manager.getNextChronologicalTopic(last_feature, anchor_node.start_date, anchor_node.end_date);
+                                //Present it
+                                return_string += temp_manager.PresentFeature(current_feature);
+                                //Update last feature
+                                last_feature = current_feature;
+                            }//end while
+                            //When we have reached the turn limit, present the ending node.
+
+                            return_string += temp_manager.PresentFeature(closest_end_neighbor);
+                            //return_string += anchor_node.Name + " (" + anchor_node.Id + ")" + ", ";
+                        }//end if
+                    }//end if
+                }//end else if
                 //START_NARRATION command.
                 //  Makes the system narrate. A turn limit may be specified after the command.
                 //  It tries to visit all anchor nodes within the turn limit. 

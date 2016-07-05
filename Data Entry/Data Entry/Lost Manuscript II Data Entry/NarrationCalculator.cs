@@ -171,6 +171,81 @@ namespace Dialogue_Data_Entry
             }//end else if
             return null;
         }//end function GetNextTopic
+        //Gets the next topic that lies between the start and end dates.
+        public Feature GetNextTopic(Feature previous_topic, int turn, List<Feature> topic_history, DateTime start_date, DateTime end_date)
+        {
+            if (turn == 0)
+            {
+                //initial case
+                return previous_topic;
+            }
+            else if (turn > 0)
+            {
+                //next topic case
+                /*if (currentNovelty == null)
+                {
+                    currentNovelty = new double[feature_graph.Features.Count()];
+                }*/
+                //int height = -1;
+                bool[] checkEntry = new bool[feature_graph.Count]; //checkEntry is to check that it won't check the same node again
+                //getHeight(featGraph.Root, oldTopic, 0, checkEntry, ref height);
+                checkEntry = new bool[feature_graph.Count];
+                //search the next topic
+
+                List<Tuple<Feature, double>> listScore = new List<Tuple<Feature, double>>();
+                //Get a list of each feature's score calculated against previous_topic.
+                //List order is based on the traveling (DFS) order.
+                TravelGraph(feature_graph.Root, previous_topic, 0, true, checkEntry, turn, topic_history, ref listScore);
+
+                //find max score
+                if (listScore.Count == 0)
+                {
+                    return null;
+                }
+                double maxScore = listScore[0].Item2;
+                int maxIndex = 0;
+                for (int x = 1; x < listScore.Count; x++)
+                {
+                    if (listScore[x].Item2 > maxScore)
+                    {
+                        //FILTERING:
+                        //If the item in this list is one of the filter nodes,
+                        //do not include it in max score determination.
+                        //Check for filter nodes.
+                        if (filter_nodes.Contains(listScore[x].Item1.Name))
+                        {
+                            //If it is a filter node, take another step.
+                            Console.WriteLine("Filtering out " + listScore[x].Item1.Id);
+                            continue;
+                        }//end if
+
+                        //If neither the feature's start nor end dates lie between the given start and end dates,
+                        //do not include it in the list.
+                        if ((listScore[x].Item1.start_date < start_date
+                            && listScore[x].Item1.end_date < start_date)
+                            || (listScore[x].Item1.start_date > end_date
+                            && listScore[x].Item1.end_date > end_date))
+                        {
+                            //Skip this feature.
+                            continue;
+                        }//end if 
+
+                        maxScore = listScore[x].Item2;
+                        maxIndex = x;
+                    }
+                }
+
+                if (print_calculation)
+                {
+                    System.Console.WriteLine("\n\nMax score: " + maxScore);
+                    //System.Console.WriteLine("Novelty: " + currentTopicNovelty);
+                    System.Console.WriteLine("Node: " + listScore[maxIndex].Item1.Id);
+                    System.Console.WriteLine("==========================================");
+                }
+                return listScore[maxIndex].Item1;
+            }//end else if
+            return null;
+        }//end function GetNextTopic
 
         /// <summary>
         /// Calculates the score between the two given features. Returns a data structure containing

@@ -23,6 +23,15 @@ namespace Dialogue_Data_Entry
                                                             //timeobj is a string relationship and a string value.
         private List<Tuple<double, double>> geodata;        //A node's geospatial data is a list of coordinates.
                                                             //First member of tuple is latitude, second is longitude.
+        public DateTime start_date;                        //Start date for this feature if it has time data.
+        public DateTime end_date;                          //End date for this feature if it has time data.
+                                                            //If the feature only has a single date, start and end dates will be equal.
+        public int story_role;                             //Integer flag identifying what role this feature plays in a story.
+                                                            //  0 = Concept (default)
+                                                            //  1 = Character
+                                                            //  2 = Location
+                                                            //  3 = Event
+                                                            //  4 = Political/Social Entity
         
         
         private List<double> shortestDistance;         //list of shortestDistance to all nodes (index is id)
@@ -43,6 +52,10 @@ namespace Dialogue_Data_Entry
             this.shortestDistance = new List<double>();
             this.timedata = new List<Tuple<string, string>>();
             this.geodata = new List<Tuple<double, double>>();
+
+            this.start_date = new DateTime();
+            this.end_date = new DateTime();
+            this.story_role = 0;
         }//end constructor Feature
         public Feature(string name, int id)
         {
@@ -58,7 +71,199 @@ namespace Dialogue_Data_Entry
             this.shortestDistance = new List<double>();
             this.timedata = new List<Tuple<string, string>>();
             this.geodata = new List<Tuple<double, double>>();
+
+            this.start_date = new DateTime();
+            this.end_date = new DateTime();
+            this.story_role = 0;
         }//end constructor Feature
+
+        //Calculate start and end dates for this feature, and, if possible, assign it
+        //the appropriate story role.
+        public void calculateDate()
+        {
+            //Gather possible start and end dates.
+            List<string> start_dates = new List<string>();
+            List<string> end_dates = new List<string>();
+            //Look through each piece of time data. First item is relationship, second is value.
+            //This first pass is to try and determine the story role this feature plays based on its time data.
+            foreach (Tuple<string, string> data_piece in timedata)
+            {
+                //Characters usually have birth and/or death dates
+                //Check for birth date
+                if (data_piece.Item1.Contains("birth"))
+                {
+                    //If this feature is still considered a general concept, mark it as a character
+                    if (story_role == 0)
+                        story_role = 1;
+                    //Add this date to the list of start dates
+                    start_dates.Add(data_piece.Item2);
+                }//end if
+                //Check for death date
+                else if (data_piece.Item1.Contains("death"))
+                {
+                    //If this feature is still considered a general concept, mark it as a character
+                    if (story_role == 0)
+                        story_role = 1;
+                    //Add this date to the list of end dates
+                    end_dates.Add(data_piece.Item2);
+                }//end else if
+
+                //Political and Social entities usually have founding and dissolution dates
+                //Check for founding date
+                else if (data_piece.Item1.Contains("founding"))
+                {
+                    //If this feature is still considered a general concept, mark it as a political/social entity
+                    if (story_role == 0)
+                        story_role = 4;
+                    //Add this to the list of start dates
+                    start_dates.Add(data_piece.Item2);
+                }//end if
+                //Check for dissolution date
+                else if (data_piece.Item1.Contains("dissolution"))
+                {
+                    //If this feature is still considered a general concept, mark it as a political/social entity
+                    if (story_role == 0)
+                        story_role = 4;
+                    //Add this to the list of end dates
+                    end_dates.Add(data_piece.Item2);
+                }//end if
+            }//end foreach
+            //If start or end dates are empty, make a second pass checking the general cases for start and end dates.
+            if (start_dates.Count <= 0)
+            {
+                foreach (Tuple<string, string> data_piece in timedata)
+                {
+                    //Check for start date
+                    if (data_piece.Item1.Contains("start"))
+                    {
+                        //Add this to the list of start dates
+                        start_dates.Add(data_piece.Item2);
+                    }//end if
+                }//end foreach
+            }//end if
+            if (end_dates.Count <= 0)
+            {
+                foreach (Tuple<string, string> data_piece in timedata)
+                {
+                    //Check for end date
+                    if (data_piece.Item1.Contains("end"))
+                    {
+                        //Add this to the list of end dates
+                        end_dates.Add(data_piece.Item2);
+                    }//end if
+                }//end foreach
+            }//end if
+            //If neither start nor end dates have been found, make a third pass looking for any dates.
+            //These dates will be stored only as start dates.
+            if (start_dates.Count <= 0 && end_dates.Count <= 0)
+            {
+                foreach (Tuple<string, string> data_piece in timedata)
+                {
+                    start_dates.Add(data_piece.Item2);
+                }//end foreach
+            }//end if
+
+
+            //Choose the most informative start and end dates as this feature's start and end dates.
+            //First pass, try to convert each string to a datetime.
+            foreach (string temp_start in start_dates)
+            {
+                try
+                {
+                    this.start_date = Convert.ToDateTime(temp_start);
+                    //If this succeeds, we are done.
+                    break;
+                }//end try
+                catch
+                {
+                }//end catch
+            }//end foreach
+            foreach (string temp_end in end_dates)
+            {
+                try
+                {
+                    this.end_date = Convert.ToDateTime(temp_end);
+                    //If this succeeds, we are done.
+                    break;
+                }//end try
+                catch
+                {
+                }//end catch
+            }//end foreach
+            //If there is still no start date, perform a second pass
+            if (start_date == default(DateTime))
+            {
+                //Second pass, try to extract digits and get a year
+                foreach (string temp_start in start_dates)
+                {
+                    int start_year = 0;
+                    if (!int.TryParse(System.Text.RegularExpressions.Regex.Match(temp_start, @"\d+").Value, out start_year))
+                    {
+                        //If this parse doesn't work, the start date is the default datetime value.
+                        start_date = new DateTime();
+                    }//end if
+                    else
+                    {
+                        //If the parse does work, the start date is the first day of the year identified.
+                        start_date = new DateTime(start_year, 1, 1);
+                        //Now that we have a start date, we are done.
+                        break;
+                    }//end else
+                }//end foreach
+            }//end if
+            //If there is still no end date, perform a second pass
+            if (end_date == default(DateTime))
+            {
+                //Second pass, try to extract digits and get a year
+                foreach (string temp_end in end_dates)
+                {
+                    int end_year = 0;
+                    if (!int.TryParse(System.Text.RegularExpressions.Regex.Match(temp_end, @"\d+").Value, out end_year))
+                    {
+                        //If this parse doesn't work, the end date is the default datetime value.
+                        end_date = new DateTime();
+                    }//end if
+                    else
+                    {
+                        //If the parse does work, the end date is the first day of the year identified.
+                        end_date = new DateTime(end_year, 1, 1);
+                        //Now that we have a nend date, we are done.
+                        break;
+                    }//end else
+                }//end foreach
+            }//end if
+
+            //If either start or end date is the default value and the other isn't, make them match
+            if (start_date != default(DateTime) && end_date == default(DateTime))
+            {
+                end_date = start_date;
+            }//end if
+            else if (start_date == default(DateTime) && end_date != default(DateTime))
+            {
+                start_date = end_date;
+            }//end else if
+
+
+/*
+			    tn.datevalue = tn.date.ToShortDateString();
+			    tn.dateticks = tn.date.Ticks;
+			    nodeList.Add(tmp_obj);
+			    nodeDict[f.data] = tmp_obj;
+		    }
+		    long maxdays = int.MinValue;
+		    long mindays = int.MaxValue;
+		    foreach (GameObject node in nodeList) {
+			    timelineNode tn = node.GetComponent<timelineNode>();
+			    int totaldays = 365 * tn.date.Year + tn.date.DayOfYear;
+			    if (totaldays > maxdays) maxdays = totaldays;
+			    if (totaldays < mindays) mindays = totaldays;
+		    }
+		    foreach (GameObject node in nodeList) {
+			    timelineNode tn = node.GetComponent<timelineNode>();
+			    int totaldays = 365 * tn.date.Year + tn.date.DayOfYear;
+			    tn.transform.position = new Vector3(map(totaldays,mindays,maxdays,0,100), 0, 0);
+		    }*/
+        }//end method calculateDate
 
         // This function is used to get a Feature that is a neighbor of this Feature, it takes an string name and preforms a binary search over the list
         public Feature getNeighbor(string name)

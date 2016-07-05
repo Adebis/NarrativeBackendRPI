@@ -236,6 +236,10 @@ namespace Dialogue_Data_Entry
                 //Go over each feature.
                 foreach (Feature feature_to_check in result_graph.Features)
                 {
+                    //From July 2016, added by Zev Battad.
+                    //Have each feature calculate its own start/end dates
+                    feature_to_check.calculateDate();
+
                     //Go over each neighbor in this feature
                     foreach (Tuple<Feature, double, string> neighbor_to_check in feature_to_check.Neighbors)
                     {
