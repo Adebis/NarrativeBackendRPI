@@ -196,7 +196,7 @@ namespace Dialogue_Data_Entry
                 //Second pass, try to extract digits and get a year
                 foreach (string temp_start in start_dates)
                 {
-                    int start_year = 0;
+                    int start_year = 1;
                     if (!int.TryParse(System.Text.RegularExpressions.Regex.Match(temp_start, @"\d+").Value, out start_year))
                     {
                         //If this parse doesn't work, the start date is the default datetime value.
@@ -204,6 +204,9 @@ namespace Dialogue_Data_Entry
                     }//end if
                     else
                     {
+                        //If the year is 0, default it to 1.
+                        if (start_year == 0)
+                            start_year = 1;
                         //If the parse does work, the start date is the first day of the year identified.
                         start_date = new DateTime(start_year, 1, 1);
                         //Now that we have a start date, we are done.

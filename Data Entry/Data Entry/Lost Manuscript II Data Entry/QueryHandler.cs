@@ -731,6 +731,14 @@ namespace Dialogue_Data_Entry
 
                             return_string += temp_manager.PresentFeature(closest_end_neighbor);
                             //return_string += anchor_node.Name + " (" + anchor_node.Id + ")" + ", ";
+
+                            //7/6/2016: For integration, send back a double-colon delineated list of node names consisting of the nodes given here.
+                            List<Feature> chronology = temp_manager.TopicHistory;
+                            return_string = "";
+                            foreach (Feature feat in chronology)
+                            {
+                                return_string += feat.Name + "::";
+                            }//end foreach
                         }//end if
                     }//end if
                 }//end else if

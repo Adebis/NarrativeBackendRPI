@@ -103,16 +103,16 @@ namespace Dialogue_Data_Entry
         private void ServerModeButton_Click(object sender, EventArgs e)
         {
             //Start new thread for server
-            //this.serverThread = new Thread(this.DoWork);
-            //this.serverThread.Start();
+            this.serverThread = new Thread(this.DoWork);
+            this.serverThread.Start();
             
             //Start the HTTP Server
-            string myFolder = Directory.GetCurrentDirectory();
-            int port = 8084;
+            //string myFolder = Directory.GetCurrentDirectory();
+            //int port = 8084;
 
-            server = new SimpleHTTPServer(myFolder, port);
+            //server = new SimpleHTTPServer(myFolder, port);
             //SimpleHTTPServer server = new SimpleHTTPServer(myFolder);
-            Console.WriteLine("Server is running on port: " + server.Port.ToString());
+            //Console.WriteLine("Server is running on port: " + server.Port.ToString());
         }
 
         public void DoWork()

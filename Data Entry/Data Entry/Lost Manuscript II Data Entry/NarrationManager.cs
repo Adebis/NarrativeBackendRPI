@@ -75,8 +75,8 @@ namespace Dialogue_Data_Entry
 			calculator = new NarrationCalculator(feature_graph, tcl);
 
 			//The first topic should be the root node of the feature graph
-			if (this.topic == null)
-				SetNextTopic(this.feature_graph.Root);
+			/*if (this.topic == null)
+				SetNextTopic(this.feature_graph.Root);*/
 		}//end method DialogueManager
 
 		//ACCESSIBLE FUNCTIONS 
