@@ -8,7 +8,7 @@ using System.IO;
 using System.Threading;
 using System.Diagnostics;
 
-using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Dialogue_Data_Entry;
 
 // See: https://gist.github.com/aksakalli/9191056
@@ -149,7 +149,8 @@ class SimpleHTTPServer
 		Process.Start(start_info);*/
 
 		_listener = new HttpListener();
-		_listener.Prefixes.Add("http://localhost:" + _port.ToString() + "/get_story/");
+		_listener.Prefixes.Add("http://localhost:" + _port.ToString() + "/");
+		_listener.Prefixes.Add("http://localhost:" + _port.ToString() + "/chronology/");
 		_listener.Start();
 		while (true)
 		{
@@ -165,31 +166,38 @@ class SimpleHTTPServer
 		}
 	}
 
-	private class JSONrequest {
-		[JsonProperty(PropertyName = "query")]
-		public string query;
-	}
-
 	private void HTTPProcess(HttpListenerContext context)
 	{
 
 		string filename = context.Request.Url.AbsolutePath;
+
+		string body = new StreamReader(context.Request.InputStream).ReadToEnd();
+
+		dynamic data = JObject.Parse(body);
+
 		switch (filename) {
-			case "/get_story":
+			case "/chronology":
 				// Get the data from the HTTP stream
-				string body = new StreamReader(context.Request.InputStream).ReadToEnd();
-				var data = JsonConvert.DeserializeObject<JSONrequest>(body);
 
-				//string result = handler.ParseInput(data.query);
+				string query = "CHRONOLOGY:" + data.id + ":" + data.turns;
+				string result = handler.ParseInput(query);
 
-				//write response (just returns the input for now, should return the story)
-				//byte[] b = Encoding.UTF8.GetBytes(result);
-				byte[] b = Encoding.UTF8.GetBytes(body);
+				dynamic response = new JObject();
+				response.sequence = new JArray(result.Split(new string[] { "::" }, StringSplitOptions.None));
+
+				//write response
+				byte[] b = Encoding.UTF8.GetBytes(response.ToString());
 				context.Response.StatusCode = (int)HttpStatusCode.OK;
 				context.Response.KeepAlive = false;
 				context.Response.ContentLength64 = b.Length;
 				context.Response.OutputStream.Write(b, 0, b.Length);
 				context.Response.OutputStream.Close();
+
+				break;
+
+			case "/":
+
+				//maybe list the options here?
 
 				break;
 		}
