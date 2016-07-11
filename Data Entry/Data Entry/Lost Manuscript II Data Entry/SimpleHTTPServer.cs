@@ -10,6 +10,7 @@ using System.Diagnostics;
 
 using Newtonsoft.Json.Linq;
 using Dialogue_Data_Entry;
+using System.Linq;
 
 // See: https://gist.github.com/aksakalli/9191056
 class SimpleHTTPServer
@@ -173,6 +174,8 @@ class SimpleHTTPServer
 
 		string body = new StreamReader(context.Request.InputStream).ReadToEnd();
 
+		Console.WriteLine("body: " + body);
+
 		dynamic data = JObject.Parse(body);
 
 		switch (filename) {
@@ -183,7 +186,8 @@ class SimpleHTTPServer
 				string result = handler.ParseInput(query);
 
 				dynamic response = new JObject();
-				response.sequence = new JArray(result.Split(new string[] { "::" }, StringSplitOptions.None));
+				//split and ignore last empty one
+				response.sequence = new JArray(result.Split(new string[] { "::" }, StringSplitOptions.None).Reverse().Skip(1).Reverse().ToArray());
 
 				//write response
 				byte[] b = Encoding.UTF8.GetBytes(response.ToString());
