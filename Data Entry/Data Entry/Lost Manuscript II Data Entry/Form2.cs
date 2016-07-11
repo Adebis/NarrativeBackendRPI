@@ -102,8 +102,6 @@ namespace Dialogue_Data_Entry
 
 		private void ServerModeButton_Click(object sender, EventArgs e)
 		{
-
-
 			//set up query handler
 			if (myHandler == null)
 				myHandler = new QueryHandler(featGraph, temporalConstraintList);
@@ -143,10 +141,14 @@ namespace Dialogue_Data_Entry
 				query = query.Replace("<EOF>", "");
 				if (query == "QUIT")
 				{
+                    //Stop the HTTP server
+                    server.Stop();
+
 					this.Invoke((MethodInvoker)delegate
 					{
 						chatBox.AppendText("Client: " + query + "\r\n");
 					});
+                    //Stop the TCP server
 					break;
 				}
 				if (query == "Start Recording")
