@@ -3,13 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using System.Net;
+using System.IO;
+
+using Newtonsoft.Json;
 
 namespace Dialogue_Data_Entry
 {
     [Serializable]
 	public class FeatureGraph
 	{
-		private List<Feature> features;
+        private Dictionary<int, float> user_interest;
+        private List<Feature> features;
 		private Feature root;
 		private int maxDepth;
 		private double maxDistance;
@@ -34,7 +40,8 @@ namespace Dialogue_Data_Entry
 		private double[] weight_array;
 		public FeatureGraph()
 		{
-			features = new List<Feature>();
+            user_interest = new Dictionary<int, float>();
+            features = new List<Feature>();
 			root = null;
 			maxDepth = -1;
 			maxDistance = -1;
@@ -226,6 +233,121 @@ namespace Dialogue_Data_Entry
 			}
 			Console.WriteLine();
 		}
+
+        private void interest_visualization(string json)
+        {
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:9000/callback/userinterest");
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                Console.WriteLine(json);
+                streamWriter.Write(json);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
+
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            string result = "";
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                result = streamReader.ReadToEnd();
+            }
+            //Console.WriteLine(result);
+            Console.Out.WriteLine("Write back done");
+        }
+
+        private string getanalogy(int id)
+        {
+            var httpWebRequest = (HttpWebRequest)WebRequest.Create("http://127.0.0.1:5000/get_analogy");
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "POST";
+
+            using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
+            {
+                string id_ = id.ToString();
+                string json = "{\"filename\":\"data files/roman_empire_500.xml\"," +
+                              "\"id\":\"" + id_ + "\"," +
+                              "\"mode\":\"all\"}";
+                Console.WriteLine(json);
+                streamWriter.Write(json);
+                streamWriter.Flush();
+                streamWriter.Close();
+            }
+
+            var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            string result = "";
+            using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
+            {
+                result = streamReader.ReadToEnd();
+            }
+            return result;
+
+        }
+        public class AnalogyResponse
+        {
+            public class AnalogyObject
+            {
+                [JsonProperty(PropertyName = "source")]
+                public int sourceID;
+                [JsonProperty(PropertyName = "target")]
+                public int targetID;
+                //[JsonProperty(PropertyName = "evidence")]
+                //public string evidence;
+                //[JsonProperty(PropertyName = "connections")]
+                //public string connections;
+                //[JsonProperty(PropertyName = "explanation")]
+                //public string explanation;
+                [JsonProperty(PropertyName = "n_rating")]
+                public float n_rating;
+                //[JsonProperty(PropertyName = "rating")]
+                //public string rating;
+            }
+            [JsonProperty(PropertyName = "data")]
+            public List<AnalogyObject> response;
+            [JsonProperty(PropertyName = "count")]
+            public int count;
+        }
+        private static void parse_json(string json, ref Dictionary<int, float> user_interest)
+        {
+            //Console.Out.WriteLine(json);
+            var data = JsonConvert.DeserializeObject<AnalogyResponse>(json);
+            foreach (var ao in data.response)
+            {
+                if (user_interest.ContainsKey(ao.targetID))
+                {
+                    user_interest[ao.targetID] += ao.n_rating;
+                }
+                else
+                {
+                    user_interest.Add(ao.targetID, ao.n_rating);
+                }
+            }
+        }
+        public void update_interest_analogy(int id, int it_)
+        {
+            string ans = getanalogy(id);
+
+            parse_json(ans, ref user_interest);
+
+            string json_out = "";
+            json_out += "{\"filename\":\"data files/roman_empire_500.xml\",";
+            json_out += "\"total_max_score\":\"" + it_.ToString() + "\",";
+            foreach (KeyValuePair<int, float> pair in user_interest)
+            {
+                json_out += "\"" + pair.Key.ToString() + "\":";
+                json_out += "\"" + pair.Value.ToString() + "\",";
+
+                this.getFeature(pair.Key).update_interest_value(pair.Value);
+
+            }
+            json_out = json_out.Substring(0, json_out.Length - 1);
+            json_out += "}";
+            interest_visualization(json_out);
+            //Console.Out.WriteLine(json_out);
+
+        }
 		public void getMaxDistance()
 		{
 			//var sw = new Stopwatch();

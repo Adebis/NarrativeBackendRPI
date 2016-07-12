@@ -8,6 +8,7 @@ namespace Dialogue_Data_Entry
     [Serializable]
     public class Feature
     {
+        private float interest_value;                    // This is the user interest value.
         private float discussedAmount;                   // This is the "ammount" that this feature has beed the topic of the conversation
         private float discussedThreshold;                // This is the threshold that when reached the topic will have beed exhausted
         private string name;                             // This is the name of this feature.
@@ -40,6 +41,7 @@ namespace Dialogue_Data_Entry
 
         public Feature(string name)
         {
+            this.interest_value = 0;
             this.speaks = new List<string>();
             this.name = name;
             this.id = 0;
@@ -59,6 +61,7 @@ namespace Dialogue_Data_Entry
         }//end constructor Feature
         public Feature(string name, int id)
         {
+            this.interest_value = 0;
             this.speaks = new List<string>();
             this.name = name;
             this.id = id;
@@ -320,6 +323,12 @@ namespace Dialogue_Data_Entry
         }//end function FindNeighborsByRelationship
 
         // This function will get the respective edge weight along the connection between this feature and the feature with the given id
+
+        public void update_interest_value(float value)
+        {
+            this.interest_value = value;
+        }
+
         public double getNeighborWeight(int id)
         {
             if (neighbors.Count == 0) { return -1.0; }

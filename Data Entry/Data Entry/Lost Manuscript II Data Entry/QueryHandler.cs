@@ -84,6 +84,7 @@ namespace Dialogue_Data_Entry
 
 		
 		// "is in" -> contains?
+        private int iterations;
 		private Bot bot;
 		private User user;
 		private FeatureGraph graph;
@@ -151,6 +152,8 @@ namespace Dialogue_Data_Entry
 
 			// Load the Feature Graph
 			this.graph = graph;
+
+            this.iterations = 0;
 
 			// Feature Names, with which to index the graph
 			this.features = graph.getFeatureNames();
@@ -994,7 +997,15 @@ namespace Dialogue_Data_Entry
 				//MessageBox.Show("FindFeature returned null for input: " + input);
 				return null;
 			}
-			//narration_manager.Topic = f;
+
+            this.iterations++;
+
+            //update interest profile based on analogy
+
+            Console.Out.WriteLine("Start handling interest");
+            this.graph.update_interest_analogy(f.Id, this.iterations);
+			
+            //narration_manager.Topic = f;
 			mainTopic = f.Name;
 			if (string.IsNullOrEmpty(mainTopic))
 			{
