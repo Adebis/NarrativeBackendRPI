@@ -13,6 +13,7 @@ namespace Dialogue_Data_Entry
 
 	class XMLFilerForFeatureGraph
 	{
+		public static string current_file;
 		public static XmlDocument docOld = new XmlDocument();
 
 		public static string escapeInvalidXML(string s)
@@ -109,6 +110,7 @@ namespace Dialogue_Data_Entry
 				FeatureGraph result_graph = new FeatureGraph();
 				XmlDocument doc = new XmlDocument();
 				doc.Load(toReadPath);
+				current_file = toReadPath;
 				docOld = doc;
 				//Get the features
 				XmlNodeList features = doc.SelectNodes("AIMind");
@@ -191,82 +193,82 @@ namespace Dialogue_Data_Entry
 					XmlNodeList speaks = node.SelectNodes("speak");
 					foreach (XmlNode speak in speaks) {
 						try {
-                            tmp.addSpeak(unEscapeInvalidXML(speak.InnerText));
-                        }
+							tmp.addSpeak(unEscapeInvalidXML(speak.InnerText));
+						}
 						catch {
 							//use new format
 							tmp.addSpeak(speak.InnerText);
 						}
-                    }
-                    //Timedata
-                    XmlNodeList timedata = node.SelectNodes("timedata");
-                    if (timedata.Count != 0)
-                    {
-                        timedata = timedata[0].SelectNodes("timeobj");
-                        foreach (XmlNode timeobj in timedata)
-                        {
-                            string rel = "";
-                            if (timeobj.Attributes["relationship"] != null)
-                                rel = unEscapeInvalidXML(Convert.ToString(timeobj.Attributes["relationship"].Value));
-                            string val = "";
-                            if (timeobj.Attributes["value"] != null)
-                                val = unEscapeInvalidXML(Convert.ToString(timeobj.Attributes["value"].Value));
-                            tmp.addTimeData(rel, val);
-                        }//end foreach
-                    }//end if
-                    //Geodata
-                    XmlNodeList geodata = node.SelectNodes("geodata");
-                    if (geodata.Count != 0)
-                    {
-                        geodata = geodata[0].SelectNodes("coordinates");
-                        foreach (XmlNode coordinates in geodata)
-                        {
-                            double lat = Convert.ToDouble(coordinates.Attributes["lat"].Value);
-                            double lon = Convert.ToDouble(coordinates.Attributes["lon"].Value);
-                            tmp.addGeoData(lat, lon);
-                        }//end foreach
-                    }//end if
+					}
+					//Timedata
+					XmlNodeList timedata = node.SelectNodes("timedata");
+					if (timedata.Count != 0)
+					{
+						timedata = timedata[0].SelectNodes("timeobj");
+						foreach (XmlNode timeobj in timedata)
+						{
+							string rel = "";
+							if (timeobj.Attributes["relationship"] != null)
+								rel = unEscapeInvalidXML(Convert.ToString(timeobj.Attributes["relationship"].Value));
+							string val = "";
+							if (timeobj.Attributes["value"] != null)
+								val = unEscapeInvalidXML(Convert.ToString(timeobj.Attributes["value"].Value));
+							tmp.addTimeData(rel, val);
+						}//end foreach
+					}//end if
+					//Geodata
+					XmlNodeList geodata = node.SelectNodes("geodata");
+					if (geodata.Count != 0)
+					{
+						geodata = geodata[0].SelectNodes("coordinates");
+						foreach (XmlNode coordinates in geodata)
+						{
+							double lat = Convert.ToDouble(coordinates.Attributes["lat"].Value);
+							double lon = Convert.ToDouble(coordinates.Attributes["lon"].Value);
+							tmp.addGeoData(lat, lon);
+						}//end foreach
+					}//end if
 
-                }//end foreach
+				}//end foreach
 
-                //Connectedness check: check each node's neighbor. If the neighbor does not have
-                //this node on its list of neighbors, place it there.
-                //This is here because knowledge explorer does not add some inverse relationships.
-                //From 5/5/2016, added by Zev Battad.
-                //Go over each feature.
-                foreach (Feature feature_to_check in result_graph.Features)
-                {
-                    //From July 2016, added by Zev Battad.
-                    //Have each feature calculate its own start/end dates
-                    feature_to_check.calculateDate();
+				//Connectedness check: check each node's neighbor. If the neighbor does not have
+				//this node on its list of neighbors, place it there.
+				//This is here because knowledge explorer does not add some inverse relationships.
+				//From 5/5/2016, added by Zev Battad.
+				//Go over each feature.
+				foreach (Feature feature_to_check in result_graph.Features)
+				{
+					//From July 2016, added by Zev Battad.
+					//Have each feature calculate its own start/end dates
+					feature_to_check.calculateDate();
 
-                    //Go over each neighbor in this feature
-                    foreach (Tuple<Feature, double, string> neighbor_to_check in feature_to_check.Neighbors)
-                    {
-                        //Check this neighbor's neighbor list for this feature.
-                        bool feature_found = false;
-                        foreach (Tuple<Feature, double, string> neighbor_of_neighbor in neighbor_to_check.Item1.Neighbors)
-                        {
-                            //If this neighbor's neighbor is the feature to check, we are done.
-                            if (neighbor_of_neighbor.Item1.Id.Equals(feature_to_check.Id))
-                            {
-                                feature_found = true;
-                                break;
-                            }//end if
-                        }//end foreach
+					//Go over each neighbor in this feature
+					foreach (Tuple<Feature, double, string> neighbor_to_check in feature_to_check.Neighbors)
+					{
+						//Check this neighbor's neighbor list for this feature.
+						bool feature_found = false;
+						foreach (Tuple<Feature, double, string> neighbor_of_neighbor in neighbor_to_check.Item1.Neighbors)
+						{
+							//If this neighbor's neighbor is the feature to check, we are done.
+							if (neighbor_of_neighbor.Item1.Id.Equals(feature_to_check.Id))
+							{
+								feature_found = true;
+								break;
+							}//end if
+						}//end foreach
 
-                        //If the neighbor has the feature to check as a neighbor, continue to the next neighbor.
-                        if (feature_found)
-                            continue;
-                        //Otherwise, we must add an inverse relationship.
-                        else
-                        {
-                            //Leave the relationship blank to signal that the relationship going the other direction
-                            //should be used.
-                            neighbor_to_check.Item1.addNeighbor(feature_to_check, 0);
-                        }//end else
-                    }//end foreach
-                }//end foreach
+						//If the neighbor has the feature to check as a neighbor, continue to the next neighbor.
+						if (feature_found)
+							continue;
+						//Otherwise, we must add an inverse relationship.
+						else
+						{
+							//Leave the relationship blank to signal that the relationship going the other direction
+							//should be used.
+							neighbor_to_check.Item1.addNeighbor(feature_to_check, 0);
+						}//end else
+					}//end foreach
+				}//end foreach
 
 				int rootId = -1;
 				try {

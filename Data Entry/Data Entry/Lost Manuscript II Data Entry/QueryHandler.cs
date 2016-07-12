@@ -84,6 +84,7 @@ namespace Dialogue_Data_Entry
 
 		
 		// "is in" -> contains?
+		private int iterations;
 		private Bot bot;
 		private User user;
 		private FeatureGraph graph;
@@ -151,6 +152,8 @@ namespace Dialogue_Data_Entry
 
 			// Load the Feature Graph
 			this.graph = graph;
+
+			this.iterations = 0;
 
 			// Feature Names, with which to index the graph
 			this.features = graph.getFeatureNames();
@@ -320,7 +323,7 @@ namespace Dialogue_Data_Entry
 			// CASE: Nothing / Move on to next topic
 			if (string.IsNullOrEmpty(input))
 			{
-                answer = narration_manager.NextTopicResponse();
+				answer = narration_manager.NextTopicResponse();
 			}//end if
 			// CASE: Tell me more / Continue speaking
 			else if (input.Contains("more") && input.Contains("tell"))
@@ -388,12 +391,12 @@ namespace Dialogue_Data_Entry
 		{
 			string return_string = "";
 
-                //LIST_COMMANDS command from query window
-                //  Lists the commands that can be typed in to the query window
-                if (split_input[0].Equals("LIST_COMMANDS"))
-                {
+				//LIST_COMMANDS command from query window
+				//  Lists the commands that can be typed in to the query window
+				if (split_input[0].Equals("LIST_COMMANDS"))
+				{
 
-                }//end if
+				}//end if
 				//Step-through command from Query window.
 				// Calls ParseInput with the empty string several times, stepping
 				// through with default responses.
@@ -541,429 +544,429 @@ namespace Dialogue_Data_Entry
 						return_string = return_string + " --> " + temp_feature.Name;
 					}//end foreach
 				}//end else if
-                //ADD_ANCHOR command.
+				//ADD_ANCHOR command.
 				// Add a set of anchor nodes to the narration manager by either feature name or ID.
 				else if (split_input[0].Equals("ADD_ANCHOR"))
 				{
 					Feature new_anchor_node = null;
-                    return_string = "Added anchor nodes: ";
+					return_string = "Added anchor nodes: ";
 
-                    for (int i = 1; i < split_input.Length; i++)
-                    {
-                        String string_topic = split_input[i];
-                        //Try to convert the topic to an int to check if it's an id.
-                        int int_topic = -1;
-                        bool parse_success = int.TryParse(string_topic, out int_topic);
-                        if (parse_success)
-                        {
-                            //Check that the new integer topic is a valid id.
-                            new_anchor_node = graph.getFeature(int_topic);
-                        }//end if
-                        else
-                        {
-                            new_anchor_node = FindFeature(string_topic);
-                        }//end else
-                        if (new_anchor_node != null)
-                        {
-                            narration_manager.AddAnchorNode(new_anchor_node);
-                            return_string += new_anchor_node.Name + " (" + new_anchor_node.Id + ")" + ", ";
-                        }//end if
+					for (int i = 1; i < split_input.Length; i++)
+					{
+						String string_topic = split_input[i];
+						//Try to convert the topic to an int to check if it's an id.
+						int int_topic = -1;
+						bool parse_success = int.TryParse(string_topic, out int_topic);
+						if (parse_success)
+						{
+							//Check that the new integer topic is a valid id.
+							new_anchor_node = graph.getFeature(int_topic);
+						}//end if
+						else
+						{
+							new_anchor_node = FindFeature(string_topic);
+						}//end else
+						if (new_anchor_node != null)
+						{
+							narration_manager.AddAnchorNode(new_anchor_node);
+							return_string += new_anchor_node.Name + " (" + new_anchor_node.Id + ")" + ", ";
+						}//end if
 
-                    }//end for
+					}//end for
 
 				}//end else if
-                //LIST_ANCHORS command.
-                //  Returns the list of anchor nodes, by name, to the chat window.
-                else if (split_input[0].Equals("LIST_ANCHORS"))
-                {
-                    return_string = "Anchor nodes: ";
-                    foreach (Feature anchor_node in narration_manager.anchor_nodes)
-                    {
-                        return_string += anchor_node.Name += " (" + anchor_node.Id + "), ";
-                    }//end foreach
-                }//end else if
-                //SET_TURN_LIMIT command.
-                //  Sets the maximum number of turns the conversation can go for.
-                else if (split_input[0].Equals("SET_TURN_LIMIT"))
-                {
-                    return_string = "";
+				//LIST_ANCHORS command.
+				//  Returns the list of anchor nodes, by name, to the chat window.
+				else if (split_input[0].Equals("LIST_ANCHORS"))
+				{
+					return_string = "Anchor nodes: ";
+					foreach (Feature anchor_node in narration_manager.anchor_nodes)
+					{
+						return_string += anchor_node.Name += " (" + anchor_node.Id + "), ";
+					}//end foreach
+				}//end else if
+				//SET_TURN_LIMIT command.
+				//  Sets the maximum number of turns the conversation can go for.
+				else if (split_input[0].Equals("SET_TURN_LIMIT"))
+				{
+					return_string = "";
 
-                    int turn_limit = 0;
-                    bool parse_success = int.TryParse(split_input[1], out turn_limit);
-                    if (parse_success)
-                    {
-                        narration_manager.SetTurnLimit(turn_limit);
-                        return_string = "Turn limit set to " + turn_limit;
-                    }//end if
-                    else
-                        return_string = "Could not set turn limit.";
-                }//end else if
-                //CHRONOLOGY command.
-                //  Generates a story based on a single anchor node.
-                //  The story should be chronological, but can start at the anchor node.
-                else if (split_input[0].Equals("CHRONOLOGY"))
-                {
-                    return_string = "Chronology for: ";
+					int turn_limit = 0;
+					bool parse_success = int.TryParse(split_input[1], out turn_limit);
+					if (parse_success)
+					{
+						narration_manager.SetTurnLimit(turn_limit);
+						return_string = "Turn limit set to " + turn_limit;
+					}//end if
+					else
+						return_string = "Could not set turn limit.";
+				}//end else if
+				//CHRONOLOGY command.
+				//  Generates a story based on a single anchor node.
+				//  The story should be chronological, but can start at the anchor node.
+				else if (split_input[0].Equals("CHRONOLOGY"))
+				{
+					return_string = "Chronology for: ";
 
-                    Feature anchor_node = null;
-                    //Get the anchor node specified in this command 
-                    if (split_input[1] != null)
-                    {
-                        String string_topic = split_input[1];
-                        //Try to convert the topic to an int to check if it's an id.
-                        int int_topic = -1;
-                        bool parse_success = int.TryParse(string_topic, out int_topic);
-                        if (parse_success)
-                        {
-                            //Check that the new integer topic is a valid id.
-                            anchor_node = graph.getFeature(int_topic);
-                        }//end if
-                        else
-                        {
-                            anchor_node = FindFeature(string_topic);
-                        }//end else
-                        if (anchor_node != null)
-                        {
-                            //If we found an anchor node with this command, assemble the chronology.
+					Feature anchor_node = null;
+					//Get the anchor node specified in this command 
+					if (split_input[1] != null)
+					{
+						String string_topic = split_input[1];
+						//Try to convert the topic to an int to check if it's an id.
+						int int_topic = -1;
+						bool parse_success = int.TryParse(string_topic, out int_topic);
+						if (parse_success)
+						{
+							//Check that the new integer topic is a valid id.
+							anchor_node = graph.getFeature(int_topic);
+						}//end if
+						else
+						{
+							anchor_node = FindFeature(string_topic);
+						}//end else
+						if (anchor_node != null)
+						{
+							//If we found an anchor node with this command, assemble the chronology.
 
-                            //For certain story roles, relationships match up with start and end dates.
-                            //For characters, transfer start and end dates to birth and death places.
-                            if (anchor_node.story_role == 1)
-                            {
-                                //Look for a birth place by looking for the word "birth" in any neighbor relationship
-                                Feature birth_place = null;
-                                foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
-                                {
-                                    if (neighbor_tuple.Item3.Contains("birth"))
-                                    {
-                                        birth_place = neighbor_tuple.Item1;
-                                        break;
-                                    }//end if
-                                }//end foreach
-                                //If the birth place is not null, update its date
-                                if (birth_place != null)
-                                {
-                                    birth_place.start_date = anchor_node.start_date;
-                                    birth_place.end_date = anchor_node.start_date;
-                                }//end if
-                                //Look for a death place by looking for the word "death" in any neighbor relationship
-                                Feature death_place = null;
-                                foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
-                                {
-                                    if (neighbor_tuple.Item3.Contains("death"))
-                                    {
-                                        death_place = neighbor_tuple.Item1;
-                                        break;
-                                    }//end if
-                                }//end foreach
-                                //If the death place is not null, update its date
-                                if (death_place != null)
-                                {
-                                    death_place.start_date = anchor_node.end_date;
-                                    death_place.end_date = anchor_node.end_date;
-                                }//end if
-                            }//end if
+							//For certain story roles, relationships match up with start and end dates.
+							//For characters, transfer start and end dates to birth and death places.
+							if (anchor_node.story_role == 1)
+							{
+								//Look for a birth place by looking for the word "birth" in any neighbor relationship
+								Feature birth_place = null;
+								foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
+								{
+									if (neighbor_tuple.Item3.Contains("birth"))
+									{
+										birth_place = neighbor_tuple.Item1;
+										break;
+									}//end if
+								}//end foreach
+								//If the birth place is not null, update its date
+								if (birth_place != null)
+								{
+									birth_place.start_date = anchor_node.start_date;
+									birth_place.end_date = anchor_node.start_date;
+								}//end if
+								//Look for a death place by looking for the word "death" in any neighbor relationship
+								Feature death_place = null;
+								foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
+								{
+									if (neighbor_tuple.Item3.Contains("death"))
+									{
+										death_place = neighbor_tuple.Item1;
+										break;
+									}//end if
+								}//end foreach
+								//If the death place is not null, update its date
+								if (death_place != null)
+								{
+									death_place.start_date = anchor_node.end_date;
+									death_place.end_date = anchor_node.end_date;
+								}//end if
+							}//end if
 
-                            //Find the neighboring node whose date most closely matches the anchor node's start date.
-                            Feature closest_start_neighbor = null;
-                            TimeSpan closest_time_difference = TimeSpan.MaxValue;
-                            foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
-                            {
-                                TimeSpan time_difference = neighbor_tuple.Item1.start_date - anchor_node.start_date;
-                                if (time_difference.Duration() < closest_time_difference.Duration())
-                                {
-                                    closest_start_neighbor = neighbor_tuple.Item1;
-                                    closest_time_difference = time_difference;
-                                }//end if
-                            }//end foreach
+							//Find the neighboring node whose date most closely matches the anchor node's start date.
+							Feature closest_start_neighbor = null;
+							TimeSpan closest_time_difference = TimeSpan.MaxValue;
+							foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
+							{
+								TimeSpan time_difference = neighbor_tuple.Item1.start_date - anchor_node.start_date;
+								if (time_difference.Duration() < closest_time_difference.Duration())
+								{
+									closest_start_neighbor = neighbor_tuple.Item1;
+									closest_time_difference = time_difference;
+								}//end if
+							}//end foreach
 
-                            //Find the neighboring node whose date most closely matches the anchor node's end date.
-                            Feature closest_end_neighbor = null;
-                            closest_time_difference = TimeSpan.MaxValue;
-                            foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
-                            {
-                                TimeSpan time_difference = neighbor_tuple.Item1.end_date - anchor_node.end_date;
-                                if (time_difference.Duration() < closest_time_difference.Duration())
-                                {
-                                    closest_end_neighbor = neighbor_tuple.Item1;
-                                    closest_time_difference = time_difference;
-                                }//end if
-                            }//end foreach
+							//Find the neighboring node whose date most closely matches the anchor node's end date.
+							Feature closest_end_neighbor = null;
+							closest_time_difference = TimeSpan.MaxValue;
+							foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
+							{
+								TimeSpan time_difference = neighbor_tuple.Item1.end_date - anchor_node.end_date;
+								if (time_difference.Duration() < closest_time_difference.Duration())
+								{
+									closest_end_neighbor = neighbor_tuple.Item1;
+									closest_time_difference = time_difference;
+								}//end if
+							}//end foreach
 
-                            //Get the turn limit
-                            int turn_limit = 0;
-                            if (split_input[2] != null)
-                            {
-                                parse_success = int.TryParse(split_input[2], out turn_limit);
-                                if (parse_success)
-                                {
-                                    Console.Out.WriteLine("Turn limit set to " + turn_limit);
-                                }//end if
-                                else
-                                    Console.Out.WriteLine("Could not set turn limit.");
-                            }//end if
+							//Get the turn limit
+							int turn_limit = 0;
+							if (split_input[2] != null)
+							{
+								parse_success = int.TryParse(split_input[2], out turn_limit);
+								if (parse_success)
+								{
+									Console.Out.WriteLine("Turn limit set to " + turn_limit);
+								}//end if
+								else
+									Console.Out.WriteLine("Could not set turn limit.");
+							}//end if
 
-                            //Make a temporary graph to create the chronology's order before presenting it.
-                            FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(graph);
+							//Make a temporary graph to create the chronology's order before presenting it.
+							FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(graph);
 
-                            return_string = "";
+							return_string = "";
 
-                            //Turns should be spent talking about nodes between the start and end dates of the anchor node.
-                            //First, talk about the anchor node.
-                            NarrationManager temp_manager = new NarrationManager(temp_graph, temporalConstraintList);
-                            return_string += temp_manager.PresentFeature(anchor_node);
-                            //Next, talk about the start neighbor.
-                            return_string += temp_manager.PresentFeature(closest_start_neighbor);
-                            Feature last_feature = closest_start_neighbor;
-                            Feature current_feature = closest_start_neighbor;
-                            
-                            //Take up the rest of the turns talking about items in between the start and end dates.
-                            while (temp_manager.Turn < turn_limit)
-                            {
-                                //Determine the next feature from the previous one
-                                current_feature = temp_manager.getNextChronologicalTopic(last_feature, anchor_node.start_date, anchor_node.end_date);
-                                //Present it
-                                return_string += temp_manager.PresentFeature(current_feature);
-                                //Update last feature
-                                last_feature = current_feature;
-                            }//end while
-                            //When we have reached the turn limit, present the ending node.
+							//Turns should be spent talking about nodes between the start and end dates of the anchor node.
+							//First, talk about the anchor node.
+							NarrationManager temp_manager = new NarrationManager(temp_graph, temporalConstraintList);
+							return_string += temp_manager.PresentFeature(anchor_node);
+							//Next, talk about the start neighbor.
+							return_string += temp_manager.PresentFeature(closest_start_neighbor);
+							Feature last_feature = closest_start_neighbor;
+							Feature current_feature = closest_start_neighbor;
+							
+							//Take up the rest of the turns talking about items in between the start and end dates.
+							while (temp_manager.Turn < turn_limit)
+							{
+								//Determine the next feature from the previous one
+								current_feature = temp_manager.getNextChronologicalTopic(last_feature, anchor_node.start_date, anchor_node.end_date);
+								//Present it
+								return_string += temp_manager.PresentFeature(current_feature);
+								//Update last feature
+								last_feature = current_feature;
+							}//end while
+							//When we have reached the turn limit, present the ending node.
 
-                            return_string += temp_manager.PresentFeature(closest_end_neighbor);
-                            //return_string += anchor_node.Name + " (" + anchor_node.Id + ")" + ", ";
+							return_string += temp_manager.PresentFeature(closest_end_neighbor);
+							//return_string += anchor_node.Name + " (" + anchor_node.Id + ")" + ", ";
 
-                            //7/6/2016: For integration, send back a double-colon delineated list of node names consisting of the nodes given here.
-                            List<Feature> chronology = temp_manager.TopicHistory;
-                            return_string = "";
-                            foreach (Feature feat in chronology)
-                            {
-                                return_string += feat.Name + "::";
-                            }//end foreach
-                        }//end if
-                    }//end if
-                }//end else if
-                //START_NARRATION command.
-                //  Makes the system narrate. A turn limit may be specified after the command.
-                //  It tries to visit all anchor nodes within the turn limit. 
-                else if (split_input[0].Equals("START_NARRATION"))
-                {
-                    return_string = "";
+							//7/6/2016: For integration, send back a double-colon delineated list of node names consisting of the nodes given here.
+							List<Feature> chronology = temp_manager.TopicHistory;
+							return_string = "";
+							foreach (Feature feat in chronology)
+							{
+								return_string += feat.Name + "::";
+							}//end foreach
+						}//end if
+					}//end if
+				}//end else if
+				//START_NARRATION command.
+				//  Makes the system narrate. A turn limit may be specified after the command.
+				//  It tries to visit all anchor nodes within the turn limit. 
+				else if (split_input[0].Equals("START_NARRATION"))
+				{
+					return_string = "";
 
-                    if (split_input[1] != null)
-                    {
-                        int turn_limit = 0;
-                        bool parse_success = int.TryParse(split_input[1], out turn_limit);
-                        if (parse_success)
-                        {
-                            narration_manager.SetTurnLimit(turn_limit);
-                            Console.Out.WriteLine("Turn limit set to " + turn_limit);
-                        }//end if
-                        else
-                            Console.Out.WriteLine("Could not set turn limit.");
-                    }//end if
+					if (split_input[1] != null)
+					{
+						int turn_limit = 0;
+						bool parse_success = int.TryParse(split_input[1], out turn_limit);
+						if (parse_success)
+						{
+							narration_manager.SetTurnLimit(turn_limit);
+							Console.Out.WriteLine("Turn limit set to " + turn_limit);
+						}//end if
+						else
+							Console.Out.WriteLine("Could not set turn limit.");
+					}//end if
 
-                    //Check if the narration manager has any anchor nodes.
-                    if (narration_manager.anchor_nodes.Count <= 0)
-                    {
-                        //If not, initialize some default anchor nodes.
-                        string temp_input = "";
-                        temp_input = "ADD_ANCHOR:78:1:117:115";
-                        ParseInput(temp_input);
-                    }//end if
+					//Check if the narration manager has any anchor nodes.
+					if (narration_manager.anchor_nodes.Count <= 0)
+					{
+						//If not, initialize some default anchor nodes.
+						string temp_input = "";
+						temp_input = "ADD_ANCHOR:78:1:117:115";
+						ParseInput(temp_input);
+					}//end if
 
-                    bool start_success = narration_manager.StartNarration();
-                    if (start_success)
-                        return_string = "Narration started.";
-                    else
-                        return_string = "Failed to start narration.";
-                }//end else if
+					bool start_success = narration_manager.StartNarration();
+					if (start_success)
+						return_string = "Narration started.";
+					else
+						return_string = "Failed to start narration.";
+				}//end else if
 
-                //INTERWEAVE command.
-                // Creates two interwoven storylines.
-                else if (split_input[0].Equals("INTERWEAVE"))
-                {
-                    List<String> return_string_1_components = new List<String>();
-                    List<String> return_string_2_components = new List<String>();
-                    string return_string_1 = "";
-                    string return_string_2 = "";
+				//INTERWEAVE command.
+				// Creates two interwoven storylines.
+				else if (split_input[0].Equals("INTERWEAVE"))
+				{
+					List<String> return_string_1_components = new List<String>();
+					List<String> return_string_2_components = new List<String>();
+					string return_string_1 = "";
+					string return_string_2 = "";
 
-                    int storyline_length = 10;
-                    //1 Arctic exploration, 20 Desert exploration
-                    int story_1_root = 200;
-                    int story_2_root = 1;
+					int storyline_length = 10;
+					//1 Arctic exploration, 20 Desert exploration
+					int story_1_root = 200;
+					int story_2_root = 1;
 
-                    //Create the first story in its entirety
-                    //Set the node that the story will start at
-                    graph.Root = graph.getFeature(story_1_root);
-                    NarrationManager manager_1 = new NarrationManager(graph, temporalConstraintList);
-                    for (int i = 0; i < storyline_length; i++)
-                    {
-                        return_string_1_components.Add(" " + manager_1.DefaultNextTopicResponse() + "\n");
-                        manager_1.Turn += 1;
-                    }//end for
-                    //Get the topic history from the first narration as the reference list for the second narration.
-                    List<Feature> storyline_1 = manager_1.TopicHistory;
-                    //Remove 1st node, it is a duplicate.
-                    storyline_1.RemoveAt(0);
+					//Create the first story in its entirety
+					//Set the node that the story will start at
+					graph.Root = graph.getFeature(story_1_root);
+					NarrationManager manager_1 = new NarrationManager(graph, temporalConstraintList);
+					for (int i = 0; i < storyline_length; i++)
+					{
+						return_string_1_components.Add(" " + manager_1.DefaultNextTopicResponse() + "\n");
+						manager_1.Turn += 1;
+					}//end for
+					//Get the topic history from the first narration as the reference list for the second narration.
+					List<Feature> storyline_1 = manager_1.TopicHistory;
+					//Remove 1st node, it is a duplicate.
+					storyline_1.RemoveAt(0);
 
-                    //Ask the manager for the first narration which node would be best as a switch point.
-                    Feature switch_point = manager_1.IdentifySwitchPoint(storyline_1);
+					//Ask the manager for the first narration which node would be best as a switch point.
+					Feature switch_point = manager_1.IdentifySwitchPoint(storyline_1);
 
 
-                    //Create the reference list from the first storyline up through the switch point.
-                    List<Feature> reference_list = new List<Feature>();
-                    foreach (Feature story_feature in storyline_1)
-                    {
-                        reference_list.Add(story_feature);
-                        if (story_feature.Id.Equals(switch_point.Id))
-                            break;
-                    }//end foreach
+					//Create the reference list from the first storyline up through the switch point.
+					List<Feature> reference_list = new List<Feature>();
+					foreach (Feature story_feature in storyline_1)
+					{
+						reference_list.Add(story_feature);
+						if (story_feature.Id.Equals(switch_point.Id))
+							break;
+					}//end foreach
 
-                    //Create the second story in its entirety
-                    //Set the node that the story will start at
-                    graph.Root = graph.getFeature(story_2_root);
-                    NarrationManager manager_2 = new NarrationManager(graph, temporalConstraintList);
-                    for (int i = 0; i < storyline_length; i++)
-                    {
-                        return_string_2_components.Add(" " + manager_2.DefaultNextTopicResponse(reference_list) + "\n");
-                        manager_2.Turn += 1;
-                    }//end for
-                    List<Feature> storyline_2 = manager_2.TopicHistory;
-                    //Remove 1st node, it is a duplicate
-                    storyline_2.RemoveAt(0);
+					//Create the second story in its entirety
+					//Set the node that the story will start at
+					graph.Root = graph.getFeature(story_2_root);
+					NarrationManager manager_2 = new NarrationManager(graph, temporalConstraintList);
+					for (int i = 0; i < storyline_length; i++)
+					{
+						return_string_2_components.Add(" " + manager_2.DefaultNextTopicResponse(reference_list) + "\n");
+						manager_2.Turn += 1;
+					}//end for
+					List<Feature> storyline_2 = manager_2.TopicHistory;
+					//Remove 1st node, it is a duplicate
+					storyline_2.RemoveAt(0);
 
-                    bool after_switch_point = false;
-                    //Compile both return strings from their components
-                    int switch_point_index = storyline_1.IndexOf(switch_point);
-                    //Get the part of storyline 1 up to the switch point
-                    List<Feature> storyline_1_first_half = storyline_1.GetRange(0, switch_point_index + 1);
-                    //Get part of storyline 1 after the switch point
-                    List<Feature> storyline_1_second_half = storyline_1.GetRange(switch_point_index + 1, storyline_1.Count - switch_point_index - 1);
-                    foreach (string component_1 in return_string_1_components)
-                    {
-                        //At the switch point, add all of the second storyline.
-                        int component_index = return_string_1_components.IndexOf(component_1);
-                        if (component_index == switch_point_index)
-                        {
-                            //Foreshadow future switch point information.
-                            foreach (Feature first_half_node in storyline_1_first_half)
-                            {
-                                return_string += " " + manager_1.Foreshadow(first_half_node, storyline_1_second_half) + "\n";
-                            }//end foreach
-                            //return_string += " " + manager_1.Foreshadow(switch_point, storyline_1_second_half) + "\n";
+					bool after_switch_point = false;
+					//Compile both return strings from their components
+					int switch_point_index = storyline_1.IndexOf(switch_point);
+					//Get the part of storyline 1 up to the switch point
+					List<Feature> storyline_1_first_half = storyline_1.GetRange(0, switch_point_index + 1);
+					//Get part of storyline 1 after the switch point
+					List<Feature> storyline_1_second_half = storyline_1.GetRange(switch_point_index + 1, storyline_1.Count - switch_point_index - 1);
+					foreach (string component_1 in return_string_1_components)
+					{
+						//At the switch point, add all of the second storyline.
+						int component_index = return_string_1_components.IndexOf(component_1);
+						if (component_index == switch_point_index)
+						{
+							//Foreshadow future switch point information.
+							foreach (Feature first_half_node in storyline_1_first_half)
+							{
+								return_string += " " + manager_1.Foreshadow(first_half_node, storyline_1_second_half) + "\n";
+							}//end foreach
+							//return_string += " " + manager_1.Foreshadow(switch_point, storyline_1_second_half) + "\n";
 
-                            return_string += " SWITCH TO STORYLINE 2 \n {But now, let's talk about something else.}";
-                            foreach (string component_2 in return_string_2_components)
-                            {
-                                return_string += component_2;
-                            }//end foreach
-                            return_string += " SWITCH TO STORYLINE 1 \n";
-                            after_switch_point = true;
-                        }//end if
-                        return_string += component_1;
-                        if (after_switch_point && component_index < storyline_1.Count)
-                        {
-                            //List<Feature> temp_list = new List<Feature>();
-                            //temp_list.Add(switch_point);
-                            return_string += " " + manager_1.TieBack(storyline_1.ElementAt(component_index), storyline_1_first_half, storyline_1.ElementAt(component_index - 1)) + "\n";
-                        }//end if
-                    }//end foreach
+							return_string += " SWITCH TO STORYLINE 2 \n {But now, let's talk about something else.}";
+							foreach (string component_2 in return_string_2_components)
+							{
+								return_string += component_2;
+							}//end foreach
+							return_string += " SWITCH TO STORYLINE 1 \n";
+							after_switch_point = true;
+						}//end if
+						return_string += component_1;
+						if (after_switch_point && component_index < storyline_1.Count)
+						{
+							//List<Feature> temp_list = new List<Feature>();
+							//temp_list.Add(switch_point);
+							return_string += " " + manager_1.TieBack(storyline_1.ElementAt(component_index), storyline_1_first_half, storyline_1.ElementAt(component_index - 1)) + "\n";
+						}//end if
+					}//end foreach
 
-                    return_string += " : switch point: " + switch_point.Name + " \n";
-                }//end else if
-                else if (split_input[0].Equals("COUNT_CONNECTIONS"))
-                {
-                    //Count the total number of edges in the graph.
-                    //Count pairs of forward and backward edges as one.
+					return_string += " : switch point: " + switch_point.Name + " \n";
+				}//end else if
+				else if (split_input[0].Equals("COUNT_CONNECTIONS"))
+				{
+					//Count the total number of edges in the graph.
+					//Count pairs of forward and backward edges as one.
 
-                    //Nodes that have already been checked
-                    List<Feature> features_checked = new List<Feature>();
-                    //Relationships that have been seen
-                    List<string> relationships = new List<string>();
-                    int connection_count = 0;
-                    foreach (Feature feat_to_check in graph.Features)
-                    {
-                        features_checked.Add(feat_to_check);
-                        foreach (Tuple<Feature, double, string> temp_neighbor in feat_to_check.Neighbors)
-                        {
-                            //If this neighbor has already been checked, don't count the connection.
-                            if (features_checked.Contains(temp_neighbor.Item1))
-                            {
-                                continue;
-                            }//end if
-                            //If the relationship has not been seen, add it to the list of relationships
-                            if (!relationships.Contains(temp_neighbor.Item3))
-                            {
-                                relationships.Add(temp_neighbor.Item3);
-                            }//end if
-                            connection_count += 1;
-                        }//end foreach
-                    }//end foreach
+					//Nodes that have already been checked
+					List<Feature> features_checked = new List<Feature>();
+					//Relationships that have been seen
+					List<string> relationships = new List<string>();
+					int connection_count = 0;
+					foreach (Feature feat_to_check in graph.Features)
+					{
+						features_checked.Add(feat_to_check);
+						foreach (Tuple<Feature, double, string> temp_neighbor in feat_to_check.Neighbors)
+						{
+							//If this neighbor has already been checked, don't count the connection.
+							if (features_checked.Contains(temp_neighbor.Item1))
+							{
+								continue;
+							}//end if
+							//If the relationship has not been seen, add it to the list of relationships
+							if (!relationships.Contains(temp_neighbor.Item3))
+							{
+								relationships.Add(temp_neighbor.Item3);
+							}//end if
+							connection_count += 1;
+						}//end foreach
+					}//end foreach
 
-                    return_string = "Number of connections: " + connection_count + ", unique relationships: " + relationships.Count;
-                }//end else if
-                else if (split_input[0].Equals("FIND_WELL_CONNECTED_ROOTS"))
-                {
-                    FeatureGraph original_feature_graph = graph;
+					return_string = "Number of connections: " + connection_count + ", unique relationships: " + relationships.Count;
+				}//end else if
+				else if (split_input[0].Equals("FIND_WELL_CONNECTED_ROOTS"))
+				{
+					FeatureGraph original_feature_graph = graph;
 
-                    //Root node, root node id, switch point, switch point id.
-                    List<Tuple<Feature, int, Feature, int>> interesting_roots = new List<Tuple<Feature, int, Feature, int>>();
-                    foreach (Feature feat_to_check in original_feature_graph.Features)
-                    {
-                        //Make a deep copy of the original feature graph so we can make changes
-                        //without changing the original.
-                        FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(original_feature_graph);
-                        NarrationManager temp_manager = new NarrationManager(temp_graph, temporalConstraintList);
+					//Root node, root node id, switch point, switch point id.
+					List<Tuple<Feature, int, Feature, int>> interesting_roots = new List<Tuple<Feature, int, Feature, int>>();
+					foreach (Feature feat_to_check in original_feature_graph.Features)
+					{
+						//Make a deep copy of the original feature graph so we can make changes
+						//without changing the original.
+						FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(original_feature_graph);
+						NarrationManager temp_manager = new NarrationManager(temp_graph, temporalConstraintList);
 
-                        //Create the first story in its entirety
-                        //Set the node that the story will start at
-                        graph.Root = graph.getFeature(feat_to_check.Id);
-                        NarrationManager manager_1 = new NarrationManager(graph, temporalConstraintList);
-                        for (int i = 0; i < 10; i++)
-                        {
-                            manager_1.DefaultNextTopicResponse();
-                            manager_1.Turn += 1;
-                        }//end for
-                        //Get the topic history from the first narration as the refernce list for the second narration.
-                        List<Feature> storyline_1 = manager_1.TopicHistory;
-                        //Remove 1st node, it is a duplicate.
-                        storyline_1.RemoveAt(0);
+						//Create the first story in its entirety
+						//Set the node that the story will start at
+						graph.Root = graph.getFeature(feat_to_check.Id);
+						NarrationManager manager_1 = new NarrationManager(graph, temporalConstraintList);
+						for (int i = 0; i < 10; i++)
+						{
+							manager_1.DefaultNextTopicResponse();
+							manager_1.Turn += 1;
+						}//end for
+						//Get the topic history from the first narration as the refernce list for the second narration.
+						List<Feature> storyline_1 = manager_1.TopicHistory;
+						//Remove 1st node, it is a duplicate.
+						storyline_1.RemoveAt(0);
 
-                        //Ask the manager for the first narration which node would be best as a switch point.
-                        Feature switch_point = manager_1.IdentifySwitchPoint(storyline_1);
+						//Ask the manager for the first narration which node would be best as a switch point.
+						Feature switch_point = manager_1.IdentifySwitchPoint(storyline_1);
 
-                        //If switch point is neither the first nor last nodes, mark this as an interesting root.
-                        if (!(switch_point.Id == storyline_1[0].Id) && !(switch_point.Id == storyline_1[storyline_1.Count - 1].Id))
-                        {
-                            interesting_roots.Add(new Tuple<Feature, int, Feature, int>(feat_to_check, feat_to_check.Id, switch_point, switch_point.Id));
-                        }//end if
-                    }//end foreach
+						//If switch point is neither the first nor last nodes, mark this as an interesting root.
+						if (!(switch_point.Id == storyline_1[0].Id) && !(switch_point.Id == storyline_1[storyline_1.Count - 1].Id))
+						{
+							interesting_roots.Add(new Tuple<Feature, int, Feature, int>(feat_to_check, feat_to_check.Id, switch_point, switch_point.Id));
+						}//end if
+					}//end foreach
 
-                    //return_string = "Number of connections: " + connection_count + ", unique relationships: " + relationships.Count;
-                }//end else if
-                else if (split_input[0].Equals("VALID_TIME_GEO"))
-                {
-                    List<Feature> valid_nodes = new List<Feature>();
-                    return_string = "Valid next nodes: ";
+					//return_string = "Number of connections: " + connection_count + ", unique relationships: " + relationships.Count;
+				}//end else if
+				else if (split_input[0].Equals("VALID_TIME_GEO"))
+				{
+					List<Feature> valid_nodes = new List<Feature>();
+					return_string = "Valid next nodes: ";
 
-                    String string_topic = split_input[1];
+					String string_topic = split_input[1];
 
-                    Feature source_node = FindFeature(string_topic);
+					Feature source_node = FindFeature(string_topic);
 
-                    foreach (Tuple<Feature, double, string> neighbor in source_node.Neighbors)
-                    {
-                        if (neighbor.Item1.Timedata.Count > 0 && neighbor.Item1.Geodata.Count > 0)
-                            valid_nodes.Add(neighbor.Item1);
-                    }//end foreach
-                    foreach (Feature valid_node in valid_nodes)
-                    {
-                        return_string += source_node.getRelationshipNeighbor(valid_node.Name) + " " + valid_node.Name + " (" + valid_node.Id + ") " + " : ";
-                    }//end foreach
-                }//end else if
-                else if (split_input[0].Equals("RESPONSE"))
-                {
+					foreach (Tuple<Feature, double, string> neighbor in source_node.Neighbors)
+					{
+						if (neighbor.Item1.Timedata.Count > 0 && neighbor.Item1.Geodata.Count > 0)
+							valid_nodes.Add(neighbor.Item1);
+					}//end foreach
+					foreach (Feature valid_node in valid_nodes)
+					{
+						return_string += source_node.getRelationshipNeighbor(valid_node.Name) + " " + valid_node.Name + " (" + valid_node.Id + ") " + " : ";
+					}//end foreach
+				}//end else if
+				else if (split_input[0].Equals("RESPONSE"))
+				{
 
-                }//end else if
+				}//end else if
 
 			return return_string;
 		}//end function CommandResponse
@@ -994,6 +997,14 @@ namespace Dialogue_Data_Entry
 				//MessageBox.Show("FindFeature returned null for input: " + input);
 				return null;
 			}
+
+			this.iterations++;
+
+			//update interest profile based on analogy
+
+			Console.Out.WriteLine("Start handling interest");
+			this.graph.update_interest_analogy(f.Id, this.iterations);
+			
 			//narration_manager.Topic = f;
 			mainTopic = f.Name;
 			if (string.IsNullOrEmpty(mainTopic))
