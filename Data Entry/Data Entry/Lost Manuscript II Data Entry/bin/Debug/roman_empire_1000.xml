@@ -248,8 +248,8 @@
       <geodata/>
       <timedata>
         <timeobj relationship="death date" value="0337-05-22"/>
-        <timeobj relationship="birth date" value="--02-27"/>
-        <timeobj relationship="DATE OF BIRTH" value="--02-27"/>
+        <timeobj relationship="birth date" value="0272-02-27"/>
+        <timeobj relationship="DATE OF BIRTH" value="0272-02-27"/>
         <timeobj relationship="DATE OF DEATH" value="0337-05-22"/>
         <timeobj relationship="years" value="319"/>
         <timeobj relationship="years" value="307"/>
@@ -261,7 +261,7 @@
         <timeobj relationship="years" value="309"/>
         <timeobj relationship="active years end year" value="0306"/>
         <timeobj relationship="active years start year" value="0306"/>
-        <timeobj relationship="birth year" value="0027"/>
+        <timeobj relationship="birth year" value="0272"/>
         <timeobj relationship="death year" value="0337"/>
       </timedata>
       <speak>Constantine the Great —is a significant figure in the history of Christianity.</speak>
@@ -624,7 +624,7 @@
     <Feature data="Rufina and Secunda" zh-data="" id="32" uri="http://dbpedia.org/resource/Rufina_and_Secunda">
       <neighbors>
         <neighbor dest="1" relationship="birth place" weight="0"/>
-        <neighbor dest="15" relationship="birth place" weight="0"/>
+        <neighbor dest="15" relationship="death place" weight="0"/>
         <neighbor dest="543" relationship="venerated in" weight="0"/>
       </neighbors>
       <geodata/>
@@ -4032,8 +4032,8 @@
     <Feature data="Legio IX Hispana" zh-data="第九「西班牙」軍團" id="250" uri="http://dbpedia.org/resource/Legio_IX_Hispana">
       <neighbors>
         <neighbor dest="145" relationship="battle" weight="0"/>
-        <neighbor dest="149" relationship="battle" weight="0"/>
-        <neighbor dest="199" relationship="notable commanders" weight="0"/>
+        <neighbor dest="149" relationship="battles" weight="0"/>
+        <neighbor dest="199" relationship="notable commander" weight="0"/>
         <neighbor dest="1" relationship="country" weight="0"/>
         <neighbor dest="290" relationship="garrison" weight="0"/>
         <neighbor dest="392" relationship="country" weight="0"/>
@@ -10531,7 +10531,7 @@
     </Feature>
     <Feature data="Pope John XII" zh-data="" id="677" uri="http://dbpedia.org/resource/Pope_John_XII">
       <neighbors>
-        <neighbor dest="615" relationship="birth place" weight="0"/>
+        <neighbor dest="615" relationship="death place" weight="0"/>
         <neighbor dest="446" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="birth place" weight="0"/>
       </neighbors>
@@ -10553,7 +10553,7 @@
       <neighbors>
         <neighbor dest="615" relationship="birth place" weight="0"/>
         <neighbor dest="446" relationship="death place" weight="0"/>
-        <neighbor dest="15" relationship="death place" weight="0"/>
+        <neighbor dest="15" relationship="birth place" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -13877,7 +13877,7 @@
     </Feature>
     <Feature data="Renato Salvatori" zh-data="" id="865" uri="http://dbpedia.org/resource/Renato_Salvatori">
       <neighbors>
-        <neighbor dest="615" relationship="birth place" weight="0"/>
+        <neighbor dest="615" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
       </neighbors>
       <geodata/>

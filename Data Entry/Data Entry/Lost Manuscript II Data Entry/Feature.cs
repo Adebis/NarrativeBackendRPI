@@ -375,7 +375,7 @@ namespace Dialogue_Data_Entry
             {
                 //Don't allow any duplicate entries
                 if (neighbor.Id == neighbors[x].Item1.Id) { return false; }
-                //ZEV: Make sure this still works!!!
+
                 if (neighbor.Id < neighbors[x].Item1.Id)
                 {
                     neighbors.Insert(x, new Tuple<Feature, double, string>(neighbor, weight,relationship));

@@ -604,6 +604,9 @@ namespace Dialogue_Data_Entry
 				//CHRONOLOGY command.
 				//  Generates a story based on a single anchor node.
 				//  The story should be chronological, but can start at the anchor node.
+                //  Generating a chronology leaves no changes in the feature graph.
+                //  To change the feature graph, the UPDATE command should be called
+                //  each time a chronology node is presented in the front-end.
 				else if (split_input[0].Equals("CHRONOLOGY"))
 				{
 					return_string = "Chronology for: ";
@@ -673,6 +676,11 @@ namespace Dialogue_Data_Entry
 							foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
 							{
 								TimeSpan time_difference = neighbor_tuple.Item1.start_date - anchor_node.start_date;
+                                TimeSpan time_difference_2 = neighbor_tuple.Item1.end_date - anchor_node.start_date;
+
+                                if (time_difference_2.Duration() < time_difference.Duration())
+                                    time_difference = time_difference_2;
+
 								if (time_difference.Duration() < closest_time_difference.Duration())
 								{
 									closest_start_neighbor = neighbor_tuple.Item1;
@@ -686,6 +694,11 @@ namespace Dialogue_Data_Entry
 							foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
 							{
 								TimeSpan time_difference = neighbor_tuple.Item1.end_date - anchor_node.end_date;
+                                TimeSpan time_difference_2 = neighbor_tuple.Item1.start_date - anchor_node.end_date;
+
+                                if (time_difference_2.Duration() < time_difference.Duration())
+                                    time_difference = time_difference_2;
+
 								if (time_difference.Duration() < closest_time_difference.Duration())
 								{
 									closest_end_neighbor = neighbor_tuple.Item1;
@@ -724,7 +737,9 @@ namespace Dialogue_Data_Entry
 							while (temp_manager.Turn < turn_limit)
 							{
 								//Determine the next feature from the previous one
-								current_feature = temp_manager.getNextChronologicalTopic(last_feature, anchor_node.start_date, anchor_node.end_date);
+								//current_feature = temp_manager.getNextChronologicalTopic(last_feature, anchor_node.start_date, anchor_node.end_date);
+                                //Determine the next feature from the anchor node every time
+                                current_feature = temp_manager.getNextChronologicalTopic(anchor_node, anchor_node.start_date, anchor_node.end_date);
 								//Present it
 								return_string += temp_manager.PresentFeature(current_feature);
 								//Update last feature
@@ -737,7 +752,7 @@ namespace Dialogue_Data_Entry
 
 							//7/6/2016: For integration, send back a double-colon delineated list of node names consisting of the nodes given here.
 							List<Feature> chronology = temp_manager.TopicHistory;
-							return_string = "";
+						    return_string = "";
 							foreach (Feature feat in chronology)
 							{
 								return_string += feat.Name + "::";
@@ -745,6 +760,27 @@ namespace Dialogue_Data_Entry
 						}//end if
 					}//end if
 				}//end else if
+                //UPDATE command.
+                //  Update the feature graph by telling the narration manager
+                //  to blankly present a node. Should be called each time a node
+                //  is presented in the front end from a chronology.
+                else if (split_input[0].Equals("UPDATE"))
+                {
+                    return_string = "";
+
+                    if (split_input[1] != null)
+                    {
+                        int node_id = -1;
+                        bool parse_success = int.TryParse(split_input[1], out node_id);
+                        if (parse_success)
+                        {
+                            string result = narration_manager.PresentFeature(graph.getFeature(node_id));
+                            Console.Out.WriteLine("Updating: " + result);
+                        }//end if
+                        else
+                            Console.Out.WriteLine("No valid node given to update");
+                    }//end if
+                }//end else if
 				//START_NARRATION command.
 				//  Makes the system narrate. A turn limit may be specified after the command.
 				//  It tries to visit all anchor nodes within the turn limit. 

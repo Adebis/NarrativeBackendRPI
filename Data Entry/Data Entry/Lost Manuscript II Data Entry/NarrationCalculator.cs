@@ -221,14 +221,21 @@ namespace Dialogue_Data_Entry
 
                         //If neither the feature's start nor end dates lie between the given start and end dates,
                         //do not include it in the list.
-                        if ((listScore[x].Item1.start_date < start_date
-                            && listScore[x].Item1.end_date < start_date)
-                            || (listScore[x].Item1.start_date > end_date
-                            && listScore[x].Item1.end_date > end_date))
+                        if (!(listScore[x].Item1.start_date > start_date && listScore[x].Item1.start_date < end_date)
+                            && !(listScore[x].Item1.end_date > start_date && listScore[x].Item1.end_date < end_date)
+                            && !(listScore[x].Item1.start_date == start_date)
+                            && !(listScore[x].Item1.start_date == end_date)
+                            && !(listScore[x].Item1.end_date == start_date)
+                            && !(listScore[x].Item1.end_date == end_date))
                         {
-                            //Skip this feature.
                             continue;
-                        }//end if 
+                        }//end if
+
+                        /*if ((listScore[x].Item1.end_date < start_date)
+                            || listScore[x].Item1.start_date > end_date)
+                        {
+                            continue;
+                        }//end if*/
 
                         maxScore = listScore[x].Item2;
                         maxIndex = x;

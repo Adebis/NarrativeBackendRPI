@@ -152,35 +152,7 @@ namespace Dialogue_Data_Entry
 						}//end if
 						 //Add the neighbor feature according to its id
 						tmp.addNeighbor(result_graph.getFeature(neighbor_id), weight, relationship);
-
-						//pre-process in case no parent exist
-						/*foreach (XmlNode tempNode in features) {
-							if (tempNode.Attributes["data"].Value == result_graph.Features[neighbor_id].Name) {
-								XmlNodeList tempParents = tempNode.SelectNodes("parents");
-								if (tempParents.Count != 0) {
-									tempParents = tempParents[0].SelectNodes("parent");
-									if (tempParents.Count == 0) {
-										result_graph.getFeature(neighbor_id).addParent(tmp);
-									}
-								}//end if
-							}
-						}*/
-						//result.Features[id].addNeighbor(tmp,weight);
 					}//end foreach
-					 //Parent
-					XmlNodeList parents = node.SelectNodes("parents");
-					if (parents.Count != 0) {
-						parents = parents[0].SelectNodes("parent");
-						foreach (XmlNode parentNode in parents) {
-							int parent_id = Convert.ToInt32(parentNode.Attributes["dest"].Value);
-							double weight = Convert.ToDouble(parentNode.Attributes["weight"].Value);
-							string relationship = "";
-							if (parentNode.Attributes["relationship"] != null) {
-								relationship = unEscapeInvalidXML(Convert.ToString(parentNode.Attributes["relationship"].Value));
-							}
-							tmp.addParent(result_graph.getFeature(parent_id), weight, relationship);
-						}
-					}//end if
 					 //Tag
 					XmlNodeList tags = node.SelectNodes("tag");
 					foreach (XmlNode tag in tags) {
@@ -245,23 +217,12 @@ namespace Dialogue_Data_Entry
 					//Go over each neighbor in this feature
 					foreach (Tuple<Feature, double, string> neighbor_to_check in feature_to_check.Neighbors)
 					{
-						//Check this neighbor's neighbor list for this feature.
-						bool feature_found = false;
-						foreach (Tuple<Feature, double, string> neighbor_of_neighbor in neighbor_to_check.Item1.Neighbors)
-						{
-							//If this neighbor's neighbor is the feature to check, we are done.
-							if (neighbor_of_neighbor.Item1.Id.Equals(feature_to_check.Id))
-							{
-								feature_found = true;
-								break;
-							}//end if
-						}//end foreach
+                        //Check that this feature is its neighbor's neighbor
+                        Feature return_val = neighbor_to_check.Item1.getNeighbor(feature_to_check.Id);
 
-						//If the neighbor has the feature to check as a neighbor, continue to the next neighbor.
-						if (feature_found)
-							continue;
-						//Otherwise, we must add an inverse relationship.
-						else
+                        //If return_val is null, then no neighbor was found.
+						//We must add an inverse relationship.
+						if (return_val == null)
 						{
 							//Leave the relationship blank to signal that the relationship going the other direction
 							//should be used.
@@ -270,6 +231,7 @@ namespace Dialogue_Data_Entry
 					}//end foreach
 				}//end foreach
 
+                //Get the root node
 				int rootId = -1;
 				try {
 					features = doc.SelectNodes("AIMind");
