@@ -752,11 +752,14 @@ namespace Dialogue_Data_Entry
 
 							//7/6/2016: For integration, send back a double-colon delineated list of node names consisting of the nodes given here.
 							List<Feature> chronology = temp_manager.TopicHistory;
-						    return_string = "";
-							foreach (Feature feat in chronology)
-							{
-								return_string += feat.Name + "::";
-							}//end foreach
+                            if (split_input[3] == null)
+                            {
+                                return_string = "";
+                                foreach (Feature feat in chronology)
+                                {
+                                    return_string += feat.Name + "::";
+                                }//end foreach
+                            }//end if
 						}//end if
 					}//end if
 				}//end else if
