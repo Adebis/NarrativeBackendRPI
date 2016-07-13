@@ -344,6 +344,7 @@ namespace Dialogue_Data_Entry
         private double CalculateScore(Feature current_feature, Feature last_feature, int turn_count, List<Feature> topic_history)
         {
             double score = 0;
+
             int currentIndex = feature_graph.getFeatureIndex(current_feature.Id);
 
             //set of Weight (W == Weight)
@@ -392,7 +393,7 @@ namespace Dialogue_Data_Entry
 
             //If this is a filter node, or the same node as the focus node, artificially set its score low
             if (filter_nodes.Contains(current_feature.Name.Split(new string[] { "##" }, StringSplitOptions.None)[0])
-                || current_feature.Id.Equals(last_feature.Id))
+                || (last_feature != null && current_feature.Id.Equals(last_feature.Id)))
             {
                 //Console.WriteLine("Filtering out node " + current.Id);
                 score = -1000000;
@@ -593,6 +594,10 @@ namespace Dialogue_Data_Entry
         {
             double noveltyValue = 0;
 
+			if(previous_feature == null) {
+				return 0;
+			}
+
             // distance
             double dist = previous_feature.ShortestDistance[feature_graph.getFeatureIndex(current_feature.Id)] / feature_graph.MaxDistance;
 
@@ -626,6 +631,10 @@ namespace Dialogue_Data_Entry
         {
             string[] Directional_Words = { "is southwest of", "is southeast of"
                 , "is northeast of", "is north of", "is west of", "is east of", "is south of", "is northwest of" };
+
+			if(previous_feature == null) {
+				return false;
+			}
 
             //From the history list, determine what the previous directional relationship was.
             string previous_directional_relationship = "";
@@ -707,6 +716,11 @@ namespace Dialogue_Data_Entry
         /// </summary>
         private bool HierachyConstraint(Feature current_feature, Feature previous_feature)
         {
+
+			if(previous_feature == null) {
+				return false;
+			}
+
             //If the relationship between the previous feature and the current feature is
             //in the hierarchy key, then the hierarchy constraint is met.
             for (int x = 0; x < current_feature.Neighbors.Count; x++)
