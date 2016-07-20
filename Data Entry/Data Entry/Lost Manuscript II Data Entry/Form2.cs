@@ -33,7 +33,7 @@ namespace Dialogue_Data_Entry
 		{
 			InitializeComponent();
 			//pre-process shortest distance
-		    myGraph.getMaxDistance();           
+			myGraph.getMaxDistance();           
 			this.featGraph = myGraph;
 			this.temporalConstraintList = myTemporalConstraintList;
 			//clear discussedAmount
@@ -115,7 +115,19 @@ namespace Dialogue_Data_Entry
 			int port = 8084;
 
 			server = new SimpleHTTPServer(myFolder, port, myHandler);
-			Console.WriteLine("Server is running on port: " + server.Port.ToString());
+
+			IPHostEntry host;
+			string localIP = "<UNKNOWN>";
+			host = Dns.GetHostEntry(Dns.GetHostName());
+			foreach (IPAddress ip in host.AddressList) {
+				if (ip.AddressFamily == AddressFamily.InterNetwork) {
+					localIP = ip.ToString();
+				}
+			}
+
+			chatBox.AppendText("HTTP Server is running on port: " + server.Port.ToString() + "\n");
+			chatBox.AppendText("Local IP address is: " + localIP + "\n");
+
 		}
 
 		public void DoWork()
@@ -123,7 +135,7 @@ namespace Dialogue_Data_Entry
 			myServer = new SynchronousSocketListener();
 			
 			this.Invoke((MethodInvoker)delegate {
-				chatBox.AppendText("Waiting for client to connect...");
+				chatBox.AppendText("Waiting for TCP client to connect...");
 			});
 
 			myServer.StartListening();
@@ -141,14 +153,14 @@ namespace Dialogue_Data_Entry
 				query = query.Replace("<EOF>", "");
 				if (query == "QUIT")
 				{
-                    //Stop the HTTP server
-                    server.Stop();
+					//Stop the HTTP server
+					server.Stop();
 
 					this.Invoke((MethodInvoker)delegate
 					{
 						chatBox.AppendText("Client: " + query + "\r\n");
 					});
-                    //Stop the TCP server
+					//Stop the TCP server
 					break;
 				}
 				if (query == "Start Recording")
