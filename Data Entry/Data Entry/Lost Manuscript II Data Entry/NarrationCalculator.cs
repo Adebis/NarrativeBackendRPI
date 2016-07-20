@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -577,6 +578,128 @@ namespace Dialogue_Data_Entry
             return relatedness;
         }//end method CalculateRelatedness
 
+        public List<Feature> CalculateBestChronology(Feature anchor_node, List<Feature> history, DateTime start_date, DateTime end_date, int turn_limit)
+        {
+            List<Feature> return_list = new List<Feature>();
+
+            //First, get the list of nodes from the graph whose effective dates fall either on or between
+            //the start and end dates.
+            //As sorted lists sort by key, datetime values are keys.
+            SortedList<DateTime, Feature> valid_nodes = new SortedList<DateTime, Feature>();
+            foreach (Feature temp_feat in feature_graph.Features)
+            {
+                if (!(temp_feat.effective_date < start_date)
+                    && !(temp_feat.effective_date > end_date))
+                {
+                    valid_nodes.Add(temp_feat.effective_date, temp_feat);
+                }//end if
+            }//end foreach
+            //Get the list of sorted features.
+            List<Feature> sorted_features = new List<Feature>();
+            foreach (KeyValuePair<DateTime, Feature> temp_entry in valid_nodes)
+            {
+                sorted_features.Add(temp_entry.Value);
+            }//end foreach
+
+            //O(i, t) = Best solution taking node i on turn t.
+            //Each entry O(i, t) is the score for the entry and the list of nodes
+            //leading to that entry. This will be represented by a linked list of doubles.
+            //The list of nodes leading to an entry can be obtained from the linked list.
+            //The first index of the working list corresponds to a feature's index in
+            //the list of sorted features.
+            //The second index corresponds to the turn.
+            //At most, i is the number of valid nodes and t is the turn limit.
+            int max_i = sorted_features.Count;
+            int max_t = turn_limit;
+            double[,] working_list = new double[max_i, max_t];
+            
+            //Set each sorted feature's history list with the history list passed in.
+            foreach (Feature f in sorted_features)
+            {
+                foreach (Feature h in history)
+                {
+                    f.local_history_list.Add(h);
+                }//end foreach
+            }//end foreach
+
+            //Initialize each entry with a score of negative infinite.
+            for (int i = 0; i < max_i; i++)
+            {
+                //For the base t = 0 case, make the starting score 0.
+                working_list[i, 0] = 0;
+                for (int t = 1; t < max_t; t++)
+                {
+                    working_list[i, t] = Double.MinValue;
+                }//end for
+            }//end for
+
+            Feature current_feature = null;
+            LinkedListNode<Tuple<Feature, double>> previous_entry = null;
+            double previous_to_current_score = 0;
+            LinkedListNode<Tuple<Feature, double>> max_previous_entry = null;
+            double max_previous_to_current_score = Double.MinValue;
+            List<Feature> temp_history_list = new List<Feature>();
+            //Start at t = 1. t = 0 is the base case.
+            for (int t = 1; t < max_t; t++)
+            {
+                for (int i = 0; i < max_i; i++)
+                {
+                    //Get the feature represented by i.
+                    current_feature = sorted_features[i];
+                    //Go through each possible previous feature in the working list.
+                    for (int j = t - 1; j < i; j++)
+                    {
+                        previous_entry = null;//working_list[j, t - 1];
+                        //Build the temporary history list by traversing the links backwards
+                        temp_history_list.Clear();
+                        //Start from this feature.
+                        temp_history_list.Add(previous_entry.Value.Item1);
+                        while (true)
+                        {
+                            //Check the current entry's link backwards.
+                            if (previous_entry.Previous == null)
+                            {
+                                //If it is null, we have reached the end of the list. Stop adding to the history.
+                                break;
+                            }//end if
+                            else
+                            {
+                                //Otherwise, make the previous entry the current entry and add it to front of the list.
+                                previous_entry = previous_entry.Previous;
+                                temp_history_list.Insert(0, previous_entry.Value.Item1);
+                            }//end else
+                        }//end while
+                        //Add the nodes from the history list passed in, in reverse order.
+                        for (int k = history.Count - 1; k >= 0; k--)
+                        {
+                            temp_history_list.Insert(0, history[k]);
+                        }//end for
+
+                        previous_entry = null;//working_list[j, t - 1];
+                        //Calculate the score from the previous entry to the current feature, given
+                        //the previous entry's history list and the previous entry's score.
+                        previous_to_current_score = previous_entry.Value.Item2;
+                        previous_to_current_score += CalculateScore(current_feature, previous_entry.Value.Item1, t, temp_history_list);
+
+                        //Compare it against the largest score. 
+                        if (previous_to_current_score > max_previous_to_current_score)
+                        {
+                            max_previous_to_current_score = previous_to_current_score;
+                            max_previous_entry = previous_entry;
+                        }//end if
+                    }//end for
+                    //Give the current entry the maximum score.
+                    //orking_list[i, t].Value = new Tuple<Feature, double>(current_feature, max_previous_to_current_score);
+                    //Link it back to the maximum scoring previous feature
+                    //working_list[i, t]. = max_previous_entry;
+                    
+
+                }//end for
+            }//end for
+
+            return return_list;
+        }//end method CalculateBestChronology
+
         //PRIVATE UTILITY FUNCTIONS
         //Make the hierarchy key from the relationships in the feature graph.
         private String[] CreateHierarchyKey(FeatureGraph source_graph)
@@ -617,6 +740,15 @@ namespace Dialogue_Data_Entry
 			}
 
             // distance
+            //Find the shortest distance between the previous feature and the current feature.
+            //BFS
+            Queue<Feature> bfs_queue = new Queue<Feature>();
+
+            foreach (Tuple<Feature, double, string> previous_feature_neighbor in previous_feature.Neighbors)
+            {
+                bfs_queue.Enqueue(previous_feature_neighbor.Item1);
+            }//end foreach
+
             double dist = previous_feature.ShortestDistance[feature_graph.getFeatureIndex(current_feature.Id)] / feature_graph.MaxDistance;
 
             // previous talk

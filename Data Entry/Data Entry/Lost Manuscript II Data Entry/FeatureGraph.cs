@@ -162,7 +162,74 @@ namespace Dialogue_Data_Entry
 			}
 			return maxDistance;
 		}
-		//update all features' shortestDistance 
+        //Finds the shortest path between each pair of nodes using BFS
+        //O(|V|*(|V| + |E|))
+        private void allPairShortestPathBFS()
+        {
+            //ZEV: Using this.Count + 1 in case root node is not 0
+            for (int x = 0; x < this.Count; x++)
+            {
+                this.Features[x].ShortestDistance.Clear();
+            }
+            //initialize all distance to infinity
+            for (int x = 0; x < this.Count; x++)
+            {
+                for (int y = 0; y < this.Count + 1; y++)
+                {
+                    this.Features[x].ShortestDistance.Add(2147483646); //maxint -1
+                }
+            }
+            //distance to itself is zero
+            for (int x = 0; x < this.Count; x++)
+            {
+                this.Features[x].ShortestDistance[x] = 0;
+            }
+
+            Queue<Feature> bfs_queue = new Queue<Feature>();
+            Feature current_feature = null;
+
+            //For every feature, perform BFS.
+            foreach (Feature temp_feat in Features)
+            {
+                //The flag will be used for BFS to prevent revisiting nodes.
+                //Clear the flag for each feature.
+                foreach (Feature temp in Features)
+                    temp.flag = false;
+                current_feature = temp_feat;
+                current_feature.flag = true;
+                //Clear the queue.
+                bfs_queue.Clear();
+                //Add all of the feature's neighbors to the queue. Set their distances relative to this feature to 1.
+                foreach (Tuple<Feature, double, string> neighbor in temp_feat.Neighbors)
+                {
+                    temp_feat.ShortestDistance[neighbor.Item1.Id] = 1;
+                    neighbor.Item1.flag = true;
+                    bfs_queue.Enqueue(neighbor.Item1);
+                }//end foreach
+
+                while (bfs_queue.Count > 0)
+                {
+                    //Dequeue a feature.
+                    current_feature = bfs_queue.Dequeue();
+                    //Add all of its neighbors to the queue and set their distances relative to
+                    //the source feature to the current feature's distance + 1.
+                    foreach (Tuple<Feature, double, string> inner_neighbor in current_feature.Neighbors)
+                    {
+                        //If the neighbor's flag is up, it has already been visited. Skip it.
+                        if (inner_neighbor.Item1.flag)
+                            continue;
+                        //Otherwise, enqueue the neighbor, update its shortest distance, and put the flag up.
+                        inner_neighbor.Item1.flag = true;
+                        temp_feat.ShortestDistance[inner_neighbor.Item1.Id] = temp_feat.ShortestDistance[current_feature.Id] + 1;
+                        bfs_queue.Enqueue(inner_neighbor.Item1);
+                    }//end foreach
+                }//end while
+
+            }//end foreach
+            
+        }//end method allPairShortestPathBFS
+		//update all features' shortestDistance
+        //O(|V|^3)
 		//shortestDistance has to be empty list
 		private void allPairShortestPath()
 		{
@@ -171,7 +238,7 @@ namespace Dialogue_Data_Entry
 				this.Features[x].ShortestDistance.Clear();
 			}
 			//initialize all distance to infinity
-			for (int x = 0; x < this.Count;x++)
+			for (int x = 0; x < this.Count; x++)
 			{
 				for (int y = 0; y < this.Count; y++)
 				{
@@ -353,8 +420,9 @@ namespace Dialogue_Data_Entry
 			//var sw = new Stopwatch();
 			//sw.Start();
 			
-			allPairShortestPath();
-			
+			//allPairShortestPath();
+            allPairShortestPathBFS();
+
 			//sw.Stop();
 			//Console.WriteLine("All-pair took "+sw.Elapsed);
 			

@@ -15,6 +15,7 @@ namespace Dialogue_Data_Entry
         private int id;                                  // The id of the feature, as it appears in the xml.
         private List<Tuple<Feature, double, string>> neighbors;  // This is a list of tuples that contain all of the features that can be reached from this topic and a weight that defines how distanced they are from the parent feature (this feature).
                                                                     //Item 1 is the neighbor feature, Item 2 is the weight between it and this feature, and item 3 is the string relationship between the two.
+        public Dictionary<int, Feature> neighbor_dictionary;   // A list of all neighbors in dictionary form, indexed by feature id, for quick lookups.
         private List<Tuple<Feature, double, string>> parents;    // This is a HashSet of features that can be reached to this feature node.
         //Item 1 is the neighbor feature, Item 2 is the weight between it and this feature, and item 3 is the string relationship between the two.
         private List<Tuple<string, string, string>>  tags;       // This is a list of tuples that are used to store the tags (generic, single use pices of information). The first element is the key, and the second element is the id. This will simply operate as a map.
@@ -24,15 +25,19 @@ namespace Dialogue_Data_Entry
                                                             //timeobj is a string relationship and a string value.
         private List<Tuple<double, double>> geodata;        //A node's geospatial data is a list of coordinates.
                                                             //First member of tuple is latitude, second is longitude.
-        public DateTime start_date;                        //Start date for this feature if it has time data.
-        public DateTime end_date;                          //End date for this feature if it has time data.
+        public DateTime start_date;                         //Start date for this feature if it has time data.
+        public DateTime end_date;                           //End date for this feature if it has time data.
                                                             //If the feature only has a single date, start and end dates will be equal.
-        public int story_role;                             //Integer flag identifying what role this feature plays in a story.
-                                                            //  0 = Concept (default)
-                                                            //  1 = Character
-                                                            //  2 = Location
-                                                            //  3 = Event
-                                                            //  4 = Political/Social Entity
+        public DateTime effective_date;                     //If a single date is required for this feature, the effective date should be used.
+                                                            //Effective date can be changed according to need (e.g., effective date relative to a certain feature)
+        public List<Feature> local_history_list;
+
+        public int story_role;                              //Integer flag identifying what role this feature plays in a story.
+                                                             //  0 = Concept (default)
+                                                             //  1 = Character
+                                                             //  2 = Location
+                                                             //  3 = Event
+                                                             //  4 = Political/Social Entity
         
         
         private List<double> shortestDistance;         //list of shortestDistance to all nodes (index is id)
@@ -46,6 +51,7 @@ namespace Dialogue_Data_Entry
             this.name = name;
             this.id = 0;
             this.neighbors = new List<Tuple<Feature, double, string>>();
+            this.neighbor_dictionary = new Dictionary<int, Feature>();
             this.tags = new List<Tuple<string, string, string>>();
             this.flag = false;
             this.parents = new List<Tuple<Feature, double, string>>();
@@ -57,7 +63,10 @@ namespace Dialogue_Data_Entry
 
             this.start_date = new DateTime();
             this.end_date = new DateTime();
+            this.effective_date = new DateTime();
             this.story_role = 0;
+
+            this.local_history_list = new List<Feature>();
         }//end constructor Feature
         public Feature(string name, int id)
         {
@@ -66,6 +75,7 @@ namespace Dialogue_Data_Entry
             this.name = name;
             this.id = id;
             this.neighbors = new List<Tuple<Feature, double, string>>();
+            this.neighbor_dictionary = new Dictionary<int, Feature>();
             this.tags = new List<Tuple<string, string, string>>();
             this.flag = false;
             this.parents = new List<Tuple<Feature, double, string>>();
@@ -77,7 +87,10 @@ namespace Dialogue_Data_Entry
 
             this.start_date = new DateTime();
             this.end_date = new DateTime();
+            this.effective_date = new DateTime();
             this.story_role = 0;
+
+            this.local_history_list = new List<Feature>();
         }//end constructor Feature
 
         //Calculate start and end dates for this feature, and, if possible, assign it
@@ -270,6 +283,76 @@ namespace Dialogue_Data_Entry
 			    tn.transform.position = new Vector3(map(totaldays,mindays,maxdays,0,100), 0, 0);
 		    }*/
         }//end method calculateDate
+
+        //Calculate the effective date of this feature from the given start and end dates and the
+        //feature's dates
+        public void calculateEffectiveDate(DateTime start, DateTime end)
+        {
+            //The effective date is the earliest date for this node that lies within
+            //the given start and end dates.
+            List<Tuple<string, string>> data_to_parse = new List<Tuple<string, string>>();
+            List<DateTime> feature_dates = new List<DateTime>();
+            DateTime temp_date = new DateTime();
+
+            //First pass, try to convert each date string in this feature's timedata to a datetime.
+            //Item 1 of the tuple is the timedata's relationship, Item 2 is the date string.
+            foreach (Tuple<string, string> data_piece in timedata)
+            {
+                try
+                {
+                    //Try to convert to a datetime
+                    temp_date = Convert.ToDateTime(data_piece.Item2);
+                    //If this succeeds, add it to the list of dates for this feature
+                    feature_dates.Add(temp_date);
+                }//end try
+                catch
+                {
+                    //If this fails, place this tuple in the list of tuples for a second pass.
+                    data_to_parse.Add(data_piece);
+                }//end catch
+            }//end foreach
+            //Second pass, try to extract digits and get a year.
+            if (data_to_parse.Count > 0)
+            {
+                foreach (Tuple<string, string> data_piece in data_to_parse)
+                {
+                    int temp_year = 1;
+                    if (!int.TryParse(System.Text.RegularExpressions.Regex.Match(data_piece.Item2, @"\d+").Value, out temp_year))
+                    {
+                        //If this parse doesn't work, don't add the date to the list of dates.
+                    }//end if
+                    else
+                    {
+                        //If the year is 0, default it to 1.
+                        if (temp_year == 0)
+                            temp_year = 1;
+                        //If the parse does work, the date is the first day of the year identified.
+                        temp_date = new DateTime(temp_year, 1, 1);
+                        feature_dates.Add(temp_date);
+                    }//end else
+                }//end foreach
+            }//end if
+
+            DateTime result_date = DateTime.MaxValue;
+            foreach (DateTime feature_date in feature_dates)
+            {
+                //Find the earliest date after the start date and before the end date.
+                if (feature_date >= start && feature_date <= end && feature_date < result_date)
+                    result_date = feature_date;
+            }//end foreach
+
+            //The date we calculate above is the effective date.
+            effective_date = result_date;
+        }//end method calculateEffectiveDate
+
+        //Build the neighbor dictionary
+        public void buildNeighborDictionary()
+        {
+            foreach (Tuple<Feature, double, string> neighbor_tuple in neighbors)
+            {
+                neighbor_dictionary.Add(neighbor_tuple.Item1.id, neighbor_tuple.Item1);
+            }//end foreach
+        }//end method buildNeighborDictionary
 
         // This function is used to get a Feature that is a neighbor of this Feature, it takes an string name and preforms a binary search over the list
         public Feature getNeighbor(string name)

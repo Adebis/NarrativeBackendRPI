@@ -203,6 +203,14 @@ namespace Dialogue_Data_Entry
 
 				}//end foreach
 
+                //Have each feature build its neighbor dictionary.
+                foreach (Feature temp_feat in result_graph.Features)
+                {
+                    temp_feat.buildNeighborDictionary();
+                    //Have each feature calculate its own start/end dates   
+                    temp_feat.calculateDate();
+                }//end foreach
+
 				//Connectedness check: check each node's neighbor. If the neighbor does not have
 				//this node on its list of neighbors, place it there.
 				//This is here because knowledge explorer does not add some inverse relationships.
@@ -210,19 +218,16 @@ namespace Dialogue_Data_Entry
 				//Go over each feature.
 				foreach (Feature feature_to_check in result_graph.Features)
 				{
-					//From July 2016, added by Zev Battad.
-					//Have each feature calculate its own start/end dates
-					feature_to_check.calculateDate();
-
 					//Go over each neighbor in this feature
 					foreach (Tuple<Feature, double, string> neighbor_to_check in feature_to_check.Neighbors)
 					{
-                        //Check that this feature is its neighbor's neighbor
-                        Feature return_val = neighbor_to_check.Item1.getNeighbor(feature_to_check.Id);
+                        //Check that the feature to check is its neighbor's neighbor
+                        bool is_neighbor = false;
+                        is_neighbor = neighbor_to_check.Item1.neighbor_dictionary.ContainsKey(feature_to_check.Id);
 
-                        //If return_val is null, then no neighbor was found.
+                        //If no neighbor was found
 						//We must add an inverse relationship.
-						if (return_val == null)
+                        if (!is_neighbor)
 						{
 							//Leave the relationship blank to signal that the relationship going the other direction
 							//should be used.

@@ -33,7 +33,7 @@ namespace Dialogue_Data_Entry
 		{
 			InitializeComponent();
 			//pre-process shortest distance
-			myGraph.getMaxDistance();           
+		    myGraph.getMaxDistance();           
 			this.featGraph = myGraph;
 			this.temporalConstraintList = myTemporalConstraintList;
 			//clear discussedAmount
