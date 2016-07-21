@@ -184,27 +184,17 @@ namespace Dialogue_Data_Entry
             //First pass, try to convert each string to a datetime.
             foreach (string temp_start in start_dates)
             {
-                try
-                {
-                    this.start_date = Convert.ToDateTime(temp_start);
-                    //If this succeeds, we are done.
-                    break;
-                }//end try
-                catch
-                {
-                }//end catch
+				if(DateTime.TryParse(temp_start, out start_date)) {
+					//If this succeeds, we are done.
+					break;
+				}                   
             }//end foreach
             foreach (string temp_end in end_dates)
             {
-                try
-                {
-                    this.end_date = Convert.ToDateTime(temp_end);
-                    //If this succeeds, we are done.
-                    break;
-                }//end try
-                catch
-                {
-                }//end catch
+				if (DateTime.TryParse(temp_end, out end_date)) {
+					//If this succeeds, we are done.
+					break;
+                }
             }//end foreach
             //If there is still no start date, perform a second pass
             if (start_date == default(DateTime))

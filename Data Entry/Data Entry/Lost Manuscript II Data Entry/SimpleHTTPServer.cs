@@ -15,13 +15,6 @@ using System.Linq;
 // See: https://gist.github.com/aksakalli/9191056
 class SimpleHTTPServer
 {
-	private readonly string[] _indexFiles = { 
-		"index.html", 
-		"index.htm", 
-		"default.html", 
-		"default.htm" 
-	};
-
 	private static IDictionary<string, string> _mimeTypeMappings = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase) {
 		#region extension to MIME type list
 		{".asf", "video/x-ms-asf"},
@@ -205,63 +198,6 @@ class SimpleHTTPServer
 
 				break;
 		}
-
-
-
-		//Console.WriteLine(filename);
-		/*filename = filename.Substring(1);
-
-		if (string.IsNullOrEmpty(filename))
-		{
-			foreach (string indexFile in _indexFiles)
-			{
-				if (File.Exists(Path.Combine(_rootDirectory, indexFile)))
-				{
-					filename = indexFile;
-					break;
-				}
-			}
-		}
-
-		filename = Path.Combine(_rootDirectory, filename);
-
-		if (File.Exists(filename))
-		{
-			try
-			{
-				Stream input = new FileStream(filename, FileMode.Open);
-
-				Console.WriteLine("HTTP request input: " + input);
-
-				//Adding permanent http response headers
-				string mime;
-				context.Response.ContentType = _mimeTypeMappings.TryGetValue(Path.GetExtension(filename), out mime) ? mime : "application/octet-stream";
-				context.Response.ContentLength64 = input.Length;
-				context.Response.AddHeader("Date", DateTime.Now.ToString("r"));
-				context.Response.AddHeader("Last-Modified", System.IO.File.GetLastWriteTime(filename).ToString("r"));
-
-				byte[] buffer = new byte[1024 * 16];
-				int nbytes;
-				while ((nbytes = input.Read(buffer, 0, buffer.Length)) > 0)
-					context.Response.OutputStream.Write(buffer, 0, nbytes);
-				input.Close();
-
-				context.Response.StatusCode = (int)HttpStatusCode.OK;
-				context.Response.OutputStream.Flush();
-			}
-			catch (Exception ex)
-			{
-				context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
-			}
-
-		}
-		else
-		{
-			context.Response.StatusCode = (int)HttpStatusCode.NotFound;
-		}
-		
-
-		context.Response.OutputStream.Close();*/
 	}
 
 	private void Initialize(string path, int port)
