@@ -48,6 +48,14 @@ namespace Dialogue_Data_Entry
 			this.FormClosing += Window_Closing;
 		}
 
+		public void AddChatBoxMessage(string value) {
+			if (InvokeRequired) {
+				this.BeginInvoke(new Action<string>(AddChatBoxMessage), new object[] { value });
+				return;
+			}
+			chatBox.AppendText(value);
+		}
+
 		private void label1_Click(object sender, EventArgs e)
 		{
 
@@ -114,7 +122,7 @@ namespace Dialogue_Data_Entry
 			string myFolder = Directory.GetCurrentDirectory();
 			int port = 8084;
 
-			server = new SimpleHTTPServer(myFolder, port, myHandler);
+			server = new SimpleHTTPServer(myFolder, port, myHandler, AddChatBoxMessage);
 
 			IPHostEntry host;
 			string localIP = "<UNKNOWN>";

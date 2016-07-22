@@ -10,7 +10,6 @@ using System.Diagnostics;
 
 using Newtonsoft.Json.Linq;
 using Dialogue_Data_Entry;
-using System.Linq;
 
 // See: https://gist.github.com/aksakalli/9191056
 class SimpleHTTPServer
@@ -90,6 +89,8 @@ class SimpleHTTPServer
 
 	private QueryHandler handler;
 
+	private Action<string> chatBoxCallback; //for writing messages to console
+
 	public int Port
 	{
 		get { return _port; }
@@ -101,10 +102,11 @@ class SimpleHTTPServer
 	/// </summary>
 	/// <param name="path">Directory path to serve.</param>
 	/// <param name="port">Port of the server.</param>
-	public SimpleHTTPServer(string path, int port, QueryHandler handler)
+	public SimpleHTTPServer(string path, int port, QueryHandler handler, Action<string> chatBoxCallback)
 	{
 		this.handler = handler;
 		this.Initialize(path, port);
+		this.chatBoxCallback = chatBoxCallback;
 	}
 
 	/// <summary>
@@ -142,12 +144,23 @@ class SimpleHTTPServer
 		start_info.CreateNoWindow = true;
 		Process.Start(start_info);
 
-		_listener = new HttpListener();
-		//_listener.Prefixes.Add("http://localhost:" + _port.ToString() + "/");
-		//_listener.Prefixes.Add("http://localhost:" + _port.ToString() + "/chronology/");
-		_listener.Prefixes.Add("http://*:" + _port.ToString() + "/");
-		_listener.Prefixes.Add("http://*:" + _port.ToString() + "/chronology/");
-		_listener.Start();
+		try {
+			_listener = new HttpListener();
+			_listener.Prefixes.Add("http://*:" + _port.ToString() + "/");
+			_listener.Prefixes.Add("http://*:" + _port.ToString() + "/chronology/");
+			_listener.Start();
+
+		}
+		catch (System.Net.HttpListenerException) {
+			_listener = new HttpListener();
+			_listener.Prefixes.Add("http://localhost:" + _port.ToString() + "/");
+			_listener.Prefixes.Add("http://localhost:" + _port.ToString() + "/chronology/");
+			_listener.Start();
+			chatBoxCallback("Error with listener: You must give permission to listen on port " + _port + 
+				". You can either run this in administrator mode or run the following in command prompt: \"netsh http add urlacl url=" +
+				listener_prefix + " user=DOMAIN\\user\". Running on localhost instead.");
+		}
+		
 		while (true)
 		{
 			try
