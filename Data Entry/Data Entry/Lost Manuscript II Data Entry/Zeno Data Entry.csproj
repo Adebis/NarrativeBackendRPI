@@ -85,6 +85,8 @@
     <Compile Include="SpeakTransform.cs" />
     <Compile Include="Constant.cs" />
     <Compile Include="QueryHandler.cs" />
+    <Compile Include="Story.cs" />
+    <Compile Include="StoryNode.cs" />
     <Compile Include="SynchronousSocketClient.cs" />
     <Compile Include="SynchronousSocketListener.cs" />
     <Compile Include="Form3.cs">
