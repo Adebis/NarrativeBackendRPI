@@ -8,6 +8,7 @@ using Dialogue_Data_Entry;
 using AIMLbot;
 using System.Collections;
 using System.Diagnostics;
+using Newtonsoft.Json;
 
 namespace Dialogue_Data_Entry
 {
@@ -261,6 +262,72 @@ namespace Dialogue_Data_Entry
 
 			return return_message;
 		}//end function MessageToServer
+
+        public string ParseInputJSON(string input)
+        {
+            String[] split_input = input.Trim().Split(':');
+
+            string json_string = "";
+
+            json_string = ParseInputJSON(split_input);
+
+            return json_string;
+        }//end method ParseInputJSON
+        public string ParseInputJSON(string[] split_input)
+        {
+            string json_string = "";
+
+            if (split_input[0].Equals("CHRONOLOGY"))
+            {
+                Feature anchor_node = null;
+                //Get the anchor node specified in this command 
+                if (split_input[1] != null)
+                {
+                    String string_topic = split_input[1];
+                    //Try to convert the topic to an int to check if it's an id.
+                    int int_topic = -1;
+                    bool parse_success = int.TryParse(string_topic, out int_topic);
+                    if (parse_success)
+                    {
+                        //Check that the new integer topic is a valid id.
+                        anchor_node = graph.getFeature(int_topic);
+                    }//end if
+                    else
+                    {
+                        anchor_node = FindFeature(string_topic);
+                    }//end else
+                    if (anchor_node != null)
+                    {
+                        //If we found an anchor node with this command, assemble the chronology.
+
+                        //Get the turn limit
+                        int turn_limit = 0;
+                        if (split_input[2] != null)
+                        {
+                            parse_success = int.TryParse(split_input[2], out turn_limit);
+                            if (parse_success)
+                            {
+                                Console.Out.WriteLine("Turn limit set to " + turn_limit);
+                            }//end if
+                            else
+                                Console.Out.WriteLine("Could not set turn limit.");
+                        }//end if
+
+                        //Make a temporary graph to create the chronology's order before presenting it.
+                        FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(graph);
+
+                        json_string = "";
+
+                        NarrationManager temp_manager = new NarrationManager(temp_graph, temporalConstraintList);
+                        Story chronology = temp_manager.GenerateChronology(anchor_node, turn_limit);
+
+                        json_string = JsonConvert.SerializeObject(chronology);
+                    }//end if
+                }//end if
+            }//end if
+
+            return json_string;
+        }//end method ParseInputJSON
 
 		//Form2 calls this function
 		//input is the input to be parsed.
@@ -782,62 +849,7 @@ namespace Dialogue_Data_Entry
 				//  each time a chronology node is presented in the front-end.
 				else if (split_input[0].Equals("CHRONOLOGY"))
 				{
-					return_string = "Chronology for: ";
-
-					Feature anchor_node = null;
-					//Get the anchor node specified in this command 
-					if (split_input[1] != null)
-					{
-						String string_topic = split_input[1];
-						//Try to convert the topic to an int to check if it's an id.
-						int int_topic = -1;
-						bool parse_success = int.TryParse(string_topic, out int_topic);
-						if (parse_success)
-						{
-							//Check that the new integer topic is a valid id.
-							anchor_node = graph.getFeature(int_topic);
-						}//end if
-						else
-						{
-							anchor_node = FindFeature(string_topic);
-						}//end else
-						if (anchor_node != null)
-						{
-							//If we found an anchor node with this command, assemble the chronology.
-
-							//Get the turn limit
-							int turn_limit = 0;
-							if (split_input[2] != null)
-							{
-								parse_success = int.TryParse(split_input[2], out turn_limit);
-								if (parse_success)
-								{
-									Console.Out.WriteLine("Turn limit set to " + turn_limit);
-								}//end if
-								else
-									Console.Out.WriteLine("Could not set turn limit.");
-							}//end if
-
-							//Make a temporary graph to create the chronology's order before presenting it.
-							FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(graph);
-
-							return_string = "";
-
-							NarrationManager temp_manager = new NarrationManager(temp_graph, temporalConstraintList);
-                            Story chronology = temp_manager.GenerateChronology(anchor_node, turn_limit);
-
-							//7/6/2016: For integration, send back a double-colon delineated list of node names consisting of the nodes given here.
-                            List<Feature> chronology_features = chronology.GetHistory();
-							if (split_input.Length < 4 || split_input[3] == null)
-							{
-								return_string = "";
-                                foreach (Feature feat in chronology_features)
-								{
-									return_string += feat.Name + "::";
-								}//end foreach
-							}//end if
-						}//end if
-					}//end if
+                    return ParseInputJSON(split_input);
 				}//end else if
 				//UPDATE command.
 				//  Update the feature graph by telling the narration manager

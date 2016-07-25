@@ -114,21 +114,26 @@ namespace Dialogue_Data_Entry
             SetNextTopic(graph_node);
             turn += 1;
 
-            StoryNode new_story_node = new StoryNode(graph_node);
+            StoryNode new_story_node = new StoryNode(graph_node.Id);
 
             //Transform the story node using the story passed in.
             //Check for relationship between this node and the previous node.
-            Feature previous_node = story.StorySequence[story.StorySequence.Count].graph_node;
+            //If this is the first node and there are no previous nodes, skip this step.
+            Feature previous_node = null;
+            if (story.StorySequence.Count > 0)
+            {
+                previous_node = feature_graph.getFeature(story.StorySequence[story.StorySequence.Count - 1].graph_node_id);
 
-            if (graph_node.getNeighbor(previous_node.Id) != null)
-            {
-                new_story_node.story_acts.Add(new Tuple<string, int>("relationship", previous_node.Id));
+                if (graph_node.getNeighbor(previous_node.Id) != null)
+                {
+                    new_story_node.story_acts.Add(new Tuple<string, int>("relationship", previous_node.Id));
+                }//end if
+                else
+                {
+                    //If this node and the previous node do not have a direct relationship, add a lead-in
+                    new_story_node.story_acts.Add(new Tuple<string, int>("lead-in", graph_node.Id));
+                }//end else
             }//end if
-            else
-            {
-                //If this node and the previous node do not have a direct relationship, add a lead-in
-                new_story_node.story_acts.Add(new Tuple<string, int>("lead-in", graph_node.Id));
-            }//end else
 
             story.AddStoryNode(new_story_node);
 
@@ -137,7 +142,7 @@ namespace Dialogue_Data_Entry
 
         public Story GenerateChronology(Feature anchor_node, int turn_limit)
         {
-            Story chronology = new Story(anchor_node);
+            Story chronology = new Story(anchor_node.Id);
 
             //For certain story roles, relationships match up with start and end dates.
             //For characters, transfer start and end dates to birth and death places.
@@ -219,7 +224,7 @@ namespace Dialogue_Data_Entry
             AddNodeToStory(closest_start_neighbor, chronology);
 
             Feature current_feature = null;
-            while (chronology.turn < turn_limit)
+            while (chronology.current_turn < turn_limit)
             {
                 //Find the next best topic for the chronology.
                 current_feature = getNextChronologicalTopic(anchor_node, anchor_node.start_date, anchor_node.end_date);
