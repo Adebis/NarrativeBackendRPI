@@ -107,6 +107,138 @@ namespace Dialogue_Data_Entry
             
             return return_string;
         }//end function DefaultNextTopic
+
+        private Story AddNodeToStory(Feature graph_node, Story story)
+        {
+            //These are for the manager, but each story has its own history and turn count.
+            SetNextTopic(graph_node);
+            turn += 1;
+
+            StoryNode new_story_node = new StoryNode(graph_node.Id);
+
+            //Transform the story node using the story passed in.
+            //Check for relationship between this node and the previous node.
+            //If this is the first node and there are no previous nodes, skip this step.
+            Feature previous_node = null;
+            if (story.StorySequence.Count > 0)
+            {
+                previous_node = feature_graph.getFeature(story.StorySequence[story.StorySequence.Count - 1].graph_node_id);
+
+                if (graph_node.getNeighbor(previous_node.Id) != null)
+                {
+                    new_story_node.story_acts.Add(new Tuple<string, int>("relationship", previous_node.Id));
+                }//end if
+                else
+                {
+                    //If this node and the previous node do not have a direct relationship, add a lead-in
+                    new_story_node.story_acts.Add(new Tuple<string, int>("lead-in", graph_node.Id));
+                }//end else
+            }//end if
+
+            story.AddStoryNode(new_story_node);
+
+            return story;
+        }//end method AddNodeToStory
+
+        public Story GenerateChronology(Feature anchor_node, int turn_limit)
+        {
+            Story chronology = new Story(anchor_node.Id);
+
+            //For certain story roles, relationships match up with start and end dates.
+            //For characters, transfer start and end dates to birth and death places.
+            if (anchor_node.story_role == 1)
+            {
+                //Look for a birth place by looking for the word "birth" in any neighbor relationship
+                Feature birth_place = null;
+                foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
+                {
+                    if (neighbor_tuple.Item3.Contains("birth"))
+                    {
+                        birth_place = neighbor_tuple.Item1;
+                        break;
+                    }//end if
+                }//end foreach
+                //If the birth place is not null, update its date
+                if (birth_place != null)
+                {
+                    birth_place.start_date = anchor_node.start_date;
+                    birth_place.end_date = anchor_node.start_date;
+                }//end if
+                //Look for a death place by looking for the word "death" in any neighbor relationship
+                Feature death_place = null;
+                foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
+                {
+                    if (neighbor_tuple.Item3.Contains("death"))
+                    {
+                        death_place = neighbor_tuple.Item1;
+                        break;
+                    }//end if
+                }//end foreach
+                //If the death place is not null, update its date
+                if (death_place != null)
+                {
+                    death_place.start_date = anchor_node.end_date;
+                    death_place.end_date = anchor_node.end_date;
+                }//end if
+            }//end if
+
+            //Find the neighboring node whose date most closely matches the anchor node's start date.
+            Feature closest_start_neighbor = null;
+            TimeSpan closest_time_difference = TimeSpan.MaxValue;
+            foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
+            {
+                TimeSpan time_difference = neighbor_tuple.Item1.start_date - anchor_node.start_date;
+                TimeSpan time_difference_2 = neighbor_tuple.Item1.end_date - anchor_node.start_date;
+
+                if (time_difference_2.Duration() < time_difference.Duration())
+                    time_difference = time_difference_2;
+
+                if (time_difference.Duration() < closest_time_difference.Duration())
+                {
+                    closest_start_neighbor = neighbor_tuple.Item1;
+                    closest_time_difference = time_difference;
+                }//end if
+            }//end foreach
+
+            //Find the neighboring node whose date most closely matches the anchor node's end date.
+            Feature closest_end_neighbor = null;
+            closest_time_difference = TimeSpan.MaxValue;
+            foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
+            {
+                TimeSpan time_difference = neighbor_tuple.Item1.end_date - anchor_node.end_date;
+                TimeSpan time_difference_2 = neighbor_tuple.Item1.start_date - anchor_node.end_date;
+
+                if (time_difference_2.Duration() < time_difference.Duration())
+                    time_difference = time_difference_2;
+
+                if (time_difference.Duration() < closest_time_difference.Duration())
+                {
+                    closest_end_neighbor = neighbor_tuple.Item1;
+                    closest_time_difference = time_difference;
+                }//end if
+            }//end foreach
+
+            //Add the anchor node to the story.
+            AddNodeToStory(anchor_node, chronology);
+            //Add the closest start neighbor to the story.
+            AddNodeToStory(closest_start_neighbor, chronology);
+
+            Feature current_feature = null;
+            while (chronology.current_turn < turn_limit)
+            {
+                //Find the next best topic for the chronology.
+                current_feature = getNextChronologicalTopic(anchor_node, anchor_node.start_date, anchor_node.end_date);
+                //Add it to the story.
+                if (current_feature != null)
+                    AddNodeToStory(current_feature, chronology);
+            }//end while
+
+            //Add the closest end neighbor to the story.
+            AddNodeToStory(closest_end_neighbor, chronology);
+
+            return chronology;
+        }//end method GenerateChronology
+
         public Feature getNextChronologicalTopic(Feature previous_topic, DateTime start_date, DateTime end_date)
         {
             //Gets the next topic that should be visited whose date lies between the given start and end dates.
@@ -1372,7 +1504,7 @@ namespace Dialogue_Data_Entry
 			//Place the next topic in the history list
 			UpdateTopicHistory(next_topic);
 
-			next_topic.DiscussedAmount += 1;
+		    next_topic.DiscussedAmount += 1;
 			this.feature_graph.setFeatureDiscussedAmount(next_topic.Id, next_topic.DiscussedAmount);
 			this.topic = next_topic;
 			//Set the topic in the AIML chatbot

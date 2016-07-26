@@ -23,6 +23,9 @@ namespace Dialogue_Data_Entry
         //A list of features that can be referred back to, different from the history list.
         private List<Feature> reference_list;
 
+        //The feature graph
+        private FeatureGraph graph;
+
         //Instantiate the SpeakTransform with both a history list and the previous topic.
         //The history list includes, at its last element, the current feature.
         public SpeakTransform(List<Feature> history_in, Feature previous_topic_in, List<Feature> ref_list = null)
@@ -77,11 +80,69 @@ namespace Dialogue_Data_Entry
             no_analogy_relationships.Add("had");
             no_analogy_relationships.Add("");
 
+            graph = null;
         }//end constructor SpeakTransform
         public SpeakTransform()
         {
             //Default constructor
         }//end method SpeakTransform
+
+        public SpeakTransform(FeatureGraph graph_in)
+        {
+            graph = graph_in;
+        }//end constructor SpeakTransform
+
+        //Go through a Story object and present it as text.
+        public string SpeakStory(Story story_to_speak)
+        {
+            string text_presentation = "";
+
+            string current_node_text = "";
+            Feature current_graph_node = null;
+            foreach (StoryNode current_node in story_to_speak.StorySequence)
+            {
+                current_graph_node = graph.getFeature(current_node.graph_node_id);
+                //Start with the speak value of the node. Story acts will be appended to the front or end of the speak value.
+                current_node_text = current_graph_node.getSpeak(0);
+
+                //For each story node, we want to go through and speak each of its story acts.
+                foreach(Tuple<string, int> story_act in current_node.story_acts)
+                {
+                    if (story_act.Item1.Equals(Constant.LEADIN))
+                    {
+                        current_node_text = LeadIn(current_graph_node) + current_node_text;
+                    }//end if
+                }//end foreach
+            }//end foreach
+
+            return text_presentation;
+        }//end method SpeakStory
+        //Return a lead-in statement for the feature passed in
+        private string LeadIn(Feature node_to_lead_in)
+        {
+            string lead_in_statement = "";
+
+            string node_name = node_to_lead_in.Name;
+
+            //A set of lead-in statements for non-novel nodes
+            List<string> non_novel_lead_in_statements = new List<string>();
+            non_novel_lead_in_statements.Add("{Have you heard of " + node_name + "?} ");
+            non_novel_lead_in_statements.Add("{Let's talk about " + node_name + ".} ");
+            non_novel_lead_in_statements.Add("{I'll mention " + node_name + " real quick.} ");
+            non_novel_lead_in_statements.Add("{So, about " + node_name + ".} ");
+            non_novel_lead_in_statements.Add("{Now then, about " + node_name + ".} ");
+            non_novel_lead_in_statements.Add("{Let's talk about " + node_name + " for a moment.} ");
+            non_novel_lead_in_statements.Add("{Have I mentioned " + node_name + "?} ");
+            non_novel_lead_in_statements.Add("{Now, about " + node_name + ".} ");
+            non_novel_lead_in_statements.Add("{Now, let's talk about " + node_name + ".} ");
+            non_novel_lead_in_statements.Add("{I should touch on " + node_name + ".} ");
+
+            //Randomly choose a lead-in statement for the given node.
+            Random rand = new Random();
+            lead_in_statement = non_novel_lead_in_statements[rand.Next(non_novel_lead_in_statements.Count)];
+
+            return lead_in_statement;
+        }//end method LeadIn
 
         //Takes a feature and its speak value. Using the history list and feature graph, 
         //attempts to add to the speak value (e.g. lead-in statements, analogies, etc.)
