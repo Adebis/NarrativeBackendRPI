@@ -47,5 +47,9 @@ namespace Dialogue_Data_Entry
         public const string SPATIAL = "spatial";
         public const string HIERACHY = "hierachy";
         public const string FUN_FACT = "Fun Fact";
+
+        //Story acts
+        public const string LEADIN = "lead-in";
+        public const string RELATIONSHIP = "relationship";
     }
 }

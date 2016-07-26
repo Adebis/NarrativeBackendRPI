@@ -329,6 +329,9 @@ namespace Dialogue_Data_Entry
             return json_string;
         }//end method ParseInputJSON
 
+
+
+        bool json_mode = false;
 		//Form2 calls this function
 		//input is the input to be parsed.
 		//messageToServer indicates whether or not we are preparing a response to the front-end.
@@ -338,6 +341,9 @@ namespace Dialogue_Data_Entry
 		//  how well the nodes in the n-length path from the current node relate to the current node.
 		public string ParseInput(string input, bool messageToServer = false, bool forLog = false, bool outOfTopic = false, bool projectAsTopic = false)
 		{
+            if (json_mode)
+                return ParseInputJSON(input);
+
 			string answer = IDK;
 			string noveltyInfo = "";
 			// Pre-processing
@@ -1094,6 +1100,20 @@ namespace Dialogue_Data_Entry
 				{
 
 				}//end else if
+                //Toggle JSON response outputs on or off.
+                else if (split_input[0].Equals("TOGGLE_JSON"))
+                {
+                    if (json_mode)
+                    {
+                        json_mode = false;
+                        return_string = "JSON responses toggled off";
+                    }//end if
+                    else
+                    {
+                        json_mode = true;
+                        return_string = "JSON responses toggled on";
+                    }//end elses
+                }//end else if
 
 			return return_string;
 		}//end function CommandResponse
