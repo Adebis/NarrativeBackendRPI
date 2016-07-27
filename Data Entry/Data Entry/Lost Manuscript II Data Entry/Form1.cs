@@ -49,9 +49,12 @@ namespace Dialogue_Data_Entry
         //private string defaultFilename = @"\roman_empire_500_geospatial.xml";
         //private string defaultFilename = @"\roman_empire_500_2.xml";
 
-        private string defaultFilename = @"\roman_empire_1000.xml";
 
-		private string constraintFilename = @"\constraint.txt";
+		//NOTE: need to use (/) as path separator because it works on both mac and windows
+
+        private string defaultFilename = @"/roman_empire_1000.xml";
+
+		private string constraintFilename = @"/constraint.txt";
 
 		public Form1()
 		{
