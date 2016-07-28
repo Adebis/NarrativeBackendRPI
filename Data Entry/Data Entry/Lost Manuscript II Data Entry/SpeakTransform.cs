@@ -94,19 +94,7 @@ namespace Dialogue_Data_Entry
 
         public string SpeakStoryFromLastUserTurn(Story story_to_speak)
         {
-            //Find the last node where there was a user turn that is not the last node of the story.
-            List<StoryNode> story_sequence = story_to_speak.StorySequence;
-            int user_turn_index = -1;
-            for (int i = story_sequence.Count - 1; i >= 0; i--)
-            {
-                if (story_sequence[i].HasStoryAct(Constant.USERTURN) && (i != story_sequence.Count - 1))
-                {
-                    user_turn_index = i;
-                    break;
-                }//end if
-            }//end for
-
-            return SpeakStoryFromTurn(story_to_speak, user_turn_index + 1);
+            return SpeakStoryFromTurn(story_to_speak, story_to_speak.GetLastSegmentIndex());
         }//end method SpeakStoryFromLastUserTurn
 
         //Go through an entire Story and present it as text.
@@ -124,11 +112,14 @@ namespace Dialogue_Data_Entry
             string current_node_text = "";
             Feature current_graph_node = null;
             Feature current_target_node = null;
+            List<Feature> local_history_list = new List<Feature>();
             for (int i = turn_to_start; i < story_to_speak.StorySequence.Count; i++)
             {
                 StoryNode current_node = story_to_speak.StorySequence[i];
 
                 current_graph_node = graph.getFeature(current_node.graph_node_id);
+                local_history_list.Add(current_graph_node);
+                
                 //Start with the speak value of the node. Story acts will be appended to the front or end of the speak value.
                 current_node_text = current_graph_node.getSpeak(0);
 
@@ -147,6 +138,7 @@ namespace Dialogue_Data_Entry
                     else if (story_act.Item1.Equals(Constant.USERTURN))
                     {
                         current_node_text = current_node_text + "{Start user turn}";
+                        current_node_text = current_node_text + UserTurn(local_history_list);
                     }//end else if
                 }//end foreach
 
@@ -202,6 +194,11 @@ namespace Dialogue_Data_Entry
 
             return relationship_statement;
         }//end method Relationship
+        //Tell the user it's their turn and give them options of what to select next.
+        private string UserTurn(List<Feature> history_list)
+        {
+            return "";
+        }//end method UserTurn
 
         //Takes a feature and its speak value. Using the history list and feature graph, 
         //attempts to add to the speak value (e.g. lead-in statements, analogies, etc.)

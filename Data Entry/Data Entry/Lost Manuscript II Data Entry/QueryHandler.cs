@@ -367,8 +367,13 @@ namespace Dialogue_Data_Entry
                         NarrationManager temp_manager = new NarrationManager(temp_graph, temporalConstraintList);
                         Story chronology = temp_manager.GenerateChronology(anchor_node, turn_limit, main_story);
 
+                        //The chronology is generated in segments, separated by user turns.
+                        //Get the last segment of the chronology.
+                        int last_segment_index = chronology.GetLastSegmentIndex();
+                        Story temp_story = new Story(chronology.GetLastSegment(), chronology.AnchorNodeId);
+
                         if (json_mode)
-                            json_string = JsonConvert.SerializeObject(chronology);
+                            json_string = JsonConvert.SerializeObject(temp_story);
                         else
                         {
                             SpeakTransform temp_transform = new SpeakTransform(graph);

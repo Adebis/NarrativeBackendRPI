@@ -18,6 +18,23 @@ namespace Dialogue_Data_Entry
             anchor_node_id = anchor_node_id_in;
             story_sequence = new List<StoryNode>();
         }//end method Story
+        public Story(List<StoryNode> base_story_sequence, int anchor_node_id_in)
+        {
+            current_turn = 0;
+            anchor_node_id = anchor_node_id_in;
+            story_sequence = new List<StoryNode>();
+            StoryNode temp_node = null;
+            foreach (StoryNode base_node in base_story_sequence)
+            {
+                //Make a deep copy of the base node.
+                temp_node = new StoryNode(base_node.graph_node_id);
+                foreach (Tuple<string, int> story_act in base_node.story_acts)
+                {
+                    temp_node.AddStoryAct(story_act.Item1, story_act.Item2);
+                }//end foreach
+                AddStoryNode(temp_node);
+            }//end foreach
+        }//end method Story
 
         public void AddStoryNode(StoryNode new_story_node)
         {
@@ -38,6 +55,35 @@ namespace Dialogue_Data_Entry
 
             return return_list;
         }//end method GetHistory
+
+        //Return the index of the last segment of the story, starting after the
+        //last story node with a user turn which is not the last node
+        //of the story sequence.
+        public int GetLastSegmentIndex()
+        {
+            int last_user_turn_index = -1;
+            for (int i = story_sequence.Count - 1; i >= 0; i--)
+            {
+                if (story_sequence[i].HasStoryAct(Constant.USERTURN) && (i != story_sequence.Count - 1))
+                {
+                    last_user_turn_index = i;
+                    break;
+                }//end if
+            }//end for
+
+            //The last segment of the story starts the turn after the last user turn.
+            return last_user_turn_index + 1;
+        }//end mehtod GetLastSegment
+        //Return the last segment.
+        public List<StoryNode> GetLastSegment()
+        {
+            List<StoryNode> last_segment = new List<StoryNode>();
+            for (int i = GetLastSegmentIndex(); i < StorySequence.Count; i++)
+            {
+                last_segment.Add(StorySequence[i]);
+            }//end for
+            return last_segment;
+        }//end method GetLastSegment
 
         public int AnchorNodeId
         {
