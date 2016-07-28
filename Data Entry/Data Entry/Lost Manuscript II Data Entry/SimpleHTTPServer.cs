@@ -110,20 +110,6 @@ class SimpleHTTPServer
 	}
 
 	/// <summary>
-	/// Construct server with suitable port.
-	/// </summary>
-	/// <param name="path">Directory path to serve.</param>
-	public SimpleHTTPServer(string path)
-	{
-		//get an empty port
-		TcpListener l = new TcpListener(IPAddress.Loopback, 0);
-		l.Start();
-		int port = ((IPEndPoint)l.LocalEndpoint).Port;
-		l.Stop();
-		this.Initialize(path, port);
-	}
-
-	/// <summary>
 	/// Stop server and dispose all functions.
 	/// </summary>
 	public void Stop()
@@ -170,7 +156,7 @@ class SimpleHTTPServer
 			}
 			catch (Exception ex)
 			{
-
+				break;
 			}
 		}
 	}
@@ -191,11 +177,11 @@ class SimpleHTTPServer
 				// Get the data from the HTTP stream
 
 				string query = "CHRONOLOGY:" + data.id + ":" + data.turns;
-				string result = handler.ParseInput(query);
+				string response = handler.ParseInputJSON(query);
 
-				dynamic response = new JObject();
+				//dynamic response = new JObject();
 				//split and ignore last empty one
-				response.sequence = new JArray(result.Split(new string[] { "::" }, StringSplitOptions.None).Reverse().Skip(1).Reverse().ToArray());
+				//response.sequence = new JArray(result.Split(new string[] { "::" }, StringSplitOptions.None).Reverse().Skip(1).Reverse().ToArray());
 
 				//write response
 				byte[] b = Encoding.UTF8.GetBytes(response.ToString());
@@ -205,6 +191,10 @@ class SimpleHTTPServer
 				context.Response.OutputStream.Write(b, 0, b.Length);
 				context.Response.OutputStream.Close();
 
+				break;
+
+			case "/chronology/reset":
+				handler.ParseInputJSON("RESTART_NARRATION");
 				break;
 
 			case "/":
