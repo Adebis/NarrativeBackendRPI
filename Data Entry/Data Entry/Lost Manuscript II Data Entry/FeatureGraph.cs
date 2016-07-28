@@ -426,6 +426,18 @@ namespace Dialogue_Data_Entry
 			//Console.Out.WriteLine(json_out);
 
 		}
+        public void UpdateInterestInternal(int id, int iterations)
+        {
+            string analogy_response = getanalogy(id);
+
+            parse_json(analogy_response, ref user_interest);
+
+            foreach (KeyValuePair<int, float> pair in user_interest)
+            {
+                this.getFeature(pair.Key).update_interest_value(pair.Value);
+            }//end foreach
+
+        }//end method UpdateInterestInternal
 		public void getMaxDistance()
 		{
 			//var sw = new Stopwatch();

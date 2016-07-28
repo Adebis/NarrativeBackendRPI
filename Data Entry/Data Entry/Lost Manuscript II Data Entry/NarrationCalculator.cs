@@ -65,6 +65,16 @@ namespace Dialogue_Data_Entry
             expected_dramatic_value = new double[20] { 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 };
             SetFilterNodes();
         }//end constructor NarrationCalculator
+        public NarrationCalculator(FeatureGraph fg)
+        {
+            feature_graph = fg;
+            this.temporal_constraint_list = new List<TemporalConstraint>();
+            //Create the hierarchy key from the feature graph
+            hierarchy_key = CreateHierarchyKey(feature_graph);
+            //Default initializations
+            expected_dramatic_value = new double[20] { 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5 };
+            SetFilterNodes();
+        }//end constructor NarrationCalculator
         private void SetFilterNodes()
         {
             //Build list of filter nodes.
@@ -265,6 +275,101 @@ namespace Dialogue_Data_Entry
             }//end else if
             return null;
         }//end function GetNextTopic
+        public List<Feature> GetNextBestTopics(Feature previous_topic, int turn, List<Feature> topic_history, int top_number)
+        {
+            //The return list will be sorted in descending order of score.
+            List<Feature> return_list = new List<Feature>();
+            if (turn == 0)
+            {
+                //initial case
+                return_list.Add(previous_topic);
+                return return_list;
+            }
+            else if (turn > 0)
+            {
+                //next topic case
+                /*if (currentNovelty == null)
+                {
+                    currentNovelty = new double[feature_graph.Features.Count()];
+                }*/
+                //int height = -1;
+                bool[] checkEntry = new bool[feature_graph.Count]; //checkEntry is to check that it won't check the same node again
+                //getHeight(featGraph.Root, oldTopic, 0, checkEntry, ref height);
+                checkEntry = new bool[feature_graph.Count];
+                //search the next topic
+
+                List<Tuple<Feature, double>> listScore = new List<Tuple<Feature, double>>();
+                //Get a list of each feature's score calculated against previous_topic.
+                //List order is based on the traveling (DFS) order.
+                TravelGraph(feature_graph.Root, previous_topic, 0, true, checkEntry, turn, topic_history, ref listScore);
+
+                //find max score
+                if (listScore.Count == 0)
+                {
+                    return null;
+                }
+                List<Tuple<Feature, double>> ordered_list_score = new List<Tuple<Feature, double>>();
+                ordered_list_score.Add(listScore[0]);
+                for (int x = 1; x < listScore.Count; x++)
+                {
+                    //FILTERING:
+                    //If the item in this list is one of the filter nodes,
+                    //do not include it in max score determination.
+                    //Check for filter nodes.
+                    if (filter_nodes.Contains(listScore[x].Item1.Name))
+                    {
+                        //If it is a filter node, take another step.
+                        Console.WriteLine("Filtering out " + listScore[x].Item1.Id);
+                        continue;
+                    }//end if
+
+                    //If neither the feature's start nor end dates lie between the given start and end dates,
+                    //do not include it in the list.
+                    /*if (start_date != end_date)
+                    {
+                        if (!(listScore[x].Item1.start_date > start_date && listScore[x].Item1.start_date < end_date)
+                            && !(listScore[x].Item1.end_date > start_date && listScore[x].Item1.end_date < end_date)
+                            && !(listScore[x].Item1.start_date == start_date)
+                            && !(listScore[x].Item1.start_date == end_date)
+                            && !(listScore[x].Item1.end_date == start_date)
+                            && !(listScore[x].Item1.end_date == end_date))
+                        {
+                            continue;
+                        }//end if
+                    }//end if
+                    else
+                    {
+                        if ((listScore[x].Item1.end_date < start_date)
+                            || listScore[x].Item1.start_date > end_date)
+                        {
+                            continue;
+                        }//end if
+                    }//end else*/
+
+                    //Goes through features in ordered list score until it finds one that has a lower score than it.
+                    //Then, inserts this features before the lower scoring one.
+                    int insert_index = ordered_list_score.Count;
+                    for (int j = 0; j < ordered_list_score.Count; j++)
+                    {
+                        if (listScore[x].Item2 > ordered_list_score[j].Item2)
+                        {
+                            insert_index = j;
+                        }//end if
+                    }//end for
+                    if (insert_index == ordered_list_score.Count)
+                        ordered_list_score.Add(listScore[x]);
+                    else
+                        ordered_list_score.Insert(insert_index, listScore[x]);
+                }//end for
+
+                for (int i = 0; i < top_number; i++)
+                {
+                    return_list.Add(ordered_list_score[i].Item1);
+                }//end for
+                return return_list;
+            }//end else
+            return return_list;
+        }//end method GetNextBestTopics
 
         /// <summary>
         /// Calculates the score between the two given features. Returns a data structure containing

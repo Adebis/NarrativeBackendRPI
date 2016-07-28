@@ -138,7 +138,7 @@ namespace Dialogue_Data_Entry
                     else if (story_act.Item1.Equals(Constant.USERTURN))
                     {
                         current_node_text = current_node_text + "{Start user turn}";
-                        current_node_text = current_node_text + UserTurn(local_history_list);
+                        current_node_text = current_node_text + UserTurn(local_history_list, current_node.turn);
                     }//end else if
                 }//end foreach
 
@@ -195,8 +195,27 @@ namespace Dialogue_Data_Entry
             return relationship_statement;
         }//end method Relationship
         //Tell the user it's their turn and give them options of what to select next.
-        private string UserTurn(List<Feature> history_list)
+        private string UserTurn(List<Feature> history_list, int turn_number)
         {
+            string return_string = "";
+
+            return_string = "Continuing with the current topic, we could talk about";
+
+            NarrationCalculator temp_calculator = new NarrationCalculator(graph);
+            Feature last_node = history_list[history_list.Count - 1];
+            List<Feature> next_best_nodes = temp_calculator.GetNextBestTopics(last_node, turn_number, history_list, 5);
+
+            foreach (Feature next_best_node in next_best_nodes)
+            {
+                return_string += next_best_node.Name + " (" + next_best_node.Id + "),";
+            }//end foreach
+            return_string.Remove(return_string.Length);
+            return_string += ". ";
+
+            return_string += "But I think you'll also be interested in";
+
+
+
             return "";
         }//end method UserTurn
 

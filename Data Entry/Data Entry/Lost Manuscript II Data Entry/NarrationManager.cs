@@ -144,7 +144,11 @@ namespace Dialogue_Data_Entry
         {
             Story chronology = new Story(anchor_node.Id);
             if (starting_story != null)
+            {
                 chronology = starting_story;
+                //Change the anchor node
+                chronology.AnchorNodeId = anchor_node.Id;
+            }//end if
 
             //For certain story roles, relationships match up with start and end dates.
             //For characters, transfer start and end dates to birth and death places.

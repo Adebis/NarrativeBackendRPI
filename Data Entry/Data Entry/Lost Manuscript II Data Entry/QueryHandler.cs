@@ -285,7 +285,10 @@ namespace Dialogue_Data_Entry
             Feature input_feature = FindFeature(input);
             if (input_feature != null)
             {
-                //If we have found a feature, then there is an anchor node for the next storyline.
+                //If we have found a feature, then there is an explicitly requested anchor node for the next storyline.
+                //Update user interest values.
+                this.graph.UpdateInterestInternal(input_feature.Id, this.main_story.current_turn);
+
                 //Generate the next section of the chronology.
                 input = "CHRONOLOGY:" + input + ":" + story_section_size;
             }//end if
