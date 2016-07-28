@@ -393,6 +393,12 @@ namespace Dialogue_Data_Entry
                     json_string = "JSON responses toggled on";
                 }//end elses
             }//end else if
+            //Reset both the main story and the feature graph.
+            else if (split_input[0].Equals("RESTART_NARRATION"))
+            {
+                main_story = null;
+                graph.ResetNodes();
+            }//end else if
 
             return json_string;
         }//end method ParseInputJSON
