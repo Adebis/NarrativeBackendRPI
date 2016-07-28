@@ -51,5 +51,6 @@ namespace Dialogue_Data_Entry
         //Story acts
         public const string LEADIN = "lead-in";
         public const string RELATIONSHIP = "relationship";
+        public const string USERTURN = "user-turn";
     }
 }

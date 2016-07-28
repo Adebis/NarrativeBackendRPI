@@ -92,31 +92,70 @@ namespace Dialogue_Data_Entry
             graph = graph_in;
         }//end constructor SpeakTransform
 
-        //Go through a Story object and present it as text.
+        public string SpeakStoryFromLastUserTurn(Story story_to_speak)
+        {
+            //Find the last node where there was a user turn that is not the last node of the story.
+            List<StoryNode> story_sequence = story_to_speak.StorySequence;
+            int user_turn_index = -1;
+            for (int i = story_sequence.Count - 1; i >= 0; i--)
+            {
+                if (story_sequence[i].HasStoryAct(Constant.USERTURN) && (i != story_sequence.Count - 1))
+                {
+                    user_turn_index = i;
+                    break;
+                }//end if
+            }//end for
+
+            return SpeakStoryFromTurn(story_to_speak, user_turn_index + 1);
+        }//end method SpeakStoryFromLastUserTurn
+
+        //Go through an entire Story and present it as text.
         public string SpeakStory(Story story_to_speak)
+        {
+
+            return SpeakStoryFromTurn(story_to_speak, 0);
+        }//end method SpeakStory
+
+        //Speak the given story starting from the given story turn.
+        public string SpeakStoryFromTurn(Story story_to_speak, int turn_to_start)
         {
             string text_presentation = "";
 
             string current_node_text = "";
             Feature current_graph_node = null;
-            foreach (StoryNode current_node in story_to_speak.StorySequence)
+            Feature current_target_node = null;
+            for (int i = turn_to_start; i < story_to_speak.StorySequence.Count; i++)
             {
+                StoryNode current_node = story_to_speak.StorySequence[i];
+
                 current_graph_node = graph.getFeature(current_node.graph_node_id);
                 //Start with the speak value of the node. Story acts will be appended to the front or end of the speak value.
                 current_node_text = current_graph_node.getSpeak(0);
 
                 //For each story node, we want to go through and speak each of its story acts.
-                foreach(Tuple<string, int> story_act in current_node.story_acts)
+                foreach (Tuple<string, int> story_act in current_node.story_acts)
                 {
+                    current_target_node = graph.getFeature(story_act.Item2);
                     if (story_act.Item1.Equals(Constant.LEADIN))
                     {
                         current_node_text = LeadIn(current_graph_node) + current_node_text;
                     }//end if
+                    else if (story_act.Item1.Equals(Constant.RELATIONSHIP))
+                    {
+                        current_node_text = Relationship(current_graph_node, current_target_node) + current_node_text;
+                    }//end else if
+                    else if (story_act.Item1.Equals(Constant.USERTURN))
+                    {
+                        current_node_text = current_node_text + "{Start user turn}";
+                    }//end else if
                 }//end foreach
-            }//end foreach
+
+                text_presentation = text_presentation + " " + current_node_text;
+            }//end for
 
             return text_presentation;
-        }//end method SpeakStory
+        }//end method SpeakStoryFromTurn
+
         //Return a lead-in statement for the feature passed in
         private string LeadIn(Feature node_to_lead_in)
         {
@@ -143,6 +182,26 @@ namespace Dialogue_Data_Entry
 
             return lead_in_statement;
         }//end method LeadIn
+        //Return a statement stating the relationship between the nodes passed in.
+        private string Relationship(Feature current_node, Feature target_node)
+        {
+            string relationship_statement = "";
+
+            if (current_node.getRelationshipNeighbor(target_node.Id) != null
+                && current_node.getRelationshipNeighbor(target_node.Id) != "")
+            {
+                relationship_statement = "{" + current_node.Name + " " + current_node.getRelationshipNeighbor(target_node.Id)
+                    + " " + target_node.Name + ".} ";
+            }//end if
+            else if (target_node.getRelationshipNeighbor(current_node.Id) != null
+                && target_node.getRelationshipNeighbor(current_node.Id) != "")
+            {
+                relationship_statement = "{" + target_node.Name + " " + target_node.getRelationshipNeighbor(current_node.Id)
+                    + " " + current_node.Name + ".} ";
+            }//end else if
+
+            return relationship_statement;
+        }//end method Relationship
 
         //Takes a feature and its speak value. Using the history list and feature graph, 
         //attempts to add to the speak value (e.g. lead-in statements, analogies, etc.)

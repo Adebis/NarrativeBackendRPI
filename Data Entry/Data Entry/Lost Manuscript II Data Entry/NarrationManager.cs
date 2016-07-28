@@ -140,9 +140,11 @@ namespace Dialogue_Data_Entry
             return story;
         }//end method AddNodeToStory
 
-        public Story GenerateChronology(Feature anchor_node, int turn_limit)
+        public Story GenerateChronology(Feature anchor_node, int turn_limit, Story starting_story = null)
         {
             Story chronology = new Story(anchor_node.Id);
+            if (starting_story != null)
+                chronology = starting_story;
 
             //For certain story roles, relationships match up with start and end dates.
             //For characters, transfer start and end dates to birth and death places.
@@ -221,29 +223,60 @@ namespace Dialogue_Data_Entry
             //Add the anchor node to the story.
             AddNodeToStory(anchor_node, chronology);
             //Add the closest start neighbor to the story.
-            AddNodeToStory(closest_start_neighbor, chronology);
+            //AddNodeToStory(closest_start_neighbor, chronology);
 
             Feature current_feature = null;
-            while (chronology.current_turn < turn_limit)
+            int local_turn = 0;
+            while (local_turn < turn_limit)
             {
                 //Find the next best topic for the chronology.
                 current_feature = getNextChronologicalTopic(anchor_node, anchor_node.start_date, anchor_node.end_date);
                 //Add it to the story.
                 if (current_feature != null)
                     AddNodeToStory(current_feature, chronology);
+                local_turn += 1;
             }//end while
 
+            //Give a user turn to the last node in the story.
+            chronology.StorySequence[chronology.StorySequence.Count - 1].AddStoryAct(
+                Constant.USERTURN
+                , chronology.StorySequence[chronology.StorySequence.Count - 1].graph_node_id);
+
             //Add the closest end neighbor to the story.
-            AddNodeToStory(closest_end_neighbor, chronology);
+            //AddNodeToStory(closest_end_neighbor, chronology);
 
             return chronology;
         }//end method GenerateChronology
 
+        public Feature getNextChronologicalTopic(Story story_in, DateTime start_date, DateTime end_date)
+        {
+            //
+            List<Feature> history_list = new List<Feature>();
+            foreach (int graph_node_id in story_in.GetHistory())
+            {
+                history_list.Add(feature_graph.getFeature(graph_node_id));
+            }//end foreach
+
+            //Gets the next topic that should be visited whose date lies between the given start and end dates.
+            return calculator.GetNextTopic(feature_graph.getFeature(story_in.AnchorNodeId), story_in.current_turn, history_list, start_date, end_date);
+        }//end method getNextChronologicalTopic
         public Feature getNextChronologicalTopic(Feature previous_topic, DateTime start_date, DateTime end_date)
         {
             //Gets the next topic that should be visited whose date lies between the given start and end dates.
             return calculator.GetNextTopic(previous_topic, this.turn, this.topic_history, start_date, end_date);
         }//end method getNextChronologicalTopic
+
+        public Feature getNextBestStoryTopic(Story story_in)
+        {
+            Feature last_topic = feature_graph.getFeature(story_in.StorySequence[story_in.StorySequence.Count - 1].graph_node_id);
+            List<Feature> history_list = new List<Feature>();
+            foreach (int graph_node_id in story_in.GetHistory())
+            {
+                history_list.Add(feature_graph.getFeature(graph_node_id));
+            }//end foreach
+
+            return calculator.GetNextTopic(last_topic, "", story_in.current_turn, history_list);
+        }//end method getNextBestStoryTopic
 
         /// <summary>
         /// Begins a narration.
