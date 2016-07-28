@@ -63,6 +63,17 @@ namespace Dialogue_Data_Entry
 			relationMap = new Dictionary<string, HashSet<Tuple<string, string>>>();
 			inverse_relationMap = new Dictionary<string, HashSet<Tuple<string, string>>>();
 		}
+
+        //Resets discussed amount and user interest for all graph nodes
+        public void ResetNodes()
+        {
+            foreach (Feature current_node in features)
+            {
+                current_node.DiscussedAmount = 0;
+                current_node.update_interest_value(0);
+            }//end foreach
+        }//end method ResetNodes
+
 		private void helperMaxDepthDSF(Feature current, int depth, bool[] checkEntry)
 		{
 			if (current.Neighbors.Count == 0)
