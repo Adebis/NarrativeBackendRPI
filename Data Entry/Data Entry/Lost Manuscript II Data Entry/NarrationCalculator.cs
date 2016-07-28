@@ -351,7 +351,7 @@ namespace Dialogue_Data_Entry
                     int insert_index = ordered_list_score.Count;
                     for (int j = 0; j < ordered_list_score.Count; j++)
                     {
-                        if (listScore[x].Item2 > ordered_list_score[j].Item2)
+                        if (listScore[x].Item2 >= ordered_list_score[j].Item2)
                         {
                             insert_index = j;
                         }//end if
@@ -370,6 +370,41 @@ namespace Dialogue_Data_Entry
             }//end else
             return return_list;
         }//end method GetNextBestTopics
+        public List<Feature> GetNextInterestingTopics(List<Feature> topic_history, int top_number)
+        {
+            List<Feature> return_list = new List<Feature>();
+
+            foreach (Feature current_feature in feature_graph.Features)
+            {
+                //Don't include any features that have already been talked about.
+                if (current_feature.DiscussedAmount > 0)
+                    continue;
+
+                //Insert in the return list in decreasing order of user interest value.
+                if (return_list.Count == 0)
+                    return_list.Add(current_feature);
+                else
+                {
+                    int insert_index = return_list.Count;
+                    for (int i = 0; i < return_list.Count; i++)
+                    {
+                        if (return_list[i].getInterestValue() <= current_feature.getInterestValue())
+                        {
+                            insert_index = i;
+                            break;
+                        }//end if
+                    }//end for
+                    if (insert_index == return_list.Count)
+                        return_list.Add(current_feature);
+                    else
+                        return_list.Insert(insert_index, current_feature);
+                }//end else
+            }//end foreach
+
+            return_list = return_list.GetRange(0, top_number);
+
+            return return_list;
+        }//end method GetNextInterestingTopics
 
         /// <summary>
         /// Calculates the score between the two given features. Returns a data structure containing

@@ -402,6 +402,11 @@ namespace Dialogue_Data_Entry
             this.interest_value = value;
         }
 
+        public float getInterestValue()
+        {
+            return this.interest_value;
+        }//end method getInterestValue
+
         public double getNeighborWeight(int id)
         {
             if (neighbors.Count == 0) { return -1.0; }

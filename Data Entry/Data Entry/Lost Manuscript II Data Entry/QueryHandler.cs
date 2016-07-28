@@ -287,7 +287,8 @@ namespace Dialogue_Data_Entry
             {
                 //If we have found a feature, then there is an explicitly requested anchor node for the next storyline.
                 //Update user interest values.
-                this.graph.UpdateInterestInternal(input_feature.Id, this.main_story.current_turn);
+                if (user_interest_mode)
+                    this.graph.UpdateInterestInternal(input_feature.Id, this.main_story.current_turn);
 
                 //Generate the next section of the chronology.
                 input = "CHRONOLOGY:" + input + ":" + story_section_size;
@@ -401,6 +402,20 @@ namespace Dialogue_Data_Entry
                     json_string = "JSON responses toggled on";
                 }//end elses
             }//end else if
+            //Toggle user interest mode on or off.
+            else if (split_input[0].Equals("TOGGLE_USER_INTEREST"))
+            {
+                if (user_interest_mode)
+                {
+                    user_interest_mode = false;
+                    json_string = "User interest mode toggled off";
+                }//end if
+                else
+                {
+                    user_interest_mode = true;
+                    json_string = "User interest mode toggled on";
+                }//end elses
+            }//end else if
             //Reset both the main story and the feature graph.
             else if (split_input[0].Equals("RESTART_NARRATION"))
             {
@@ -414,6 +429,7 @@ namespace Dialogue_Data_Entry
 
 
         bool json_mode = true;
+        bool user_interest_mode = false;
 		//Form2 calls this function
 		//input is the input to be parsed.
 		//messageToServer indicates whether or not we are preparing a response to the front-end.

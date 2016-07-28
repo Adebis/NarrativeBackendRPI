@@ -207,16 +207,23 @@ namespace Dialogue_Data_Entry
 
             foreach (Feature next_best_node in next_best_nodes)
             {
-                return_string += next_best_node.Name + " (" + next_best_node.Id + "),";
+                return_string += " " + next_best_node.Name + " (" + next_best_node.Id + "),";
             }//end foreach
             return_string.Remove(return_string.Length);
             return_string += ". ";
 
-            return_string += "But I think you'll also be interested in";
+            return_string += "I also think you'll be interested in";
 
+            List<Feature> next_interesting_nodes = temp_calculator.GetNextInterestingTopics(history_list, 5);
 
+            foreach (Feature next_interesting_node in next_interesting_nodes)
+            {
+                return_string += " " + next_interesting_node.Name + " (" + next_interesting_node.Id + "),";
+            }//end foreach
+            return_string.Remove(return_string.Length);
+            return_string += ". ";
 
-            return "";
+            return return_string;
         }//end method UserTurn
 
         //Takes a feature and its speak value. Using the history list and feature graph, 
