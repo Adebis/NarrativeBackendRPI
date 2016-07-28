@@ -193,6 +193,10 @@ class SimpleHTTPServer
 
 				break;
 
+			case "/chronology/reset":
+				handler.ParseInputJSON("RESTART_NARRATION");
+				break;
+
 			case "/":
 
 				//maybe list the options here?
