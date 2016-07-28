@@ -112,10 +112,18 @@ namespace Dialogue_Data_Entry
             string current_node_text = "";
             Feature current_graph_node = null;
             Feature current_target_node = null;
+            StoryNode current_node = null;
             List<Feature> local_history_list = new List<Feature>();
+            //Load all story nodes before the start turn into the history list to start with.
+            for (int i = 0; i < turn_to_start; i++)
+            {
+                current_node = story_to_speak.StorySequence[i];
+                current_graph_node = graph.getFeature(current_node.graph_node_id);
+                local_history_list.Add(current_graph_node);
+            }//end for
             for (int i = turn_to_start; i < story_to_speak.StorySequence.Count; i++)
             {
-                StoryNode current_node = story_to_speak.StorySequence[i];
+                current_node = story_to_speak.StorySequence[i];
 
                 current_graph_node = graph.getFeature(current_node.graph_node_id);
                 local_history_list.Add(current_graph_node);
@@ -137,8 +145,7 @@ namespace Dialogue_Data_Entry
                     }//end else if
                     else if (story_act.Item1.Equals(Constant.USERTURN))
                     {
-                        current_node_text = current_node_text + "{Start user turn}";
-                        current_node_text = current_node_text + UserTurn(local_history_list, current_node.turn);
+                        current_node_text = current_node_text + UserTurn(local_history_list, current_node.turn, graph.getFeature(story_to_speak.AnchorNodeId));
                     }//end else if
                 }//end foreach
 
@@ -195,11 +202,11 @@ namespace Dialogue_Data_Entry
             return relationship_statement;
         }//end method Relationship
         //Tell the user it's their turn and give them options of what to select next.
-        private string UserTurn(List<Feature> history_list, int turn_number)
+        private string UserTurn(List<Feature> history_list, int turn_number, Feature anchor_node)
         {
             string return_string = "";
 
-            return_string = "Continuing with the current topic, we could talk about";
+            return_string = " {Continuing from the last subject, we could talk about";
 
             NarrationCalculator temp_calculator = new NarrationCalculator(graph);
             Feature last_node = history_list[history_list.Count - 1];
@@ -209,10 +216,10 @@ namespace Dialogue_Data_Entry
             {
                 return_string += " " + next_best_node.Name + " (" + next_best_node.Id + "),";
             }//end foreach
-            return_string.Remove(return_string.Length);
-            return_string += ". ";
+            return_string.Remove(return_string.Length - 1);
+            return_string += ".} ";
 
-            return_string += "I also think you'll be interested in";
+            return_string += "{I also think you'll be interested in";
 
             List<Feature> next_interesting_nodes = temp_calculator.GetNextInterestingTopics(history_list, 5);
 
@@ -220,8 +227,8 @@ namespace Dialogue_Data_Entry
             {
                 return_string += " " + next_interesting_node.Name + " (" + next_interesting_node.Id + "),";
             }//end foreach
-            return_string.Remove(return_string.Length);
-            return_string += ". ";
+            return_string.Remove(return_string.Length - 1);
+            return_string += ".} ";
 
             return return_string;
         }//end method UserTurn

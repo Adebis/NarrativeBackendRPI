@@ -354,6 +354,7 @@ namespace Dialogue_Data_Entry
                         if (listScore[x].Item2 >= ordered_list_score[j].Item2)
                         {
                             insert_index = j;
+                            break;
                         }//end if
                     }//end for
                     if (insert_index == ordered_list_score.Count)

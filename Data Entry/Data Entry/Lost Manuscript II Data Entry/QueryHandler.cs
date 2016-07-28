@@ -288,8 +288,12 @@ namespace Dialogue_Data_Entry
                 //If we have found a feature, then there is an explicitly requested anchor node for the next storyline.
                 //Update user interest values.
                 if (user_interest_mode)
-                    this.graph.UpdateInterestInternal(input_feature.Id, this.main_story.current_turn);
-
+                {
+                    if (this.main_story == null)
+                        this.graph.UpdateInterestInternal(input_feature.Id, 0);
+                    else
+                        this.graph.UpdateInterestInternal(input_feature.Id, this.main_story.current_turn);
+                }//end if
                 //Generate the next section of the chronology.
                 input = "CHRONOLOGY:" + input + ":" + story_section_size;
             }//end if
