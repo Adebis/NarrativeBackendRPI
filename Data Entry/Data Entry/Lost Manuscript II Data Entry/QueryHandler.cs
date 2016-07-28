@@ -136,6 +136,8 @@ namespace Dialogue_Data_Entry
 		//A string to be used for text-to-speech
 		public string buffered_tts = "";
 
+        public Story main_story;
+
 		/// <summary>
 		/// Create a converter for the specified XML file
 		/// </summary>
@@ -161,6 +163,8 @@ namespace Dialogue_Data_Entry
 
 			//Initialize the dialogue manager
 			narration_manager = new NarrationManager(this.graph, myTemporalConstraintList);
+
+            main_story = null;
 
 			//Build lists of equivalent relationships
 			//is, are, was, is a kind of, is a
@@ -265,10 +269,34 @@ namespace Dialogue_Data_Entry
 
         public string ParseInputJSON(string input)
         {
-            String[] split_input = input.Trim().Split(':');
-
+            int story_section_size = 3;
             string json_string = "";
 
+            //First, do an initial pass for any commands.
+            String[] split_input = input.Trim().Split(':');
+            json_string = ParseInputJSON(split_input);
+            if (!json_string.Equals(""))
+            {
+                return json_string;
+            }//end if
+
+            //Next, try to start or continue the chronology.
+            //Check for feature names in input.
+            Feature input_feature = FindFeature(input);
+            if (input_feature != null)
+            {
+                //If we have found a feature, then there is an anchor node for the next storyline.
+                //Generate the next section of the chronology.
+                input = "CHRONOLOGY:" + input + ":" + story_section_size;
+            }//end if
+            //Otherwise, pass in the empty string as input to the chronology command.
+            //This will get the default next best story node.
+            else
+            {
+                input = "CHRONOLOGY:" + "" + ":" + story_section_size;
+            }//end else
+
+            split_input = input.Trim().Split(':');
             json_string = ParseInputJSON(split_input);
 
             return json_string;
@@ -284,17 +312,35 @@ namespace Dialogue_Data_Entry
                 if (split_input[1] != null)
                 {
                     String string_topic = split_input[1];
-                    //Try to convert the topic to an int to check if it's an id.
-                    int int_topic = -1;
-                    bool parse_success = int.TryParse(string_topic, out int_topic);
-                    if (parse_success)
+                    //First, check if the topic is the empty string.
+                    //If so, try the "default" anchor node.
+                    if (string_topic.Equals(""))
                     {
-                        //Check that the new integer topic is a valid id.
-                        anchor_node = graph.getFeature(int_topic);
+                        //If there is not yet a story, get the root node as the anchor node.
+                        if (main_story == null)
+                        {
+                            anchor_node = graph.Root;
+                        }//end if
+                        //If there is an ongoing story, get the next best topic based on the story.
+                        else
+                        {
+                            anchor_node = narration_manager.getNextBestStoryTopic(main_story);
+                        }//end else
                     }//end if
                     else
                     {
-                        anchor_node = FindFeature(string_topic);
+                        //Try to convert the topic to an int to check if it's an id.
+                        int int_topic = -1;
+                        bool parse_success = int.TryParse(string_topic, out int_topic);
+                        if (parse_success)
+                        {
+                            //Check that the new integer topic is a valid id.
+                            anchor_node = graph.getFeature(int_topic);
+                        }//end if
+                        else
+                        {
+                            anchor_node = FindFeature(string_topic);
+                        }//end else
                     }//end else
                     if (anchor_node != null)
                     {
@@ -304,7 +350,7 @@ namespace Dialogue_Data_Entry
                         int turn_limit = 0;
                         if (split_input[2] != null)
                         {
-                            parse_success = int.TryParse(split_input[2], out turn_limit);
+                            bool parse_success = int.TryParse(split_input[2], out turn_limit);
                             if (parse_success)
                             {
                                 Console.Out.WriteLine("Turn limit set to " + turn_limit);
@@ -319,19 +365,41 @@ namespace Dialogue_Data_Entry
                         json_string = "";
 
                         NarrationManager temp_manager = new NarrationManager(temp_graph, temporalConstraintList);
-                        Story chronology = temp_manager.GenerateChronology(anchor_node, turn_limit);
+                        Story chronology = temp_manager.GenerateChronology(anchor_node, turn_limit, main_story);
 
-                        json_string = JsonConvert.SerializeObject(chronology);
+                        if (json_mode)
+                            json_string = JsonConvert.SerializeObject(chronology);
+                        else
+                        {
+                            SpeakTransform temp_transform = new SpeakTransform(graph);
+                            json_string = temp_transform.SpeakStoryFromLastUserTurn(chronology);
+                        }//end else
+
+                        main_story = chronology;
                     }//end if
                 }//end if
             }//end if
+            //Toggle JSON response outputs on or off.
+            else if (split_input[0].Equals("TOGGLE_JSON"))
+            {
+                if (json_mode)
+                {
+                    json_mode = false;
+                    json_string = "JSON responses toggled off";
+                }//end if
+                else
+                {
+                    json_mode = true;
+                    json_string = "JSON responses toggled on";
+                }//end elses
+            }//end else if
 
             return json_string;
         }//end method ParseInputJSON
 
 
 
-        bool json_mode = false;
+        bool json_mode = true;
 		//Form2 calls this function
 		//input is the input to be parsed.
 		//messageToServer indicates whether or not we are preparing a response to the front-end.
@@ -341,8 +409,7 @@ namespace Dialogue_Data_Entry
 		//  how well the nodes in the n-length path from the current node relate to the current node.
 		public string ParseInput(string input, bool messageToServer = false, bool forLog = false, bool outOfTopic = false, bool projectAsTopic = false)
 		{
-            if (json_mode)
-                return ParseInputJSON(input);
+            return ParseInputJSON(input);
 
 			string answer = IDK;
 			string noveltyInfo = "";

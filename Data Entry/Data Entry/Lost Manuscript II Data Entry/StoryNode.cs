@@ -26,5 +26,17 @@ namespace Dialogue_Data_Entry
         {
             story_acts.Add(new Tuple<string, int>(act_name, target_id));
         }//end method AddStoryAct
+
+        //Returns whether or not this story node contains the given story act.
+        public bool HasStoryAct(string act_name)
+        {
+            foreach (Tuple<string, int> story_act in story_acts)
+            {
+                if (story_act.Item1.Equals(act_name))
+                    return true;
+            }//end foreach
+
+            return false;
+        }//end method HasStoryAct
     }
 }
