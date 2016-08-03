@@ -14,12 +14,15 @@ namespace Dialogue_Data_Entry
         public List<Tuple<string, int>> story_acts;
         //What turn of the story this node is placed
         public int turn;
+        //The text presentation for this node, based on its story acts.
+        public string text;
 
         public StoryNode(int graph_node_id_in)
         {
             turn = 0;
             graph_node_id = graph_node_id_in;
             story_acts = new List<Tuple<string, int>>();
+            text = "";
         }//end constructor StoryNode
 
         public void AddStoryAct(string act_name, int target_id)

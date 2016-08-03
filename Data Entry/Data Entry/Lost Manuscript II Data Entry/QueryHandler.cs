@@ -378,6 +378,9 @@ namespace Dialogue_Data_Entry
                         //The chronology is generated in segments, separated by user turns.
                         //Get the last segment of the chronology.
                         int last_segment_index = chronology.GetLastSegmentIndex();
+                        //Create its text.
+                        SpeakTransform t = new SpeakTransform(graph);
+                        t.SpeakStoryFromTurn(chronology, last_segment_index);
                         Story temp_story = new Story(chronology.GetLastSegment(), chronology.AnchorNodeId);
 
                         if (json_mode)
