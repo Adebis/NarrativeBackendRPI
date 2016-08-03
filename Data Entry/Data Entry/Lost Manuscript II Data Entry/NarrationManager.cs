@@ -124,14 +124,16 @@ namespace Dialogue_Data_Entry
             {
                 previous_node = feature_graph.getFeature(story.StorySequence[story.StorySequence.Count - 1].graph_node_id);
 
+                //Decide whether to state the relationship between this node and the previous one or
+                //to use a generic lead-in statement.
                 if (graph_node.getNeighbor(previous_node.Id) != null)
                 {
-                    new_story_node.story_acts.Add(new Tuple<string, int>("relationship", previous_node.Id));
+                    new_story_node.story_acts.Add(new Tuple<string, int>(Constant.RELATIONSHIP, previous_node.Id));
                 }//end if
                 else
                 {
                     //If this node and the previous node do not have a direct relationship, add a lead-in
-                    new_story_node.story_acts.Add(new Tuple<string, int>("lead-in", graph_node.Id));
+                    new_story_node.story_acts.Add(new Tuple<string, int>(Constant.LEADIN, graph_node.Id));
                 }//end else
             }//end if
 
@@ -236,8 +238,35 @@ namespace Dialogue_Data_Entry
                 //Find the next best topic for the chronology.
                 current_feature = getNextChronologicalTopic(anchor_node, anchor_node.start_date, anchor_node.end_date);
                 //Add it to the story.
+                StoryNode current_node = null;
                 if (current_feature != null)
                     AddNodeToStory(current_feature, chronology);
+
+                //Try to tie back the most recent node to the previous segment of the story.
+                //Check the last sequence (the one prior to the current one). Decide whether or not a tie-back is possible.
+                List<StoryNode> second_to_last_segment = chronology.GetSecondToLastSegment();
+                Feature segment_feature = null;
+                current_node = chronology.StorySequence[chronology.StorySequence.Count - 1];
+                /*foreach (StoryNode segment_node in second_to_last_segment)
+                {
+                    segment_feature = feature_graph.getFeature(segment_node.graph_node_id);
+                    if (current_feature.getNeighbor(segment_feature.Id) != null || segment_feature.getNeighbor(current_feature.Id) != null)
+                    {
+                        current_node.AddStoryAct(Constant.TIEBACK, segment_feature.Id);
+                        break;
+                    }//end if
+                }//end foreach*/
+                List<StoryNode> remainder_story = chronology.GetRemainderStory();
+                foreach (StoryNode segment_node in remainder_story)
+                {
+                    segment_feature = feature_graph.getFeature(segment_node.graph_node_id);
+                    if (current_feature.getNeighbor(segment_feature.Id) != null || segment_feature.getNeighbor(current_feature.Id) != null)
+                    {
+                        current_node.AddStoryAct(Constant.TIEBACK, segment_feature.Id);
+                        break;
+                    }//end if
+                }//end foreach
+
                 local_turn += 1;
             }//end while
 

@@ -145,9 +145,15 @@ namespace Dialogue_Data_Entry
                     }//end else if
                     else if (story_act.Item1.Equals(Constant.USERTURN))
                     {
-                        current_node_text = current_node_text + UserTurn(local_history_list, current_node.turn, graph.getFeature(story_to_speak.AnchorNodeId));
+                        //current_node_text = current_node_text + UserTurn(local_history_list, current_node.turn, graph.getFeature(story_to_speak.AnchorNodeId));
+                    }//end else if
+                    else if (story_act.Item1.Equals(Constant.TIEBACK))
+                    {
+                        current_node_text = current_node_text + TieBack(current_graph_node, current_target_node);
                     }//end else if
                 }//end foreach
+                //Give the node its text.
+                current_node.text = current_node_text;
 
                 text_presentation = text_presentation + " " + current_node_text;
             }//end for
@@ -232,6 +238,25 @@ namespace Dialogue_Data_Entry
 
             return return_string;
         }//end method UserTurn
+        private string TieBack(Feature current_node, Feature target_node)
+        {
+            string tieback_text = "";
+            // Check both directions for a non-blank relationship to use
+            if (!current_node.getRelationshipNeighbor(target_node.Id).Equals("")
+                && !(current_node.getRelationshipNeighbor(target_node.Id) == null))
+            {
+                tieback_text = "{And do you remember " + target_node.Name + "? Well, " + current_node.Name + " " + current_node.getRelationshipNeighbor(target_node.Id) + " "
+                    + target_node.Name + ".} ";
+            }//end if
+            else if (!target_node.getRelationshipNeighbor(current_node.Id).Equals("")
+                && !(target_node.getRelationshipNeighbor(current_node.Id) == null))
+            {
+                tieback_text = "{And do you remember " + target_node.Name + "? Well, " + target_node.Name + " " + target_node.getRelationshipNeighbor(current_node.Id) + " "
+                    + current_node.Name + ".} ";
+            }//end if
+
+            return tieback_text;
+        }//end method TieBack
 
         //Takes a feature and its speak value. Using the history list and feature graph, 
         //attempts to add to the speak value (e.g. lead-in statements, analogies, etc.)

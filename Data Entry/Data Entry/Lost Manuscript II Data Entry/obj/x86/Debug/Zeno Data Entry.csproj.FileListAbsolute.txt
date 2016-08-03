@@ -181,6 +181,32 @@ C:\Users\Zev\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Man
 C:\Users\Zev\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Zeno Data Entry.csproj.GenerateResource.Cache
 C:\Users\Zev\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue Data Entry.exe
 C:\Users\Zev\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue Data Entry.pdb
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\Dialogue Data Entry.exe.config
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue Data Entry.exe
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue Data Entry.pdb
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\Dialogue Data Entry.exe
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\Dialogue Data Entry.pdb
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\AIMLbot.dll
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\Newtonsoft.Json.dll
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.dll
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.Formatting.dll
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.WebRequest.dll
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Web.Http.dll
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Web.Http.SelfHost.dll
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\Newtonsoft.Json.xml
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.xml
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.Formatting.xml
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.WebRequest.xml
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Web.Http.xml
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Web.Http.SelfHost.xml
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Zeno Data Entry.csprojResolveAssemblyReference.cache
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.Form1.resources
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.Form2.resources
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.Form3.resources
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.Properties.Resources.resources
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.Searcher.resources
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.TreeFrom.resources
+D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Zeno Data Entry.csproj.GenerateResource.Cache
 C:\Users\Zev\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Zeno Data Entry.csprojResolveAssemblyReference.cache
 C:\Users\zevsm_000\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\Dialogue Data Entry.exe.config
 C:\Users\zevsm_000\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue Data Entry.exe
@@ -207,28 +233,3 @@ C:\Users\zevsm_000\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lo
 C:\Users\zevsm_000\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.Searcher.resources
 C:\Users\zevsm_000\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.TreeFrom.resources
 C:\Users\zevsm_000\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Zeno Data Entry.csproj.GenerateResource.Cache
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\Dialogue Data Entry.exe.config
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\Dialogue Data Entry.exe
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\Dialogue Data Entry.pdb
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\AIMLbot.dll
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\Newtonsoft.Json.dll
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.dll
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.Formatting.dll
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.WebRequest.dll
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Web.Http.dll
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Web.Http.SelfHost.dll
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\Newtonsoft.Json.xml
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.xml
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.Formatting.xml
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.WebRequest.xml
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Web.Http.xml
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Web.Http.SelfHost.xml
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.Form1.resources
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.Form2.resources
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.Form3.resources
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.Properties.Resources.resources
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.Searcher.resources
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.TreeFrom.resources
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Zeno Data Entry.csproj.GenerateResource.Cache
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue Data Entry.exe
-D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue Data Entry.pdb

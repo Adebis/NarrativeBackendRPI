@@ -52,5 +52,6 @@ namespace Dialogue_Data_Entry
         public const string LEADIN = "lead-in";
         public const string RELATIONSHIP = "relationship";
         public const string USERTURN = "user-turn";
+        public const string TIEBACK = "tie-back";
     }
 }
