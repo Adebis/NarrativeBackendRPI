@@ -133,18 +133,16 @@ class SimpleHTTPServer
 		try {
 			_listener = new HttpListener();
 			_listener.Prefixes.Add("http://*:" + _port.ToString() + "/");
-			_listener.Prefixes.Add("http://*:" + _port.ToString() + "/chronology/");
 			_listener.Start();
 
 		}
 		catch (System.Net.HttpListenerException) {
 			_listener = new HttpListener();
 			_listener.Prefixes.Add("http://localhost:" + _port.ToString() + "/");
-			_listener.Prefixes.Add("http://localhost:" + _port.ToString() + "/chronology/");
 			_listener.Start();
 			chatBoxCallback("Error with listener: You must give permission to listen on port " + _port + 
 				". You can either run this in administrator mode or run the following in command prompt: \"netsh http add urlacl url=" +
-				listener_prefix + " user=DOMAIN\\user\". Running on localhost instead.");
+				listener_prefix + " user=DOMAIN\\user\". Running on localhost instead.\n");
 		}
 		
 		while (true)
@@ -166,15 +164,28 @@ class SimpleHTTPServer
 
 		string filename = context.Request.Url.AbsolutePath;
 
-		string body = new StreamReader(context.Request.InputStream).ReadToEnd();
+		//string body = new StreamReader(context.Request.InputStream).ReadToEnd();
+
+		string body = "";
+		using (Stream receiveStream = context.Request.InputStream) {
+			using (StreamReader readStream = new StreamReader(receiveStream, Encoding.UTF8)) {
+				body = readStream.ReadToEnd();
+			}
+		}
 
 		Console.WriteLine("body: " + body);
+		if (string.IsNullOrEmpty(body)) {
+			body = "{}";
+		}
 
+		byte[] b;
 		dynamic data = JObject.Parse(body);
 
 		switch (filename) {
 			case "/chronology":
 				// Get the data from the HTTP stream
+				
+				chatBoxCallback("<CHRONOLOGY REQUEST: " + context.Request.RemoteEndPoint + ">\n");
 
 				string query = "CHRONOLOGY:" + data.id + ":" + data.turns;
 				string response = handler.ParseInputJSON(query);
@@ -184,7 +195,7 @@ class SimpleHTTPServer
 				//response.sequence = new JArray(result.Split(new string[] { "::" }, StringSplitOptions.None).Reverse().Skip(1).Reverse().ToArray());
 
 				//write response
-				byte[] b = Encoding.UTF8.GetBytes(response.ToString());
+				b = Encoding.UTF8.GetBytes(response.ToString());
 				context.Response.StatusCode = (int)HttpStatusCode.OK;
 				context.Response.KeepAlive = false;
 				context.Response.ContentLength64 = b.Length;
@@ -194,7 +205,14 @@ class SimpleHTTPServer
 				break;
 
 			case "/chronology/reset":
+				chatBoxCallback("<NARRATION RESET: " + context.Request.RemoteEndPoint + ">\n");
 				handler.ParseInputJSON("RESTART_NARRATION");
+				b = Encoding.UTF8.GetBytes("null");
+				context.Response.StatusCode = (int)HttpStatusCode.OK;
+				context.Response.KeepAlive = false;
+				context.Response.ContentLength64 = b.Length;
+				context.Response.OutputStream.Write(b, 0, b.Length);
+				context.Response.OutputStream.Close();
 				break;
 
 			case "/":
