@@ -24,6 +24,13 @@ namespace Dialogue_Data_Entry
             story_acts = new List<Tuple<string, int>>();
             text = "";
         }//end constructor StoryNode
+        public StoryNode()
+        {
+            turn = 0;
+            graph_node_id = -1;
+            story_acts = new List<Tuple<string, int>>();
+            text = "";
+        }//end constructor StoryNode
 
         public void AddStoryAct(string act_name, int target_id)
         {

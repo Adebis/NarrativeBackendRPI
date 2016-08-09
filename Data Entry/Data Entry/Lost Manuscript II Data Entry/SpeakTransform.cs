@@ -151,6 +151,10 @@ namespace Dialogue_Data_Entry
                     {
                         current_node_text = current_node_text + TieBack(current_graph_node, current_target_node);
                     }//end else if
+                    else if (story_act.Item1.Equals(Constant.LOCATIONCHANGE))
+                    {
+                        current_node_text = LocationChange(current_graph_node, current_target_node) + current_node_text;
+                    }//end else if
                 }//end foreach
                 //Give the node its text.
                 current_node.text = current_node_text;
@@ -257,6 +261,14 @@ namespace Dialogue_Data_Entry
 
             return tieback_text;
         }//end method TieBack
+        private string LocationChange(Feature current_node, Feature last_location_node)
+        {
+            string return_string = "";
+
+            return_string = "{For now, we'll move away from where " + last_location_node.Name + " was to where " + current_node.Name + " is.} ";
+
+            return return_string;
+        }//end method LocationChange
 
         //Takes a feature and its speak value. Using the history list and feature graph, 
         //attempts to add to the speak value (e.g. lead-in statements, analogies, etc.)

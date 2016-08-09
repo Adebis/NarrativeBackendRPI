@@ -124,6 +124,31 @@ namespace Dialogue_Data_Entry
             return second_to_last_segment;
         }//end method GetSecondToLastSegment
 
+        //Get the most recent location that we can find on a node in the story, as well as the id
+        //of the node.
+        public Tuple<double, double, int> GetLastLocation(FeatureGraph graph)
+        {
+            Tuple<double, double, int> last_location_info = null;
+            StoryNode current_node = null;
+            Feature current_feature = null;
+            //Go through the list of nodes backwards, so the most recent
+            //node is found first.
+            for (int i = story_sequence.Count - 1; i >= 0; i--)
+            {
+                current_node = story_sequence[i];
+                current_feature = graph.getFeature(current_node.graph_node_id);
+                if (current_feature.Geodata.Count > 0)
+                {
+                    last_location_info = new Tuple<double, double, int>(current_feature.Geodata[0].Item1
+                        , current_feature.Geodata[0].Item2
+                        , current_feature.Id);
+                    break;
+                }//end if
+            }//end for
+
+            return last_location_info;
+        }//end method GetLastLocation
+
         public int AnchorNodeId
         {
             get
