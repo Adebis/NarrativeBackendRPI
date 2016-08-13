@@ -236,6 +236,30 @@ namespace Dialogue_Data_Entry
 					}//end foreach
 				}//end foreach
 
+                //Try to determine what entity each node is.
+                foreach (Feature temp_feature in result_graph.Features)
+                {
+                    //Check geodata. If there is any, this is a location.
+                    if (temp_feature.Geodata.Count > 0)
+                        temp_feature.AddEntityType(Constant.LOCATION);
+                    //Check time data. If "birth" or "death" is amongst the relationship types, this is a character.
+                    foreach (Tuple<string, string> temp_time_data in temp_feature.Timedata)
+                    {
+                        if (temp_time_data.Item1.ToLower().Contains("birth")
+                            || temp_time_data.Item1.ToLower().Contains("death"))
+                        {
+                            temp_feature.AddEntityType(Constant.CHARACTER);
+                            break;
+                        }//end if
+                    }//end foreach
+                    //Check outgoing relationships.
+                    foreach (Tuple<Feature, double, string> temp_neighbor in temp_feature.Neighbors)
+                    {
+                        if (temp_neighbor.Item3.Contains("event"))
+                            temp_neighbor.Item1.AddEntityType(Constant.EVENT);
+                    }//end foreach
+                }//end foreach
+
                 //Get the root node
 				int rootId = -1;
 				try {

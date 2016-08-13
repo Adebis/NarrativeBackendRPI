@@ -38,6 +38,8 @@ namespace Dialogue_Data_Entry
                                                              //  2 = Location
                                                              //  3 = Event
                                                              //  4 = Political/Social Entity
+        public List<string> entity_type;                          //What type of entity this feature represents.
+                                                            //Redundant with story role, remove story role in future.
         
         
         private List<double> shortestDistance;         //list of shortestDistance to all nodes (index is id)
@@ -65,6 +67,7 @@ namespace Dialogue_Data_Entry
             this.end_date = new DateTime();
             this.effective_date = new DateTime();
             this.story_role = 0;
+            this.entity_type = new List<string>();
 
             this.local_history_list = new List<Feature>();
         }//end constructor Feature
@@ -89,6 +92,7 @@ namespace Dialogue_Data_Entry
             this.end_date = new DateTime();
             this.effective_date = new DateTime();
             this.story_role = 0;
+            this.entity_type = new List<string>();
 
             this.local_history_list = new List<Feature>();
         }//end constructor Feature
@@ -675,6 +679,16 @@ namespace Dialogue_Data_Entry
         {
             geodata.Add(new Tuple<double, double>(latitude, longitude));
         }//end method addSpatialData
+
+        //Add an entity type
+        public void AddEntityType(string entity_type_to_add)
+        {
+            //Prevent duplicate entries
+            if (!entity_type.Contains(entity_type_to_add))
+            {
+                entity_type.Add(entity_type_to_add);
+            }//end if
+        }//end method AddEntityType
 
         // This function will check through all of the features that can be reached from its neighbors and if it finds the one that we are looking for it return true, false otherwise
         private bool canReachHelper(int dest_id,bool checkLevel)

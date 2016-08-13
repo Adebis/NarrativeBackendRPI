@@ -194,7 +194,6 @@ C:\Users\zevsm_000\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lo
 C:\Users\zevsm_000\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.WebRequest.dll
 C:\Users\zevsm_000\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Web.Http.dll
 C:\Users\zevsm_000\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Web.Http.SelfHost.dll
-C:\Users\zevsm_000\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\Newtonsoft.Json.xml
 C:\Users\zevsm_000\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.xml
 C:\Users\zevsm_000\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.Formatting.xml
 C:\Users\zevsm_000\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.WebRequest.xml
