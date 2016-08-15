@@ -230,3 +230,4 @@ C:\Users\Zev\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Man
 C:\Users\Zev\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Zeno Data Entry.csproj.GenerateResource.Cache
 C:\Users\Zev\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue Data Entry.exe
 C:\Users\Zev\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue Data Entry.pdb
+C:\Users\Zev\Documents\GitHub\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Zeno Data Entry.csprojResolveAssemblyReference.cache

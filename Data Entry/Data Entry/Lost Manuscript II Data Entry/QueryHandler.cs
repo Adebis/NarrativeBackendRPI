@@ -537,6 +537,16 @@ namespace Dialogue_Data_Entry
                         json_string += " [U] " + temp_uncategorized.Name + " \n";
                     }//end foreach
             }//end else if
+            //get_graph command
+            else if (split_input[0].ToLower().Equals("get_graph"))
+            {
+                GraphLight temp_graph = new GraphLight(graph);
+                if (json_mode)
+                    json_string = JsonConvert.SerializeObject(temp_graph);
+                else
+                    json_string = JsonConvert.SerializeObject(temp_graph);
+            }//end else if
+
 
             return json_string;
         }//end method ParseInputJSON

@@ -236,11 +236,27 @@ namespace Dialogue_Data_Entry
 					}//end foreach
 				}//end foreach
 
+                //If a node has an outgoing character relationship with a neighbor, the neighbor is a character.
+                List<string> outgoing_character_relationships = new List<string>();
+                outgoing_character_relationships.Add("with");
+                outgoing_character_relationships.Add("commander");
+
+                //If a node has an inner character relationship with a neighbor, the node is a character.
+                List<string> inner_character_relationships = new List<string>();
+                inner_character_relationships.Add("next");
+                inner_character_relationships.Add("regent");
+                inner_character_relationships.Add("death place");
+                inner_character_relationships.Add("birth place");
+                inner_character_relationships.Add("allegiance");
+                inner_character_relationships.Add("citizenship");
+                inner_character_relationships.Add("state of origin");
+                //inner_character_relationships.Add("title");
+
                 //If a node has an outgoing location relationship with a neighbor, the neighbor it has
                 //this relationship with is a location.
                 List<string> outgoing_location_relationships = new List<string>();
                 //outgoing_location_relationships.Add("Capital");
-                outgoing_location_relationships.Add("region");
+                //outgoing_location_relationships.Add("region");
                 //location_relationships.Add("place of military conflict");
                 outgoing_location_relationships.Add("place");
                 outgoing_location_relationships.Add("territory");
@@ -260,12 +276,27 @@ namespace Dialogue_Data_Entry
                 List<string> inner_location_relationships = new List<string>();
                 inner_location_relationships.Add("location");
                 inner_location_relationships.Add("built during reign of");
+                inner_location_relationships.Add("builder");
+                inner_location_relationships.Add("founder");
+                inner_location_relationships.Add("cultures");
+                inner_location_relationships.Add("epochs");
+                inner_location_relationships.Add("named for");
+                //These actually identify countries, which, for now, are included under locations
+                inner_location_relationships.Add("occupants");
+                inner_location_relationships.Add("common languages");
+
+                //If a node has an outgoing event relationship with a neighbor, the neighbor is an event.
+                List<string> outgoing_event_relationships = new List<string>();
+                outgoing_event_relationships.Add("is part of military conflict");
 
                 //If a node has an inner event relationship with a neighbor, the node is an event.
                 List<string> inner_event_relationships = new List<string>();
                 inner_event_relationships.Add("combatant");
                 inner_event_relationships.Add("is part of military conflict");
                 inner_event_relationships.Add("commander");
+                inner_event_relationships.Add("place of military conflict");
+                inner_event_relationships.Add("countries affected");
+                inner_event_relationships.Add("Name");
 
                 //Try to determine what entity each node is.
                 foreach (Feature temp_feature in result_graph.Features)
@@ -282,12 +313,29 @@ namespace Dialogue_Data_Entry
                             temp_feature.AddEntityType(Constant.CHARACTER);
                             break;
                         }//end if
+                        if (temp_time_data.Item1.ToLower().Contains("date opened"))
+                        {
+                            temp_feature.AddEntityType(Constant.LOCATION);
+                            break;
+                        }//end if
                     }//end foreach
                     //Check outgoing relationships.
                     foreach (Tuple<Feature, double, string> temp_neighbor in temp_feature.Neighbors)
                     {
+                        if (outgoing_character_relationships.Contains(temp_neighbor.Item3))
+                        {
+                            temp_neighbor.Item1.AddEntityType(Constant.CHARACTER);
+                        }//end if
+                        if (inner_character_relationships.Contains(temp_neighbor.Item3))
+                        {
+                            temp_feature.AddEntityType(Constant.CHARACTER);
+                        }//end if
                         //if (temp_neighbor.Item3.Contains("event"))
                         //    temp_neighbor.Item1.AddEntityType(Constant.EVENT);
+                        if (outgoing_event_relationships.Contains(temp_neighbor.Item3))
+                        {
+                            temp_neighbor.Item1.AddEntityType(Constant.EVENT);
+                        }//end if
                         if (inner_event_relationships.Contains(temp_neighbor.Item3))
                         {
                             temp_feature.AddEntityType(Constant.EVENT);

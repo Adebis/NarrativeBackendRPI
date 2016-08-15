@@ -78,6 +78,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AnalogyBuilder.cs" />
+    <Compile Include="GraphLight.cs" />
+    <Compile Include="GraphNodeLight.cs" />
     <Compile Include="HttpRequester.cs" />
     <Compile Include="NarrationCalculator.cs" />
     <Compile Include="NarrationManager.cs" />
