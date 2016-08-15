@@ -236,6 +236,37 @@ namespace Dialogue_Data_Entry
 					}//end foreach
 				}//end foreach
 
+                //If a node has an outgoing location relationship with a neighbor, the neighbor it has
+                //this relationship with is a location.
+                List<string> outgoing_location_relationships = new List<string>();
+                //outgoing_location_relationships.Add("Capital");
+                outgoing_location_relationships.Add("region");
+                //location_relationships.Add("place of military conflict");
+                outgoing_location_relationships.Add("place");
+                outgoing_location_relationships.Add("territory");
+                //outgoing_location_relationships.Add("capital");
+                outgoing_location_relationships.Add("birth place");
+                //outgoing_location_relationships.Add("death place");
+                outgoing_location_relationships.Add("resting place");
+                outgoing_location_relationships.Add("country");
+                outgoing_location_relationships.Add("place of burial");
+                outgoing_location_relationships.Add("location");
+                outgoing_location_relationships.Add("beatified place");
+                //location_relationships.Add("spoken in");
+                outgoing_location_relationships.Add("area");
+                outgoing_location_relationships.Add("PLACE OF DEATH");
+
+                //If a node has an inner location relationship with a neighbor, the node is a location.
+                List<string> inner_location_relationships = new List<string>();
+                inner_location_relationships.Add("location");
+                inner_location_relationships.Add("built during reign of");
+
+                //If a node has an inner event relationship with a neighbor, the node is an event.
+                List<string> inner_event_relationships = new List<string>();
+                inner_event_relationships.Add("combatant");
+                inner_event_relationships.Add("is part of military conflict");
+                inner_event_relationships.Add("commander");
+
                 //Try to determine what entity each node is.
                 foreach (Feature temp_feature in result_graph.Features)
                 {
@@ -255,8 +286,18 @@ namespace Dialogue_Data_Entry
                     //Check outgoing relationships.
                     foreach (Tuple<Feature, double, string> temp_neighbor in temp_feature.Neighbors)
                     {
-                        if (temp_neighbor.Item3.Contains("event"))
-                            temp_neighbor.Item1.AddEntityType(Constant.EVENT);
+                        //if (temp_neighbor.Item3.Contains("event"))
+                        //    temp_neighbor.Item1.AddEntityType(Constant.EVENT);
+                        if (inner_event_relationships.Contains(temp_neighbor.Item3))
+                        {
+                            temp_feature.AddEntityType(Constant.EVENT);
+                        }//end if
+                        if (outgoing_location_relationships.Contains(temp_neighbor.Item3))
+                        {
+                            temp_neighbor.Item1.AddEntityType(Constant.LOCATION);
+                        }//end if
+                        if (inner_location_relationships.Contains(temp_neighbor.Item3))
+                            temp_feature.AddEntityType(Constant.LOCATION);
                     }//end foreach
                 }//end foreach
 
