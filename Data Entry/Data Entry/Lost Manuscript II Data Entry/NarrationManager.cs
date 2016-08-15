@@ -124,17 +124,35 @@ namespace Dialogue_Data_Entry
             {
                 previous_node = feature_graph.getFeature(story.StorySequence[story.StorySequence.Count - 1].graph_node_id);
 
-                //Decide whether to state the relationship between this node and the previous one or
-                //to use a generic lead-in statement.
+                bool introduction_handled = false;
+                //Decide whether to state the relationship between this node and the previous one.
                 if (graph_node.getNeighbor(previous_node.Id) != null)
                 {
                     new_story_node.story_acts.Add(new Tuple<string, int>(Constant.RELATIONSHIP, previous_node.Id));
+                    introduction_handled = true;
                 }//end if
-                else
+
+                //Decide whether or not this node is placed in a new geographic location.
+                if (graph_node.Geodata.Count > 0)
                 {
-                    //If this node and the previous node do not have a direct relationship, add a lead-in
+                    Tuple<double, double, int> last_location_info = story.GetLastLocation(feature_graph);
+                    if (last_location_info != null)
+                    {
+                        double geo_threshold = 0.0;
+                        if (Math.Abs(graph_node.Geodata[0].Item1 - last_location_info.Item1) + Math.Abs(graph_node.Geodata[0].Item2 - last_location_info.Item2) > geo_threshold)
+                        {
+                            new_story_node.story_acts.Add(new Tuple<string, int>(Constant.LOCATIONCHANGE, last_location_info.Item3));
+                            introduction_handled = true;
+                        }//end if
+                    }//end if
+                }//end if
+
+                //If there is nothing introducing this node, add a generic lead-in
+                if (!introduction_handled)
+                {
                     new_story_node.story_acts.Add(new Tuple<string, int>(Constant.LEADIN, graph_node.Id));
                 }//end else
+
             }//end if
 
             story.AddStoryNode(new_story_node);

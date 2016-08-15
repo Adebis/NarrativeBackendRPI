@@ -429,6 +429,124 @@ namespace Dialogue_Data_Entry
                 main_story = null;
                 graph.ResetNodes();
             }//end else if
+            //GRAPH_INFO command.
+            //List information about the knowledge graph.
+            else if (split_input[0].ToLower().Equals("graph_info"))
+            {
+                //Count the total number of edges in the graph.
+                //Count pairs of forward and backward edges as one.
+
+                bool verbose = false;
+                if (split_input.Count() > 1)
+                    if (split_input[1].ToLower().Equals("verbose"))
+                        verbose = true;
+
+                //Nodes that have already been checked
+                List<Feature> features_checked = new List<Feature>();
+                //Relationships that have been seen
+                List<string> relationships = new List<string>();
+                int connection_count = 0;
+                foreach (Feature feat_to_check in graph.Features)
+                {
+                    features_checked.Add(feat_to_check);
+                    foreach (Tuple<Feature, double, string> temp_neighbor in feat_to_check.Neighbors)
+                    {
+                        //If this neighbor has already been checked, don't count the connection.
+                        if (features_checked.Contains(temp_neighbor.Item1))
+                        {
+                            continue;
+                        }//end if
+                        //If the relationship has not been seen, add it to the list of relationships
+                        if (!relationships.Contains(temp_neighbor.Item3))
+                        {
+                            relationships.Add(temp_neighbor.Item3);
+                        }//end if
+                        connection_count += 1;
+                    }//end foreach
+                }//end foreach
+
+                json_string = "Number of edges: " + connection_count + ", unique relationships: " + relationships.Count;
+
+                if (verbose)
+                {
+                    json_string += " Relationships: \n";
+
+                    foreach (string relationship in relationships)
+                    {
+                        json_string += " (" + relationship + ") \n";
+                    }//end foreach
+                }//end if
+
+                List<Feature> characters = new List<Feature>();
+                List<Feature> locations = new List<Feature>();
+                List<Feature> events = new List<Feature>();
+                List<Feature> uncategorized = new List<Feature>();
+
+                bool categorized = false;
+                foreach (Feature temp_feature in graph.Features)
+                {
+                    categorized = false;
+                    if (temp_feature.entity_type.Contains(Constant.CHARACTER))
+                    {
+                        characters.Add(temp_feature);
+                        categorized = true;
+                    }//end if
+                    if (temp_feature.entity_type.Contains(Constant.LOCATION))
+                    {
+                        locations.Add(temp_feature);
+                        categorized = true;
+                    }//end if
+                    if (temp_feature.entity_type.Contains(Constant.EVENT))
+                    {
+                        events.Add(temp_feature);
+                        categorized = true;
+                    }//end if
+                    if (!categorized)
+                        uncategorized.Add(temp_feature);
+                }//end foreach
+
+                json_string += " Characters (" +  characters.Count + "): \n";
+
+                if (verbose)
+                    foreach (Feature character in characters)
+                    {
+                        json_string += " [C] " + character.Name + " \n";
+                    }//end foreach
+
+                json_string += " Locations (" + locations.Count + "): \n";
+
+                if (verbose)
+                    foreach (Feature location in locations)
+                    {
+                        json_string += " [L] " + location.Name + " \n";
+                    }//end foreach
+
+                json_string += " Events (" + events.Count + "): \n";
+
+                if (verbose)
+                    foreach (Feature temp_event in events)
+                    {
+                        json_string += " [E] " + temp_event.Name + " \n";
+                    }//end foreach
+
+                json_string += " Uncategorized (" + uncategorized.Count + "): \n";
+
+                if (verbose)
+                    foreach (Feature temp_uncategorized in uncategorized)
+                    {
+                        json_string += " [U] " + temp_uncategorized.Name + " \n";
+                    }//end foreach
+            }//end else if
+            //get_graph command
+            else if (split_input[0].ToLower().Equals("get_graph"))
+            {
+                GraphLight temp_graph = new GraphLight(graph);
+                if (json_mode)
+                    json_string = JsonConvert.SerializeObject(temp_graph);
+                else
+                    json_string = JsonConvert.SerializeObject(temp_graph);
+            }//end else if
+
 
             return json_string;
         }//end method ParseInputJSON

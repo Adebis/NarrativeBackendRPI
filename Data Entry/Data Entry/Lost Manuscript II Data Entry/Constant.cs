@@ -53,5 +53,11 @@ namespace Dialogue_Data_Entry
         public const string RELATIONSHIP = "relationship";
         public const string USERTURN = "user-turn";
         public const string TIEBACK = "tie-back";
+        public const string LOCATIONCHANGE = "location-change";
+
+        //Entity types
+        public const string CHARACTER = "character";
+        public const string LOCATION = "location";
+        public const string EVENT = "event";
     }
 }
