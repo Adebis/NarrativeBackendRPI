@@ -181,6 +181,8 @@ class SimpleHTTPServer
 		byte[] b;
 		dynamic data = JObject.Parse(body);
 
+		string response = "{}";
+
 		switch (filename) {
 			case "/chronology":
 				// Get the data from the HTTP stream
@@ -188,7 +190,7 @@ class SimpleHTTPServer
 				chatBoxCallback("<CHRONOLOGY REQUEST: " + context.Request.RemoteEndPoint + ">\n");
 
 				string query = "CHRONOLOGY:" + data.id + ":" + data.turns;
-				string response = handler.ParseInputJSON(query);
+				response = handler.ParseInputJSON(query);
 
 				//dynamic response = new JObject();
 				//split and ignore last empty one
@@ -213,6 +215,20 @@ class SimpleHTTPServer
 				context.Response.ContentLength64 = b.Length;
 				context.Response.OutputStream.Write(b, 0, b.Length);
 				context.Response.OutputStream.Close();
+				break;
+
+			case "/getgraph":
+
+				response = handler.ParseInput("GET_GRAPH");
+
+				//write response
+				b = Encoding.UTF8.GetBytes(response.ToString());
+				context.Response.StatusCode = (int)HttpStatusCode.OK;
+				context.Response.KeepAlive = false;
+				context.Response.ContentLength64 = b.Length;
+				context.Response.OutputStream.Write(b, 0, b.Length);
+				context.Response.OutputStream.Close();
+
 				break;
 
 			case "/":
