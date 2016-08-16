@@ -261,9 +261,33 @@ namespace Dialogue_Data_Entry
 
                         maxScore = listScore[x].Item2;
                         maxIndex = x;
-                    }
-                }
+                    }//end if
+                }//end for
+                //If the next item has been visited before, calculate again without time constraints
+                /*if (listScore[maxIndex].Item1.DiscussedAmount > 0)
+                {
+                    maxScore = listScore[0].Item2;
+                    maxIndex = 0;
+                    for (int x = 1; x < listScore.Count; x++)
+                    {
+                        if (listScore[x].Item2 > maxScore)
+                        {
+                            //FILTERING:
+                            //If the item in this list is one of the filter nodes,
+                            //do not include it in max score determination.
+                            //Check for filter nodes.
+                            if (filter_nodes.Contains(listScore[x].Item1.Name))
+                            {
+                                //If it is a filter node, take another step.
+                                Console.WriteLine("Filtering out " + listScore[x].Item1.Id);
+                                continue;
+                            }//end if
 
+                            maxScore = listScore[x].Item2;
+                            maxIndex = x;
+                        }//end if
+                    }//end for
+                }//end if*/
                 if (print_calculation)
                 {
                     System.Console.WriteLine("\n\nMax score: " + maxScore);
