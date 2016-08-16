@@ -190,11 +190,20 @@ namespace Dialogue_Data_Entry
                     this.Features[x].ShortestDistance.Add(2147483646); //maxint -1
                 }
             }
-            //distance to itself is zero
-            for (int x = 0; x < this.Count; x++)
+
+            for (int i = 0; i < this.Count; i++)
             {
-                this.Features[x].ShortestDistance[x] = 0;
-            }
+                if (Features[i].Id != i)
+                {
+                    Console.WriteLine("Feature not in Id index");
+                }//end if
+            }//end for
+
+                //distance to itself is zero
+                for (int x = 0; x < this.Count; x++)
+                {
+                    this.Features[x].ShortestDistance[x] = 0;
+                }
 
             Queue<Feature> bfs_queue = new Queue<Feature>();
             Feature current_feature = null;
@@ -500,7 +509,27 @@ namespace Dialogue_Data_Entry
 		}//end method setWeight
 		public bool addFeature(Feature toAdd)
 		{
-			features.Add(toAdd);
+            //If there is nothing else in the feature list, just add the feature
+            if (features.Count == 0)
+                features.Add(toAdd);
+            //Otherwise, starting from the front of the list, find the first feature whose id is greater.
+            //This will sort the list by increasing order of id as it is created.
+            else
+            {
+                bool feature_added = false;
+                foreach (Feature existing_feature in features)
+                {
+                    if (existing_feature.Id > toAdd.Id)
+                    {
+                        features.Insert(features.IndexOf(existing_feature), toAdd);
+                        feature_added = true;
+                        break;
+                    }//end if
+                }//end foreach
+                if (!feature_added)
+                    features.Add(toAdd);
+            }//end else
+			//features.Add(toAdd);
 			return true;
 		}
 		public bool setFeature(int id, Feature change)
