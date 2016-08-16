@@ -189,6 +189,9 @@ namespace Dialogue_Data_Entry
             Random rand = new Random();
             lead_in_statement = non_novel_lead_in_statements[rand.Next(non_novel_lead_in_statements.Count)];
 
+            //No lead-in statements
+            lead_in_statement = "";
+
             return lead_in_statement;
         }//end method LeadIn
         //Return a statement stating the relationship between the nodes passed in.

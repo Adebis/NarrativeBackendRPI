@@ -2,17 +2,6 @@
 <AIMind>
   <Root id="1"/>
   <Features>
-    <Feature data="" zh-data="" id="0" uri="">
-	  <neighbors/>
-      <geodata/>
-      <timedata/>
-      <pictures/>
-      <speak/>
-      <zh-speak/>
-      <description/>
-      <zh-data/>
-      <thumbnail/>
-	</Feature>
     <Feature data="Roman Empire" zh-data="" id="1" uri="http://dbpedia.org/resource/Roman_Empire">
       <neighbors>
         <neighbor dest="2" relationship="event pre" weight="0"/>
