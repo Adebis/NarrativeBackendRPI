@@ -264,7 +264,7 @@
         <timeobj relationship="birth year" value="0272"/>
         <timeobj relationship="death year" value="0337"/>
       </timedata>
-      <speak>Constantine the Great —is a significant figure in the history of Christianity.</speak>
+      <speak>Constantine the Great, also known as Constantine the first or Saint Constantine, was a Roman Emperor from 306 to 337 AD.</speak>
       <zh-speak/>
     </Feature>
     <Feature data="Diocletian" zh-data="" id="13" uri="http://dbpedia.org/resource/Diocletian">
@@ -427,7 +427,7 @@
         <timeobj relationship="birth year" value="1953"/>
         <timeobj relationship="death year" value="0117"/>
       </timedata>
-      <speak>Trajan , Trajan is remembered as a successful soldier-emperor who presided over the greatest military expansion in Roman history, leading the empire to attain its maximum territorial extent by the time of his death.</speak>
+      <speak>Trajan is remembered as a successful soldier-emperor who presided over the greatest military expansion in Roman history, leading the empire to attain its maximum territorial extent by the time of his death.</speak>
       <zh-speak/>
     </Feature>
     <Feature data="Greek East and Latin West" zh-data="" id="19" uri="http://dbpedia.org/resource/Greek_East_and_Latin_West">
@@ -2850,9 +2850,13 @@
         <neighbor dest="18" relationship="commander" weight="0"/>
         <neighbor dest="177" relationship="is part of military conflict" weight="0"/>
       </neighbors>
-      <geodata/>
+	  <geodata>
+        <coordinates lat="44.0792" lon="27.9542"/>
+      </geodata>
       <timedata>
         <timeobj relationship="date" value="Winter of 101 to 102"/>
+		<timeobj relationship="start date" value="101"/>
+		<timeobj relationship="end date" value="102"/>
       </timedata>
       <speak>The Battle of Adamclisi was a major battle in the Dacian Wars, fought in the winter of 101 to 102 between the Roman Empire and the Dacians near Adamclisi, in modern Romania.</speak>
       <zh-speak/>
@@ -3028,6 +3032,9 @@
         <neighbor dest="177" relationship="is part of military conflict" weight="0"/>
       </neighbors>
       <geodata/>
+	  <geodata>
+        <coordinates lat="45.5056" lon="22.7247"/>
+      </geodata>
       <timedata>
         <timeobj relationship="date" value="September 101"/>
       </timedata>
@@ -3042,6 +3049,8 @@
       <geodata/>
       <timedata>
         <timeobj relationship="date" value="101"/>
+		<timeobj relationship="start date" value="101"/>
+		<timeobj relationship="end date" value="106"/>
       </timedata>
       <speak>The Dacian Wars  were two military campaigns fought between the Roman Empire and Dacia during Roman Emperor Trajan's rule.</speak>
       <zh-speak>达西亚战争是罗马帝国征服达西亚的战争。达西亚（一译达基亚）位于今天的罗马尼亚一带，盛产黄金。公元前1世纪，布雷比斯塔逐渐将达西亚的达西亚人和盖塔人的部落联合起来，成立了达西亚王国。逐渐壮大的达西亚对罗马共和国的边境构成了威胁，以至于凯撒也制定了征服达西亚的计划。但是公元前44年布雷比斯塔遇刺身亡，达西亚王国陷入分裂，征服达西亚的计划才推迟。双方的相对和平持续了100多年，直到公元85年至86年，又有来自达西亚的势力威胁到了罗马帝国东部默西亚行省的边境安全。于是公元85年至89年，当时的罗马皇帝多米提安进攻达西亚，因受到达西亚统治者德凯巴鲁斯顽强抵抗而失败。图拉真上台后，再次发动了对达西亚征服的战争。第一次达西亚战争（101年-102年），虽然取得了一些胜利，但是无法完全征服达西亚，图拉真最后与德凯巴鲁斯签订了和平条约。为了彻底消除达西亚的威胁，图拉真于105年发动了第二次达西亚战争，并最终征服了达西亚。罗马由此战直接取获了极为丰厚的战利品。图拉真为纪念征服达西亚，还立了图拉真柱以示纪念。</zh-speak>
@@ -3265,6 +3274,8 @@
       <geodata/>
       <timedata>
         <timeobj relationship="date" value="101"/>
+		<timeobj relationship="start date" value="101"/>
+		<timeobj relationship="end date" value="102"/>
       </timedata>
       <speak>The First Roman–Dacian War took place from 101 to 102 AD. The Kingdom of Dacia, under King Decebalus, had become a threat to the Roman Empire, and defeated several of Rome's armies during Domitian's reign .  The Emperor Trajan was set on ridding this threat to Rome's power and in 101 set out determined to defeat Dacia.</speak>
       <zh-speak/>
@@ -3824,7 +3835,9 @@
         <neighbor dest="1" relationship="combatant" weight="0"/>
         <neighbor dest="18" relationship="commander" weight="0"/>
       </neighbors>
-      <geodata/>
+      <geodata>
+        <coordinates lat="45.6219" lon="23.3093"/>
+      </geodata>
       <timedata>
         <timeobj relationship="date" value="106"/>
       </timedata>
@@ -7523,7 +7536,8 @@
       </neighbors>
       <geodata/>
       <timedata>
-        <timeobj relationship="death date" value="-476"/>
+	    <timeobj relationship="birth date" value=""/>
+        <timeobj relationship="death date" value="476"/>
         <timeobj relationship="DATE OF DEATH" value="476"/>
         <timeobj relationship="death date" value="winter 476&amp;ndash;477"/>
         <timeobj relationship="years" value="476"/>
@@ -7532,7 +7546,7 @@
         <timeobj relationship="years" value="475"/>
         <timeobj relationship="active years end year" value="0475"/>
         <timeobj relationship="active years start year" value="0475"/>
-        <timeobj relationship="death year" value="-476"/>
+        <timeobj relationship="death year" value="476"/>
       </timedata>
       <speak>Basiliscus . His relationship with the Emperor allowed him to pursue a military career that, after minor initial successes, ended in 468, when he led the disastrous Roman invasion of Vandal Africa, in one of the largest military operations of Late Antiquity.Basiliscus succeeded in seizing power in 475, exploiting the unpopularity of Emperor Zeno, the "barbarian" successor to Leo, and a plot organised by Verina that had caused Zeno to flee Constantinople.</speak>
       <zh-speak/>
@@ -8690,7 +8704,7 @@
         <timeobj relationship="birth year" value="0278"/>
         <timeobj relationship="death year" value="0312"/>
       </timedata>
-      <speak>For the saint of the same name see Saint MaxentiusMaxentius  was Roman Emperor from 306 to 312. He was the son of former Emperor Maximian and the son-in-law of Emperor Galerius.</speak>
+      <speak>Maxentius  was Roman Emperor from 306 to 312. He was the son of former Emperor Maximian and the son-in-law of Emperor Galerius.</speak>
       <zh-speak>马克森提乌斯（Marcus Aurelius Valerius Maxentius，278年—312年），罗马帝国皇帝，公元306年至312年在位。</zh-speak>
     </Feature>
     <Feature data="Battle of Turin (312)" zh-data="" id="553" uri="http://dbpedia.org/resource/Battle_of_Turin_(312)">
@@ -9111,7 +9125,9 @@
         <neighbor dest="532" relationship="place of military conflict" weight="0"/>
         <neighbor dest="13" relationship="combatant" weight="0"/>
       </neighbors>
-      <geodata/>
+      <geodata>
+        <coordinates lat="50.205" lon="16.8492"/>
+      </geodata>
       <timedata>
         <timeobj relationship="date" value="July 285"/>
       </timedata>

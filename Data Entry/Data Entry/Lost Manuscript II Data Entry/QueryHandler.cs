@@ -428,6 +428,7 @@ namespace Dialogue_Data_Entry
             {
                 main_story = null;
                 graph.ResetNodes();
+                json_string = "narration restarted";
             }//end else if
             //GRAPH_INFO command.
             //List information about the knowledge graph.
