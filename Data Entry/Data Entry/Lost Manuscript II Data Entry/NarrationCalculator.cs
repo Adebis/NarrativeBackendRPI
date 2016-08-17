@@ -108,6 +108,7 @@ namespace Dialogue_Data_Entry
             filter_nodes.Add("Aug. 21st, 2008");
             filter_nodes.Add("Aug. 22nd, 2008");
             filter_nodes.Add("Aug. 23rd, 2008");
+            filter_nodes.Add("Split, Croatia");
         }//end method setFilterNodes
 
         //ACCESSIBLE FUNCTIONS
