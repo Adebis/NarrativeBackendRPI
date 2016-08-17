@@ -309,7 +309,7 @@
         <timeobj relationship="birth year" value="0244"/>
         <timeobj relationship="death year" value="0311"/>
       </timedata>
-      <speak>Diocletian /ˌdaɪ.əˈkliːʃən/ , the empire's last, largest, and bloodiest official persecution of Christianity, did not destroy the empire's Christian community; indeed, after 324 Christianity became the empire's preferred religion under its first Christian emperor, Constantine.In spite of his failures, Diocletian's reforms fundamentally changed the structure of Roman imperial government and helped stabilize the empire economically and militarily, enabling the empire to remain essentially intact for another hundred years despite being near the brink of collapse in Diocletian's youth.</speak>
+      <speak>Diocletian, the Roman empire's last, largest, and bloodiest official persecution of Christianity, did not destroy the empire's Christian community; indeed, after 324 Christianity became the empire's preferred religion under its first Christian emperor, Constantine. In spite of his failures, Diocletian's reforms fundamentally changed the structure of Roman imperial government and helped stabilize the empire economically and militarily, enabling the empire to remain essentially intact for another hundred years despite being near the brink of collapse in Diocletian's youth.</speak>
       <zh-speak/>
     </Feature>
     <Feature data="Justinian I" zh-data="" id="14" uri="http://dbpedia.org/resource/Justinian_I">
@@ -8708,7 +8708,7 @@
         <timeobj relationship="birth year" value="0278"/>
         <timeobj relationship="death year" value="0312"/>
       </timedata>
-      <speak>Maxentius  was Roman Emperor from 306 to 312. He was the son of former Emperor Maximian and the son-in-law of Emperor Galerius.</speak>
+      <speak>Maxentius was Roman Emperor from 306 to 312. He was the son of former Emperor Maximian and the son-in-law of Emperor Galerius.</speak>
       <zh-speak>马克森提乌斯（Marcus Aurelius Valerius Maxentius，278年—312年），罗马帝国皇帝，公元306年至312年在位。</zh-speak>
     </Feature>
     <Feature data="Battle of Turin (312)" zh-data="" id="553" uri="http://dbpedia.org/resource/Battle_of_Turin_(312)">
@@ -9040,7 +9040,7 @@
         <timeobj relationship="active years start year" value="0282"/>
         <timeobj relationship="death year" value="0285"/>
       </timedata>
-      <speak>Carinus  was Roman Emperor from 282 to 285. The elder son of emperor Carus, he was first appointed Caesar and in the beginning of 283 co-emperor of the western portion of the empire by his father.</speak>
+      <speak>Carinus was Roman Emperor from 282 to 285. The elder son of emperor Carus, he was first appointed Caesar and in the beginning of 283 co-emperor of the western portion of the empire by his father.</speak>
       <zh-speak>卡里努斯（Marcus Aurelius Carinus，？—285年），罗马帝国皇帝，282年－285年在位。</zh-speak>
     </Feature>
     <Feature data="Cathedral of Saint Domnius" zh-data="斯普利特主教座堂" id="577" uri="http://dbpedia.org/resource/Cathedral_of_Saint_Domnius">
@@ -9137,7 +9137,7 @@
       <timedata>
         <timeobj relationship="date" value="July 285"/>
       </timedata>
-      <speak>The Battle of the Margus was fought in July 285 between the armies of Roman Emperors Diocletian and Carinus in the valley of the Margus River . Diocletian's victory was the tipping-point that led to the eventual resolution of the Crisis of the Third Century and the return of stability to the Empire.Carinus led the larger force, but the loyalty of this army was definitely questionable.</speak>
+      <speak>The Battle of the Margus was fought in July 285 between the armies of Roman Emperors Diocletian and Carinus in the valley of the Margus River. Diocletian's victory was the tipping-point that led to the eventual resolution of the Crisis of the Third Century and the return of stability to the Empire. Carinus led the larger force, but the loyalty of this army was definitely questionable.</speak>
       <zh-speak/>
     </Feature>
     <Feature data="Numerian" zh-data="" id="583" uri="http://dbpedia.org/resource/Numerian">
