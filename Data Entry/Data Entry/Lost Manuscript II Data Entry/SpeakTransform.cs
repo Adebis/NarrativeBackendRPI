@@ -153,7 +153,7 @@ namespace Dialogue_Data_Entry
                     }//end else if
                     else if (story_act.Item1.Equals(Constant.LOCATIONCHANGE))
                     {
-                        current_node_text = LocationChange(current_graph_node, current_target_node) + current_node_text;
+                        //current_node_text = LocationChange(current_graph_node, current_target_node) + current_node_text;
                     }//end else if
                 }//end foreach
                 //Give the node its text.

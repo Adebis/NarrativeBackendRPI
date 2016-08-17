@@ -285,7 +285,9 @@
         <neighbor dest="580" relationship="birth place" weight="0"/>
         <neighbor dest="581" relationship="title" weight="0"/>
       </neighbors>
-      <geodata/>
+      <geodata>
+        <coordinates lat="43.5384" lon="16.4743"/>
+      </geodata>
       <timedata>
         <timeobj relationship="death date" value="0311-12-03"/>
         <timeobj relationship="death date" value="0311"/>
@@ -8690,7 +8692,9 @@
         <neighbor dest="556" relationship="issue" weight="0"/>
         <neighbor dest="563" relationship="death place" weight="0"/>
       </neighbors>
-      <geodata/>
+      <geodata>
+        <coordinates lat="43.5384" lon="16.4743"/>
+      </geodata>
       <timedata>
         <timeobj relationship="death date" value="0312-10-28"/>
         <timeobj relationship="birth date" value="0278"/>
@@ -9080,9 +9084,11 @@
     </Feature>
     <Feature data="Salona" zh-data="" id="579" uri="http://dbpedia.org/resource/Salona">
       <neighbors/>
-      <geodata/>
+      <geodata>
+        <coordinates lat="43.5384" lon="16.4743"/>
+      </geodata>
       <timedata/>
-      <speak>Salona  was placed on the north-east side of the walls which was fortified with towers during the reign of Augustus.The early trapezoid shape of the city was transformed by eastern and western expansion of the city, which Dyggve called Urbs orientalis and Urbs occidentalis.The city quickly acquired Roman characteristics: walls; a forum; a theater; an amphitheater — the most conspicuous above-ground remains today; public baths; and an aqueduct.</speak>
+      <speak>Salona was placed on the north-east side of the walls which was fortified with towers during the reign of Augustus.The early trapezoid shape of the city was transformed by eastern and western expansion of the city, which Dyggve called Urbs orientalis and Urbs occidentalis.The city quickly acquired Roman characteristics: walls; a forum; a theater; an amphitheater — the most conspicuous above-ground remains today; public baths; and an aqueduct.</speak>
       <zh-speak/>
     </Feature>
     <Feature data="Croatia" zh-data="" id="580" uri="http://dbpedia.org/resource/Croatia">
