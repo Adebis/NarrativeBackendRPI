@@ -376,19 +376,18 @@ namespace Dialogue_Data_Entry
                         Story chronology = temp_manager.GenerateChronology(anchor_node, turn_limit, main_story);
 
                         //The chronology is generated in segments, separated by user turns.
-                        //Get the last segment of the chronology.
-                        int last_segment_index = chronology.GetLastSegmentIndex();
                         //Create its text.
                         SpeakTransform t = new SpeakTransform(graph);
-                        t.SpeakStoryFromTurn(chronology, last_segment_index);
-                        Story temp_story = new Story(chronology.GetLastSegment(), chronology.AnchorNodeId);
+                        StorySegment last_segment = chronology.GetLastSegment();
+                        t.SpeakStorySegment(last_segment);
+                        //Story temp_story = new Story(chronology.GetLastSegment());
 
                         if (json_mode)
-                            json_string = JsonConvert.SerializeObject(temp_story);
+                            json_string = JsonConvert.SerializeObject(last_segment);
                         else
                         {
                             SpeakTransform temp_transform = new SpeakTransform(graph);
-                            json_string = temp_transform.SpeakStoryFromLastUserTurn(chronology);
+                            json_string = temp_transform.SpeakStorySegment(last_segment);
                         }//end else
 
                         main_story = chronology;
@@ -547,7 +546,53 @@ namespace Dialogue_Data_Entry
                 else
                     json_string = JsonConvert.SerializeObject(temp_graph);
             }//end else if
+            //set_anchors command.
+            // Add a set of anchor nodes to the narration manager by either feature name or ID.
+            else if (split_input[0].ToLower().Equals("set_anchors"))
+            {
+                Feature new_anchor_node = null;
+                json_string = "Added anchor nodes: ";
 
+                for (int i = 1; i < split_input.Length; i++)
+                {
+                    String string_topic = split_input[i];
+                    //Try to convert the topic to an int to check if it's an id.
+                    int int_topic = -1;
+                    bool parse_success = int.TryParse(string_topic, out int_topic);
+                    if (parse_success)
+                    {
+                        //Check that the new integer topic is a valid id.
+                        new_anchor_node = graph.getFeature(int_topic);
+                    }//end if
+                    else
+                    {
+                        new_anchor_node = FindFeature(string_topic);
+                    }//end else
+                    if (new_anchor_node != null)
+                    {
+                        narration_manager.AddAnchorNode(new_anchor_node);
+                        json_string += new_anchor_node.Name + " (" + new_anchor_node.Id + ")" + ", ";
+                    }//end if
+
+                }//end for
+
+            }//end else if
+            //LIST_ANCHORS command.
+            //  Returns the list of anchor nodes, by name, to the chat window.
+            else if (split_input[0].ToLower().Equals("list_anchors"))
+            {
+                json_string = "Anchor nodes: ";
+                foreach (Feature anchor_node in narration_manager.anchor_nodes)
+                {
+                    json_string += anchor_node.Name += " (" + anchor_node.Id + "), ";
+                }//end foreach
+            }//end else if
+            else if (split_input[0].Equals(""))
+            {
+                //On empty string, start the default narration.
+                //Talk about the first anchor node in the list.
+
+            }//end else if
 
             return json_string;
         }//end method ParseInputJSON

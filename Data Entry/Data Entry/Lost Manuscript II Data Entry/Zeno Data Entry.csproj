@@ -88,6 +88,7 @@
     <Compile Include="Constant.cs" />
     <Compile Include="QueryHandler.cs" />
     <Compile Include="Story.cs" />
+    <Compile Include="StorySegment.cs" />
     <Compile Include="StoryNode.cs" />
     <Compile Include="SynchronousSocketClient.cs" />
     <Compile Include="SynchronousSocketListener.cs" />

@@ -122,7 +122,7 @@ namespace Dialogue_Data_Entry
             Feature previous_node = null;
             if (story.StorySequence.Count > 0)
             {
-                previous_node = feature_graph.getFeature(story.StorySequence[story.StorySequence.Count - 1].graph_node_id);
+                previous_node = feature_graph.getFeature(story.GetLastNode().graph_node_id);
 
                 bool introduction_handled = false;
                 //Decide whether to state the relationship between this node and the previous one.
@@ -160,14 +160,19 @@ namespace Dialogue_Data_Entry
             return story;
         }//end method AddNodeToStory
 
+        //Generate a single segment of the story starting from the an anchor node.
+        //If there is a starting story, this arc will be the next segment of the story.
+        public Story GenerateStorySegment(Feature anchor_node, int turn_limit, Story starting_story = null)
+        {
+            return null;
+        }//end method GenerateStory
+
         public Story GenerateChronology(Feature anchor_node, int turn_limit, Story starting_story = null)
         {
-            Story chronology = new Story(anchor_node.Id);
+            Story chronology = new Story();
             if (starting_story != null)
             {
                 chronology = starting_story;
-                //Change the anchor node
-                chronology.AnchorNodeId = anchor_node.Id;
             }//end if
 
             //For certain story roles, relationships match up with start and end dates.
@@ -262,9 +267,12 @@ namespace Dialogue_Data_Entry
 
                 //Try to tie back the most recent node to the previous segment of the story.
                 //Check the last sequence (the one prior to the current one). Decide whether or not a tie-back is possible.
-                List<StoryNode> second_to_last_segment = chronology.GetSecondToLastSegment();
+                List<StoryNode> second_to_last_segment = new List<StoryNode>();
+                if (chronology.GetSecondToLastSegment() != null)
+                    second_to_last_segment = chronology.GetSecondToLastSegment().GetSequence();
+
                 Feature segment_feature = null;
-                current_node = chronology.StorySequence[chronology.StorySequence.Count - 1];
+                current_node = chronology.GetLastNode();
                 /*foreach (StoryNode segment_node in second_to_last_segment)
                 {
                     segment_feature = feature_graph.getFeature(segment_node.graph_node_id);
@@ -289,9 +297,9 @@ namespace Dialogue_Data_Entry
             }//end while
 
             //Give a user turn to the last node in the story.
-            chronology.StorySequence[chronology.StorySequence.Count - 1].AddStoryAct(
+            chronology.GetLastNode().AddStoryAct(
                 Constant.USERTURN
-                , chronology.StorySequence[chronology.StorySequence.Count - 1].graph_node_id);
+                , chronology.GetLastNode().graph_node_id);
 
             //Add the closest end neighbor to the story.
             //AddNodeToStory(closest_end_neighbor, chronology);
@@ -309,7 +317,7 @@ namespace Dialogue_Data_Entry
             }//end foreach
 
             //Gets the next topic that should be visited whose date lies between the given start and end dates.
-            return calculator.GetNextTopic(feature_graph.getFeature(story_in.AnchorNodeId), story_in.current_turn, history_list, start_date, end_date);
+            return calculator.GetNextTopic(feature_graph.getFeature(story_in.last_anchor_id), story_in.current_turn, history_list, start_date, end_date);
         }//end method getNextChronologicalTopic
         public Feature getNextChronologicalTopic(Feature previous_topic, DateTime start_date, DateTime end_date)
         {
@@ -319,7 +327,7 @@ namespace Dialogue_Data_Entry
 
         public Feature getNextBestStoryTopic(Story story_in)
         {
-            Feature last_topic = feature_graph.getFeature(story_in.StorySequence[story_in.StorySequence.Count - 1].graph_node_id);
+            Feature last_topic = feature_graph.getFeature(story_in.GetLastNode().graph_node_id);
             List<Feature> history_list = new List<Feature>();
             foreach (int graph_node_id in story_in.GetHistory())
             {

@@ -12,21 +12,17 @@ namespace Dialogue_Data_Entry
         //A list of tuples representing story acts. First item is the name of the act,
         //second item is the id of the target of the act (relative to the current node).
         public List<Tuple<string, int>> story_acts;
-        //What turn of the story this node is placed
-        public int turn;
         //The text presentation for this node, based on its story acts.
         public string text;
 
         public StoryNode(int graph_node_id_in)
         {
-            turn = 0;
             graph_node_id = graph_node_id_in;
             story_acts = new List<Tuple<string, int>>();
             text = "";
         }//end constructor StoryNode
         public StoryNode()
         {
-            turn = 0;
             graph_node_id = -1;
             story_acts = new List<Tuple<string, int>>();
             text = "";

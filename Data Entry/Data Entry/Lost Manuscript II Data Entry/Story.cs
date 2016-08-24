@@ -8,120 +8,121 @@ namespace Dialogue_Data_Entry
     class Story
     {
         //A story is a list of story nodes.
-        private List<StoryNode> story_sequence;
-        private int anchor_node_id;
+        private List<StorySegment> story_sequence;
         public int current_turn;
+        public int last_anchor_id;
+        public int last_segment_turn;
 
-        public Story(int anchor_node_id_in)
+        public Story()
         {
             current_turn = 0;
-            anchor_node_id = anchor_node_id_in;
-            story_sequence = new List<StoryNode>();
+            last_anchor_id = 0;
+            story_sequence = new List<StorySegment>();
         }//end method Story
-        public Story(List<StoryNode> base_story_sequence, int anchor_node_id_in)
+        public Story(StorySegment base_story_segment)
         {
             current_turn = 0;
-            anchor_node_id = anchor_node_id_in;
-            story_sequence = new List<StoryNode>();
-            StoryNode temp_node = null;
-            foreach (StoryNode base_node in base_story_sequence)
-            {
-                //Make a deep copy of the base node.
-                temp_node = new StoryNode(base_node.graph_node_id);
-                temp_node.turn = base_node.turn;
-                temp_node.text = base_node.text;
+            story_sequence = new List<StorySegment>();
+            last_anchor_id = base_story_segment.anchor_node_id;
 
-                foreach (Tuple<string, int> story_act in base_node.story_acts)
-                {
-                    temp_node.AddStoryAct(story_act.Item1, story_act.Item2);
-                }//end foreach
-                AddStoryNode(temp_node);
+            story_sequence.Add(DeepClone.DeepCopy<StorySegment>(base_story_segment));
+            current_turn += base_story_segment.length;
+        }//end method Story
+        public Story(List<StorySegment> base_story_sequence)
+        {
+            current_turn = 0;
+            story_sequence = new List<StorySegment>();
+            last_anchor_id = base_story_sequence.Last<StorySegment>().anchor_node_id;
+
+            foreach (StorySegment base_segment in base_story_sequence)
+            {
+                story_sequence.Add(DeepClone.DeepCopy<StorySegment>(base_segment));
+                current_turn += base_segment.length;
             }//end foreach
         }//end method Story
 
+        //Add a story node to the last arc in the sequence.
         public void AddStoryNode(StoryNode new_story_node)
         {
-            new_story_node.turn = current_turn;
-            story_sequence.Add(new_story_node);
-            current_turn += 1;
+            if (story_sequence.Count > 0)
+            {
+                current_turn += 1;
+                story_sequence.Last<StorySegment>().AddStoryNode(new_story_node);
+            }//end if
+            else
+                BeginStorySegment(new_story_node);
         }//end method AddStoryNode
+
+        public void BeginStorySegment(StoryNode anchor_node)
+        {
+            story_sequence.Add(new StorySegment(anchor_node));
+            story_sequence.Last<StorySegment>().starting_turn = current_turn;
+            current_turn += 1;
+            last_segment_turn = story_sequence.Last<StorySegment>().starting_turn;
+            last_anchor_id = anchor_node.graph_node_id;
+        }//end method BeginStorySegment
+
+        public StoryNode GetLastNode()
+        {
+            if (story_sequence.Count > 0)
+            {
+                return story_sequence.Last<StorySegment>().GetSequence().Last<StoryNode>();
+            }//end if
+            else
+                return null;
+        }//end method GetLastNode
+
+        public List<StoryNode> GetNodeSequence()
+        {
+            List<StoryNode> return_sequence = new List<StoryNode>();
+            foreach (StorySegment temp_segment in story_sequence)
+            {
+                foreach (StoryNode temp_node in temp_segment.GetSequence())
+                {
+                    return_sequence.Add(temp_node);
+                }//end foreach
+            }//end foreach
+
+            return return_sequence;
+        }//end method GetNodeSequence
 
         //Get the story as a history list of feature ids
         public List<int> GetHistory()
         {
             List<int> return_list = new List<int>();
 
-            foreach (StoryNode temp_node in story_sequence)
+            foreach (StorySegment temp_segment in story_sequence)
             {
-                return_list.Add(temp_node.graph_node_id);
+                return_list.AddRange(temp_segment.GetSequenceIds());
             }//end foreach
 
             return return_list;
         }//end method GetHistory
 
-        //Return the index of the last segment of the story, starting after the
-        //last story node with a user turn which is not the last node
-        //of the story sequence.
-        public int GetLastSegmentIndex()
-        {
-            int last_user_turn_index = -1;
-            for (int i = story_sequence.Count - 1; i >= 0; i--)
-            {
-                if (story_sequence[i].HasStoryAct(Constant.USERTURN) && (i != story_sequence.Count - 1))
-                {
-                    last_user_turn_index = i;
-                    break;
-                }//end if
-            }//end for
-
-            //The last segment of the story starts the turn after the last user turn.
-            return last_user_turn_index + 1;
-        }//end mehtod GetLastSegment
-        public int GetSecondToLastSegmentIndex()
-        {
-            int second_to_last_user_turn_index = -1;
-            //Search from before the start of the last segment.
-            for (int i = GetLastSegmentIndex() - 1; i >= 0; i--)
-            {
-                if (story_sequence[i].HasStoryAct(Constant.USERTURN) && (i != story_sequence.Count - 1))
-                {
-                    second_to_last_user_turn_index = i;
-                    break;
-                }//end if
-            }//end for
-
-            return second_to_last_user_turn_index;
-        }//end method GetSecondToLastSegmentIndex
         //Return the last segment.
-        public List<StoryNode> GetLastSegment()
+        public StorySegment GetLastSegment()
         {
-            List<StoryNode> last_segment = new List<StoryNode>();
-            for (int i = GetLastSegmentIndex(); i < StorySequence.Count; i++)
-            {
-                last_segment.Add(StorySequence[i]);
-            }//end for
-            return last_segment;
+            return story_sequence.Last<StorySegment>();
         }//end method GetLastSegment
         public List<StoryNode> GetRemainderStory()
         {
             List<StoryNode> remainder_story = new List<StoryNode>();
-            for (int i = 0; i < GetLastSegmentIndex(); i++)
+            for (int i = 0; i < story_sequence.Count - 1; i++)
             {
-                remainder_story.Add(StorySequence[i]);
+                for (int j = 0; j < story_sequence[i].length; j++)
+                {
+                    remainder_story.Add(story_sequence[i].GetSequence()[j]);
+                }//end for
             }//end for
             return remainder_story;
         }//end method GetRemainderStory
-        public List<StoryNode> GetSecondToLastSegment()
+        public StorySegment GetSecondToLastSegment()
         {
-            List<StoryNode> second_to_last_segment = new List<StoryNode>();
-            if (GetSecondToLastSegmentIndex() != -1)
+            if (StorySequence.Count >= 2)
             {
-                for (int i = GetSecondToLastSegmentIndex(); i < GetLastSegmentIndex(); i++)
-                {
-                    second_to_last_segment.Add(StorySequence[i]);
-                }//end for
+                return story_sequence[story_sequence.Count - 2];
             }//end if
-            return second_to_last_segment;
+            return null;
         }//end method GetSecondToLastSegment
 
         //Get the most recent location that we can find on a node in the story, as well as the id
@@ -131,36 +132,30 @@ namespace Dialogue_Data_Entry
             Tuple<double, double, int> last_location_info = null;
             StoryNode current_node = null;
             Feature current_feature = null;
+            StorySegment current_segment = null;
             //Go through the list of nodes backwards, so the most recent
             //node is found first.
             for (int i = story_sequence.Count - 1; i >= 0; i--)
             {
-                current_node = story_sequence[i];
-                current_feature = graph.getFeature(current_node.graph_node_id);
-                if (current_feature.Geodata.Count > 0)
+                current_segment = story_sequence[i];
+                for (int j = current_segment.length - 1; j >= 0; j--)
                 {
-                    last_location_info = new Tuple<double, double, int>(current_feature.Geodata[0].Item1
-                        , current_feature.Geodata[0].Item2
-                        , current_feature.Id);
-                    break;
-                }//end if
+                    current_node = current_segment.GetSequence()[j];
+                    current_feature = graph.getFeature(current_node.graph_node_id);
+                    if (current_feature.Geodata.Count > 0)
+                    {
+                        last_location_info = new Tuple<double, double, int>(current_feature.Geodata[0].Item1
+                            , current_feature.Geodata[0].Item2
+                            , current_feature.Id);
+                        break;
+                    }//end if
+                }//end for
             }//end for
 
             return last_location_info;
         }//end method GetLastLocation
 
-        public int AnchorNodeId
-        {
-            get
-            {
-                return this.anchor_node_id;
-            }//end get
-            set
-            {
-                this.anchor_node_id = value;
-            }//end set
-        }
-        public List<StoryNode> StorySequence
+        public List<StorySegment> StorySequence
         {
             get
             {
