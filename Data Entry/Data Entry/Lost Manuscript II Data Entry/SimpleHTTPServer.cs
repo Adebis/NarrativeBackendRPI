@@ -121,14 +121,16 @@ class SimpleHTTPServer
 	private void Listen()
 	{
 		string listener_prefix = "http://*:" + _port.ToString() + "/";
-		//Give permission to the listener's URL
-		//Full argument is: netsh http add urlacl url=[listener_prefix here] user=DOMAIN\user
-		string arguments = "http add urlacl url=" + listener_prefix + " user=DOMAIN\\user";
-		ProcessStartInfo start_info = new ProcessStartInfo("netsh", arguments);
-		start_info.RedirectStandardOutput = true;
-		start_info.UseShellExecute = false;
-		start_info.CreateNoWindow = true;
-		Process.Start(start_info);
+		if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
+			//Give permission to the listener's URL
+			//Full argument is: netsh http add urlacl url=[listener_prefix here] user=DOMAIN\user
+			string arguments = "http add urlacl url=" + listener_prefix + " user=DOMAIN\\user";
+			ProcessStartInfo start_info = new ProcessStartInfo("netsh", arguments);
+			start_info.RedirectStandardOutput = true;
+			start_info.UseShellExecute = false;
+			start_info.CreateNoWindow = true;
+			Process.Start(start_info);
+		}
 
 		try {
 			_listener = new HttpListener();
