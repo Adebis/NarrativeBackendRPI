@@ -160,6 +160,15 @@ namespace Dialogue_Data_Entry
             return story;
         }//end method AddNodeToStory
 
+        public Story GenerateAnalogicalStory(Feature starting_anchor, List<Feature> anchor_nodes, int turn_limit)
+        {
+            Story analogical_story = new Story();
+
+
+
+            return analogical_story;
+        }//end method GenerateAnalogicalStory
+
         //Generate a single segment of the story starting from the an anchor node.
         //If there is a starting story, this arc will be the next segment of the story.
         public Story GenerateStorySegment(Feature anchor_node, int turn_limit, Story starting_story = null)

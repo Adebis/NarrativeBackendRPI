@@ -38,7 +38,7 @@ namespace Dialogue_Data_Entry
                                                              //  2 = Location
                                                              //  3 = Event
                                                              //  4 = Political/Social Entity
-        public List<string> entity_type;                          //What type of entity this feature represents.
+        public List<string> entity_type;                    //What type of entity this feature represents.
                                                             //Redundant with story role, remove story role in future.
         
         
@@ -689,6 +689,14 @@ namespace Dialogue_Data_Entry
                 entity_type.Add(entity_type_to_add);
             }//end if
         }//end method AddEntityType
+        //Check for an entity type
+        public bool HasEntityType(string entity_type_to_find)
+        {
+            if (entity_type.Contains(entity_type_to_find))
+                return true;
+            else
+                return false;
+        }//end method HasEntityType
 
         // This function will check through all of the features that can be reached from its neighbors and if it finds the one that we are looking for it return true, false otherwise
         private bool canReachHelper(int dest_id,bool checkLevel)

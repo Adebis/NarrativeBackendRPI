@@ -236,12 +236,12 @@ namespace Dialogue_Data_Entry
 					}//end foreach
 				}//end foreach
 
-                //If a node has an outgoing character relationship with a neighbor, the neighbor is a character.
+                //If a node has one of the following relationships with a neighbor, the neighbor is a character.
                 List<string> outgoing_character_relationships = new List<string>();
                 outgoing_character_relationships.Add("with");
                 outgoing_character_relationships.Add("commander");
 
-                //If a node has an inner character relationship with a neighbor, the node is a character.
+                //If a node has one of the following relationships with a neighbor, the node is a character.
                 List<string> inner_character_relationships = new List<string>();
                 inner_character_relationships.Add("next");
                 inner_character_relationships.Add("regent");
@@ -252,7 +252,7 @@ namespace Dialogue_Data_Entry
                 inner_character_relationships.Add("state of origin");
                 //inner_character_relationships.Add("title");
 
-                //If a node has an outgoing location relationship with a neighbor, the neighbor it has
+                //If a node has one of the following relationships with a neighbor, the neighbor it has
                 //this relationship with is a location.
                 List<string> outgoing_location_relationships = new List<string>();
                 //outgoing_location_relationships.Add("Capital");
@@ -272,7 +272,7 @@ namespace Dialogue_Data_Entry
                 outgoing_location_relationships.Add("area");
                 outgoing_location_relationships.Add("PLACE OF DEATH");
 
-                //If a node has an inner location relationship with a neighbor, the node is a location.
+                //If a node has one of the following relationships with a neighbor, the node is a location.
                 List<string> inner_location_relationships = new List<string>();
                 inner_location_relationships.Add("location");
                 inner_location_relationships.Add("built during reign of");
@@ -285,11 +285,11 @@ namespace Dialogue_Data_Entry
                 inner_location_relationships.Add("occupants");
                 inner_location_relationships.Add("common languages");
 
-                //If a node has an outgoing event relationship with a neighbor, the neighbor is an event.
+                //If a node has one of the following relationships with a neighbor, the neighbor is an event.
                 List<string> outgoing_event_relationships = new List<string>();
                 outgoing_event_relationships.Add("is part of military conflict");
 
-                //If a node has an inner event relationship with a neighbor, the node is an event.
+                //If a node has one of the following relationships with a neighbor, the node is an event.
                 List<string> inner_event_relationships = new List<string>();
                 inner_event_relationships.Add("combatant");
                 inner_event_relationships.Add("is part of military conflict");
@@ -301,9 +301,6 @@ namespace Dialogue_Data_Entry
                 //Try to determine what entity each node is.
                 foreach (Feature temp_feature in result_graph.Features)
                 {
-                    //Check geodata. If there is any, this is a location.
-                    if (temp_feature.Geodata.Count > 0)
-                        temp_feature.AddEntityType(Constant.LOCATION);
                     //Check time data. If "birth" or "death" is amongst the relationship types, this is a character.
                     foreach (Tuple<string, string> temp_time_data in temp_feature.Timedata)
                     {
@@ -347,6 +344,45 @@ namespace Dialogue_Data_Entry
                         if (inner_location_relationships.Contains(temp_neighbor.Item3))
                             temp_feature.AddEntityType(Constant.LOCATION);
                     }//end foreach
+
+                    //Check geodata. If there is any, and this is not another entity type, this is a location.
+                    if (temp_feature.Geodata.Count > 0 
+                        && !temp_feature.HasEntityType(Constant.EVENT)
+                        && !temp_feature.HasEntityType(Constant.CHARACTER))
+                        temp_feature.AddEntityType(Constant.LOCATION);
+
+                    //Check for sub-categories.
+                    //Capitals
+                    foreach (Tuple<Feature, double, string> temp_neighbor in temp_feature.Neighbors)
+                    {
+                        if (temp_neighbor.Item3.Equals("Capital")
+                            || temp_neighbor.Item3.Equals("capital"))
+                        {
+                            temp_neighbor.Item1.AddEntityType("capital");
+                        }//end if
+                    }//end foreach
+                    if (temp_feature.HasEntityType(Constant.CHARACTER))
+                    {
+                        foreach (Tuple<Feature, double, string> temp_neighbor in temp_feature.Neighbors)
+                        {
+                            //Emperors will have the "title" relationship to either Roman emperor (id 5),
+                            //List of Roman emperors (id 581), or List of Byzantine emperors (id 562)
+                            if (temp_neighbor.Item1.Name.Equals("Roman emperor")
+                                || temp_neighbor.Item1.Name.Equals("List of Roman emperors")
+                                || temp_neighbor.Item1.Name.Equals("List of Byzantine emperors"))
+                            {
+                                temp_feature.AddEntityType("emperor");
+                                break;
+                            }//end if
+                        }//end foreach
+                    }//end if
+                    if (temp_feature.HasEntityType(Constant.EVENT))
+                    {
+                        if (temp_feature.Name.Contains("Battle"))
+                        {
+                            temp_feature.AddEntityType("battle");
+                        }//end if
+                    }//end if
                 }//end foreach
 
                 //Get the root node

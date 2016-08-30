@@ -313,7 +313,7 @@ namespace Dialogue_Data_Entry
         {
             string json_string = "";
 
-            if (split_input[0].Equals("CHRONOLOGY"))
+            if (split_input[0].ToLower().Equals("chronology"))
             {
                 Feature anchor_node = null;
                 //Get the anchor node specified in this command 
@@ -395,7 +395,7 @@ namespace Dialogue_Data_Entry
                 }//end if
             }//end if
             //Toggle JSON response outputs on or off.
-            else if (split_input[0].Equals("TOGGLE_JSON"))
+            else if (split_input[0].ToLower().Equals("toggle_json"))
             {
                 if (json_mode)
                 {
@@ -409,7 +409,7 @@ namespace Dialogue_Data_Entry
                 }//end elses
             }//end else if
             //Toggle user interest mode on or off.
-            else if (split_input[0].Equals("TOGGLE_USER_INTEREST"))
+            else if (split_input[0].ToLower().Equals("toggle_user_interest"))
             {
                 if (user_interest_mode)
                 {
@@ -423,7 +423,7 @@ namespace Dialogue_Data_Entry
                 }//end elses
             }//end else if
             //Reset both the main story and the feature graph.
-            else if (split_input[0].Equals("RESTART_NARRATION"))
+            else if (split_input[0].ToLower().Equals("restart_narration"))
             {
                 main_story = null;
                 graph.ResetNodes();
@@ -505,27 +505,51 @@ namespace Dialogue_Data_Entry
                         uncategorized.Add(temp_feature);
                 }//end foreach
 
-                json_string += " Characters (" +  characters.Count + "): \n";
+                int emperor_count = 0;
+                foreach (Feature character in characters)
+                {
+                    if (character.HasEntityType("emperor"))
+                        emperor_count += 1;
+                }//end foreach
+                json_string += " Characters (" +  characters.Count + ") - emperors (" + emperor_count + "): \n";
 
                 if (verbose)
                     foreach (Feature character in characters)
                     {
+                        if (character.HasEntityType("emperor"))
+                            json_string += "[emperor]";
                         json_string += " [C] " + character.Name + " \n";
                     }//end foreach
 
-                json_string += " Locations (" + locations.Count + "): \n";
+                int capital_count = 0;
+                foreach (Feature location in locations)
+                {
+                    if (location.HasEntityType("capital"))
+                        capital_count += 1;
+                }//end foreach
+                json_string += " Locations (" + locations.Count + ") - capitals (" + capital_count + "): \n";
 
                 if (verbose)
                     foreach (Feature location in locations)
                     {
+                        if (location.HasEntityType("capital"))
+                            json_string += "[capital]";
                         json_string += " [L] " + location.Name + " \n";
                     }//end foreach
 
-                json_string += " Events (" + events.Count + "): \n";
+                int battle_count = 0;
+                foreach (Feature temp_event in events)
+                {
+                    if (temp_event.HasEntityType("battle"))
+                        battle_count += 1;
+                }//end foreach
+                json_string += " Events (" + events.Count + ") - battles (" + battle_count + "): \n";
 
                 if (verbose)
                     foreach (Feature temp_event in events)
                     {
+                        if (temp_event.HasEntityType("battle"))
+                            json_string += "[battle]";
                         json_string += " [E] " + temp_event.Name + " \n";
                     }//end foreach
 
@@ -587,12 +611,72 @@ namespace Dialogue_Data_Entry
                     json_string += anchor_node.Name += " (" + anchor_node.Id + "), ";
                 }//end foreach
             }//end else if
-            else if (split_input[0].Equals(""))
+            //analogical_story command
+            else if (split_input[0].Equals("analogical_story"))
             {
-                //On empty string, start the default narration.
-                //Talk about the first anchor node in the list.
+                Feature anchor_node = null;
+                //Get the anchor node specified in this command 
+                if (split_input[1] != null)
+                {
+                    String string_topic = split_input[1];
+                    //First, check if the topic is the empty string.
+                    //If so, try the "default" anchor node.
+                    if (string_topic.Equals(""))
+                    {
+                        //If there is not yet a story, get the root node as the anchor node.
+                        if (main_story == null)
+                        {
+                            anchor_node = graph.Root;
+                        }//end if
+                        //If there is an ongoing story, get the next best topic based on the story.
+                        else
+                        {
+                            anchor_node = narration_manager.getNextBestStoryTopic(main_story);
+                        }//end else
+                    }//end if
+                    else
+                    {
+                        //Try to convert the topic to an int to check if it's an id.
+                        int int_topic = -1;
+                        bool parse_success = int.TryParse(string_topic, out int_topic);
+                        if (parse_success)
+                        {
+                            //Check that the new integer topic is a valid id.
+                            anchor_node = graph.getFeature(int_topic);
+                        }//end if
+                        else
+                        {
+                            anchor_node = FindFeature(string_topic);
+                        }//end else
+                    }//end else
+                    if (anchor_node != null)
+                    {
+                        //If we found an anchor node with this command, assemble the chronology.
 
-            }//end else if
+                        //Get the turn limit
+                        int turn_limit = 0;
+                        if (split_input[2] != null)
+                        {
+                            bool parse_success = int.TryParse(split_input[2], out turn_limit);
+                            if (parse_success)
+                            {
+                                Console.Out.WriteLine("Turn limit set to " + turn_limit);
+                            }//end if
+                            else
+                                Console.Out.WriteLine("Could not set turn limit.");
+                        }//end if
+
+                        //Make a temporary graph to create the chronology's order before presenting it.
+                        FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(graph);
+
+                        json_string = "";
+
+                        NarrationManager temp_manager = new NarrationManager(graph, temporalConstraintList);
+
+                    }//end if
+
+                }//end else if
+            }//end if
 
             return json_string;
         }//end method ParseInputJSON
