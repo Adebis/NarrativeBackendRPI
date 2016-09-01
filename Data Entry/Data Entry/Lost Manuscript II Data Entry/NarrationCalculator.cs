@@ -264,8 +264,9 @@ namespace Dialogue_Data_Entry
                         maxIndex = x;
                     }//end if
                 }//end for
-                //If the next item has been visited before, calculate again without time constraints
-                /*if (listScore[maxIndex].Item1.DiscussedAmount > 0)
+                //If the next item has been visited before, calculate again without time range constraints.
+                //Also, filter out all previously visited nodes.
+                if (listScore[maxIndex].Item1.DiscussedAmount > 0)
                 {
                     maxScore = listScore[0].Item2;
                     maxIndex = 0;
@@ -283,12 +284,15 @@ namespace Dialogue_Data_Entry
                                 Console.WriteLine("Filtering out " + listScore[x].Item1.Id);
                                 continue;
                             }//end if
+                            //If it has been visited before, do not count this node.
+                            if (listScore[x].Item1.DiscussedAmount > 0)
+                                continue;
 
                             maxScore = listScore[x].Item2;
                             maxIndex = x;
                         }//end if
                     }//end for
-                }//end if*/
+                }//end if
                 if (print_calculation)
                 {
                     System.Console.WriteLine("\n\nMax score: " + maxScore);
@@ -727,6 +731,63 @@ namespace Dialogue_Data_Entry
 
             return return_feature;*/
         }//end method IdentifySwitchPoint
+        public int IdentifySwitchPointTurn(Story input_story)
+        {
+            //How connected the set of features up to the index in Item1 is.
+            List<Tuple<Feature, int>> sum_edge_counts = new List<Tuple<Feature, int>>();
+            //the list of features that come before the current index
+            List<Feature> prior_list = new List<Feature>();
+            //the list of features that come after the current index
+            List<Feature> future_list = new List<Feature>();
+            List<StoryNode> story_node_sequence = input_story.GetNodeSequence();
+            List<Feature> storyline = new List<Feature>();
+            foreach (StoryNode temp_node in story_node_sequence)
+            {
+                storyline.Add(feature_graph.getFeature(temp_node.graph_node_id));
+            }//end foreach
+            Feature switch_point = null;
+            int switch_point_turn = 0;
+            int largest_count = -1;
+            int current_count = 0;
+            for (int i = 0; i < storyline.Count; i++)
+            {
+                prior_list = storyline.GetRange(0, i + 1);
+                future_list = storyline.GetRange(i + 1, storyline.Count - i - 1);
+                current_count = 0;
+                //Count all edges from previous nodes to future nodes
+                foreach (Feature prior_feature in prior_list)
+                {
+                    foreach (Feature future_feature in future_list)
+                    {
+                        //Check if there is a relationship in either direction between the two.
+                        if ((!prior_feature.getRelationshipNeighbor(future_feature.Id).Equals("")
+                            && !(prior_feature.getRelationshipNeighbor(future_feature.Id) == null))
+                            || (!future_feature.getRelationshipNeighbor(prior_feature.Id).Equals("")
+                            && !(future_feature.getRelationshipNeighbor(prior_feature.Id) == null)))
+                        {
+                            //If so, then increment the connections count.
+                            current_count += 1;
+                        }//end if
+                    }//end foreach
+                }//end foreach
+                //Make a tuple entry
+                sum_edge_counts.Add(new Tuple<Feature, int>(storyline[i], current_count));
+                if (current_count >= largest_count)
+                {
+                    largest_count = current_count;
+                    switch_point = storyline[i];
+                    switch_point_turn = i;
+                }//end if
+            }//end for
+
+            if (largest_count == 0)
+            {
+                switch_point = storyline[storyline.Count - 1];
+                switch_point_turn = storyline.Count - 1;
+            }//end if
+
+            return switch_point_turn;
+        }//end method IdentifySwitchPointTurn
 
         //Calculate the relatedness between two features
         public double CalculateRelatedness(Feature feature_1, Feature feature_2, int turn_count, List<Feature> topic_history)

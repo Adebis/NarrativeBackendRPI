@@ -160,6 +160,18 @@ namespace Dialogue_Data_Entry
             return story;
         }//end method AddNodeToStory
 
+        public Story MakeStoryFromList(List<Feature> story_features)
+        {
+            Story return_story = new Story();
+
+            foreach (Feature to_add in story_features)
+            {
+                AddNodeToStory(to_add, return_story);
+            }//end foreach
+
+            return return_story;
+        }//end method MakeStoryFromList
+
         public Story GenerateAnalogicalStory(Feature starting_anchor, List<Feature> anchor_nodes, int turn_limit)
         {
             Story analogical_story = new Story();
@@ -1145,6 +1157,90 @@ namespace Dialogue_Data_Entry
 			return output;
 		}//end method SayToChatBot
 
+        public Story Interweave(Story story_1, Story story_2)
+        {
+            Story interwoven_story = new Story();
+
+            StorySegment story_1_part_1 = new StorySegment();
+            StorySegment story_1_part_2 = new StorySegment();
+            int switchpoint_turn = IdentifySwitchPointTurn(story_1);
+            StoryNode switchpoint_node = story_1.GetNodeAtTurn(switchpoint_turn);
+            Feature switchpoint_feature = feature_graph.getFeature(switchpoint_node.graph_node_id);
+
+            for (int i = 0; i <= switchpoint_turn; i++)
+            {
+                story_1_part_1.AddStoryNode(story_1.GetNodeSequence()[i]);
+            }//end for
+            for (int i = switchpoint_turn + 1; i < story_1.GetNodeSequence().Count; i++)
+            {
+                story_1_part_2.AddStoryNode(story_1.GetNodeSequence()[i]);
+            }//end for
+
+            //Check for any HINT-ATs we can add, as well as their corresponding resolutions.
+            foreach (StoryNode temp_node in story_1_part_1.Sequence)
+            {
+                Feature temp_node_feature = feature_graph.getFeature(temp_node.graph_node_id);
+                foreach (StoryNode compare_node in story_1_part_2.Sequence)
+                {
+                    Feature compare_node_feature = feature_graph.getFeature(compare_node.graph_node_id);
+                    //Check if there is a relationship in either direction between the two.
+                    if ((!temp_node_feature.getRelationshipNeighbor(compare_node_feature.Id).Equals("")
+                        && !(temp_node_feature.getRelationshipNeighbor(compare_node_feature.Id) == null)))
+                    {
+                        temp_node.AddStoryAct(Constant.HINTAT, compare_node.graph_node_id);
+                        compare_node.AddStoryAct(Constant.RESOLVE, temp_node.graph_node_id);
+                    }//end if
+                    else if (!compare_node_feature.getRelationshipNeighbor(temp_node_feature.Id).Equals("")
+                        && !(compare_node_feature.getRelationshipNeighbor(temp_node_feature.Id) == null))
+                    {
+                        temp_node.AddStoryAct(Constant.HINTAT, compare_node.graph_node_id);
+                        compare_node.AddStoryAct(Constant.RESOLVE, temp_node.graph_node_id);
+                    }//end else if
+                }//end foreach
+            }//end foreach
+
+            //Check for any TIE-BACKs we can add.
+            foreach (StoryNode temp_node in story_2.GetNodeSequence())
+            {
+                Feature temp_node_feature = feature_graph.getFeature(temp_node.graph_node_id);
+                foreach (StoryNode compare_node in story_1_part_1.Sequence)
+                {
+                    Feature compare_node_feature = feature_graph.getFeature(compare_node.graph_node_id);
+                    //Check if there is a relationship in either direction between the two.
+                    if ((!temp_node_feature.getRelationshipNeighbor(compare_node_feature.Id).Equals("")
+                        && !(temp_node_feature.getRelationshipNeighbor(compare_node_feature.Id) == null)))
+                    {
+                        temp_node.AddStoryAct(Constant.TIEBACK, compare_node.graph_node_id);
+                    }//end if
+                    else if (!compare_node_feature.getRelationshipNeighbor(temp_node_feature.Id).Equals("")
+                        && !(compare_node_feature.getRelationshipNeighbor(temp_node_feature.Id) == null))
+                    {
+                        temp_node.AddStoryAct(Constant.TIEBACK, compare_node.graph_node_id);
+                    }//end else if
+                }//end foreach
+            }//end foreach
+
+            //Put stories together
+            foreach (StoryNode temp_node in story_1_part_1.Sequence)
+            {
+                interwoven_story.AddStoryNode(temp_node);
+            }//end foreach
+            foreach (StoryNode temp_node in story_2.GetNodeSequence())
+            {
+                interwoven_story.AddStoryNode(temp_node);
+            }//end foreach
+            foreach (StoryNode temp_node in story_1_part_2.Sequence)
+            {
+                interwoven_story.AddStoryNode(temp_node);
+            }//end foreach
+
+            return interwoven_story;
+        }//end method Interweave
+
+        public int IdentifySwitchPointTurn(Story story)
+        {
+            return calculator.IdentifySwitchPointTurn(story);
+        }//end method IdentifySwitchPointTurn
         //Returns the feature that would serve best as a switch point given
         // the input storyline.
         public Feature IdentifySwitchPoint(List<Feature> storyline)

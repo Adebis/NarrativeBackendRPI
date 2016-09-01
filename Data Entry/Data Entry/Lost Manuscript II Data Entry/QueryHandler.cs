@@ -137,6 +137,7 @@ namespace Dialogue_Data_Entry
 		public string buffered_tts = "";
 
         public Story main_story;
+        public List<Story> stories;
 
 		/// <summary>
 		/// Create a converter for the specified XML file
@@ -165,6 +166,7 @@ namespace Dialogue_Data_Entry
 			narration_manager = new NarrationManager(this.graph, myTemporalConstraintList);
 
             main_story = null;
+            stories = new List<Story>();
 
 			//Build lists of equivalent relationships
 			//is, are, was, is a kind of, is a
@@ -394,6 +396,201 @@ namespace Dialogue_Data_Entry
                     }//end if
                 }//end if
             }//end if
+            //Make a story using a list of nodes, identified by node ID or node name.
+            if (split_input[0].ToLower().Equals("make_story"))
+            {
+                Feature anchor_node = null;
+                List<Feature> input_features = new List<Feature>();
+                //Resolve the node IDs or names, and get the list of their corresponding features.
+                foreach (string split_input_item in split_input)
+                {
+                    if (split_input_item.Equals("make_story"))
+                        continue;
+
+                    int input_id = -1;
+                    bool parse_success = int.TryParse(split_input_item, out input_id);
+                    if (parse_success)
+                        input_features.Add(graph.getFeature(input_id));
+                    else
+                        input_features.Add(FindFeature(split_input_item));
+                }//end foreach
+                if (input_features.Count > 0)
+                    anchor_node = input_features[0];
+                if (anchor_node != null)
+                {
+                    //Assemble the story.
+                    FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(graph);
+
+                    json_string = "";
+
+                    NarrationManager temp_manager = new NarrationManager(temp_graph, temporalConstraintList);
+
+                    Story result_story = temp_manager.MakeStoryFromList(input_features);
+                    SpeakTransform t = new SpeakTransform(graph);
+                    StorySegment last_segment = result_story.GetLastSegment();
+                    json_string = t.SpeakStorySegment(last_segment);
+                    
+                    stories.Add(result_story);
+                }//end if
+            }//end if
+            //List the anchor node of each story in the list of stories
+            if (split_input[0].ToLower().Equals("list_stories"))
+            {
+                json_string = "Stories: ";
+                int story_index = 0;
+                foreach (Story list_story in stories)
+                {
+                    json_string += "Story[" + story_index + "]=" + graph.getFeature(list_story.StorySequence[0].anchor_node_id).Name + "\n ";
+                    story_index += 1;
+                }//end foreach
+            }//end if
+            //Read a story from the list of stories, by index.
+            if (split_input[0].ToLower().Equals("read_story"))
+            {
+                json_string = "";
+                int input_int = -1;
+                bool parse_success = int.TryParse(split_input[1], out input_int);
+                if (parse_success && stories.Count > input_int)
+                {
+                    FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(graph);
+                    Story to_read = stories[input_int];
+                    SpeakTransform temp_transform = new SpeakTransform(temp_graph);
+                    json_string = temp_transform.SpeakStorySegment(to_read.GetLastSegment());
+                }//end if
+                else
+                    json_string = "No valid story at given index.";
+            }//end if
+            //Interweave two stories from the list of stories, by index.
+            if (split_input[0].ToLower().Equals("interweave_stories"))
+            {
+                json_string = "";
+                int index_1 = -1;
+                int index_2 = -1;
+                bool parse_success = int.TryParse(split_input[1], out index_1);
+                if (parse_success)
+                {
+                    parse_success = int.TryParse(split_input[2], out index_2);
+                }//end if
+                if (parse_success)
+                {
+                    Story story_1 = stories[index_1];
+                    Story story_2 = stories[index_2];
+
+                    FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(graph);
+                    //Find the turn in the first storyline where the switch point should occur
+                    NarrationManager temp_manager = new NarrationManager(temp_graph, temporalConstraintList);
+
+                    Story interwoven_story = temp_manager.Interweave(story_1, story_2);
+
+                    SpeakTransform t = new SpeakTransform(graph);
+                    json_string = t.SpeakStory(interwoven_story);
+
+                    if (json_mode)
+                        json_string = JsonConvert.SerializeObject(interwoven_story);
+                }//end if
+                else
+                    json_string = "No valid story at given indices.";
+            }//end if
+            if (split_input[0].ToLower().Equals("test_sequence"))
+            {
+                ParseInputJSON("make_story:13:552:576:531:551");
+                ParseInputJSON("make_story:582:583:584:585:408");
+                json_string = ParseInputJSON("interweave_stories:0:1");
+            }//end if
+            //INTERWEAVE command.
+            // Creates two interwoven storylines.
+            /*else if (split_input[0].Equals("INTERWEAVE"))
+            {
+                List<String> return_string_1_components = new List<String>();
+                List<String> return_string_2_components = new List<String>();
+                string return_string_1 = "";
+                string return_string_2 = "";
+
+                int storyline_length = 10;
+                //1 Arctic exploration, 20 Desert exploration
+                int story_1_root = 200;
+                int story_2_root = 1;
+
+                //Create the first story in its entirety
+                //Set the node that the story will start at
+                graph.Root = graph.getFeature(story_1_root);
+                NarrationManager manager_1 = new NarrationManager(graph, temporalConstraintList);
+                for (int i = 0; i < storyline_length; i++)
+                {
+                    return_string_1_components.Add(" " + manager_1.DefaultNextTopicResponse() + "\n");
+                    manager_1.Turn += 1;
+                }//end for
+                //Get the topic history from the first narration as the reference list for the second narration.
+                List<Feature> storyline_1 = manager_1.TopicHistory;
+                //Remove 1st node, it is a duplicate.
+                storyline_1.RemoveAt(0);
+
+                //Ask the manager for the first narration which node would be best as a switch point.
+                Feature switch_point = manager_1.IdentifySwitchPoint(storyline_1);
+
+
+                //Create the reference list from the first storyline up through the switch point.
+                List<Feature> reference_list = new List<Feature>();
+                foreach (Feature story_feature in storyline_1)
+                {
+                    reference_list.Add(story_feature);
+                    if (story_feature.Id.Equals(switch_point.Id))
+                        break;
+                }//end foreach
+
+                //Create the second story in its entirety
+                //Set the node that the story will start at
+                graph.Root = graph.getFeature(story_2_root);
+                NarrationManager manager_2 = new NarrationManager(graph, temporalConstraintList);
+                for (int i = 0; i < storyline_length; i++)
+                {
+                    return_string_2_components.Add(" " + manager_2.DefaultNextTopicResponse(reference_list) + "\n");
+                    manager_2.Turn += 1;
+                }//end for
+                List<Feature> storyline_2 = manager_2.TopicHistory;
+                //Remove 1st node, it is a duplicate
+                storyline_2.RemoveAt(0);
+
+                bool after_switch_point = false;
+                //Compile both return strings from their components
+                int switch_point_index = storyline_1.IndexOf(switch_point);
+                //Get the part of storyline 1 up to the switch point
+                List<Feature> storyline_1_first_half = storyline_1.GetRange(0, switch_point_index + 1);
+                //Get part of storyline 1 after the switch point
+                List<Feature> storyline_1_second_half = storyline_1.GetRange(switch_point_index + 1, storyline_1.Count - switch_point_index - 1);
+                foreach (string component_1 in return_string_1_components)
+                {
+                    //At the switch point, add all of the second storyline.
+                    int component_index = return_string_1_components.IndexOf(component_1);
+                    if (component_index == switch_point_index)
+                    {
+                        //Foreshadow future switch point information.
+                        foreach (Feature first_half_node in storyline_1_first_half)
+                        {
+                            return_string += " " + manager_1.Foreshadow(first_half_node, storyline_1_second_half) + "\n";
+                        }//end foreach
+                        //return_string += " " + manager_1.Foreshadow(switch_point, storyline_1_second_half) + "\n";
+
+                        return_string += " SWITCH TO STORYLINE 2 \n {But now, let's talk about something else.}";
+                        foreach (string component_2 in return_string_2_components)
+                        {
+                            return_string += component_2;
+                        }//end foreach
+                        return_string += " SWITCH TO STORYLINE 1 \n";
+                        after_switch_point = true;
+                    }//end if
+                    return_string += component_1;
+                    if (after_switch_point && component_index < storyline_1.Count)
+                    {
+                        //List<Feature> temp_list = new List<Feature>();
+                        //temp_list.Add(switch_point);
+                        return_string += " " + manager_1.TieBack(storyline_1.ElementAt(component_index), storyline_1_first_half, storyline_1.ElementAt(component_index - 1)) + "\n";
+                    }//end if
+                }//end foreach
+
+                return_string += " : switch point: " + switch_point.Name + " \n";
+            }//end else if*/
+
             //Toggle JSON response outputs on or off.
             else if (split_input[0].ToLower().Equals("toggle_json"))
             {
@@ -511,7 +708,7 @@ namespace Dialogue_Data_Entry
                     if (character.HasEntityType("emperor"))
                         emperor_count += 1;
                 }//end foreach
-                json_string += " Characters (" +  characters.Count + ") - emperors (" + emperor_count + "): \n";
+                json_string += " Characters (" + characters.Count + ") - emperors (" + emperor_count + "): \n";
 
                 if (verbose)
                     foreach (Feature character in characters)

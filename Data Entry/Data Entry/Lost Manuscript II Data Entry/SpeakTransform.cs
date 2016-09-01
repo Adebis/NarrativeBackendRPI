@@ -92,6 +92,18 @@ namespace Dialogue_Data_Entry
             graph = graph_in;
         }//end constructor SpeakTransform
 
+        public string SpeakStory(Story story_to_speak)
+        {
+            string presentation = "";
+
+            foreach (StorySegment temp_segment in story_to_speak.StorySequence)
+            {
+                presentation += SpeakStorySegment(temp_segment) + " ";
+            }//end foreach
+
+            return presentation;
+        }//end method SpeakStory
+
         public string SpeakStorySegment(StorySegment segment_to_speak)
         {
             string text_presentation = "";
@@ -109,11 +121,17 @@ namespace Dialogue_Data_Entry
 
                 //Start with the speak value of the node. Story acts will be appended to the front or end of the speak value.
                 current_node_text = current_graph_node.getSpeak(0);
+                bool hint_at_block = false;
 
                 //For each story node, we want to go through and speak each of its story acts.
                 foreach (Tuple<string, int> story_act in segment_node.story_acts)
                 {
                     current_target_node = graph.getFeature(story_act.Item2);
+                    if (hint_at_block && !story_act.Item1.Equals(Constant.HINTAT))
+                    {
+                        current_node_text = current_node_text + "soon.}";
+                        hint_at_block = false;
+                    }//end if
                     if (story_act.Item1.Equals(Constant.LEADIN))
                     {
                         current_node_text = LeadIn(current_graph_node) + current_node_text;
@@ -130,11 +148,28 @@ namespace Dialogue_Data_Entry
                     {
                         current_node_text = current_node_text + TieBack(current_graph_node, current_target_node);
                     }//end else if
+                    else if (story_act.Item1.Equals(Constant.HINTAT))
+                    {
+                        if (!hint_at_block)
+                        {
+                            hint_at_block = true;
+                            current_node_text = current_node_text + "{We'll hear more about ";
+                        }//end if
+                        current_node_text = current_node_text + HintAt(current_graph_node, current_target_node);
+                    }//end else if
+                    else if (story_act.Item1.Equals(Constant.RESOLVE))
+                    {
+                        current_node_text = current_node_text + Resolve(current_graph_node, current_target_node);
+                    }//end else if
                     else if (story_act.Item1.Equals(Constant.LOCATIONCHANGE))
                     {
                         //current_node_text = LocationChange(current_graph_node, current_target_node) + current_node_text;
                     }//end else if
                 }//end foreach
+
+                if (hint_at_block)
+                    current_node_text = current_node_text + "soon.}";
+
                 //Give the node its text.
                 segment_node.text = current_node_text;
 
@@ -150,10 +185,10 @@ namespace Dialogue_Data_Entry
         }//end method SpeakStoryFromLastUserTurn
 
         //Go through an entire Story and present it as text.
-        public string SpeakStory(Story story_to_speak)
+        /*public string SpeakStory(Story story_to_speak)
         {
             return SpeakStoryFromTurn(story_to_speak, 0);
-        }//end method SpeakStory
+        }//end method SpeakStory*/
 
         //Speak the given story starting from the given story turn.
         public string SpeakStoryFromTurn(Story story_to_speak, int turn_to_start)
@@ -182,10 +217,16 @@ namespace Dialogue_Data_Entry
                 //Start with the speak value of the node. Story acts will be appended to the front or end of the speak value.
                 current_node_text = current_graph_node.getSpeak(0);
 
+                bool hint_at_block = false;
                 //For each story node, we want to go through and speak each of its story acts.
                 foreach (Tuple<string, int> story_act in current_node.story_acts)
                 {
                     current_target_node = graph.getFeature(story_act.Item2);
+                    if (hint_at_block && story_act.Item1.Equals(Constant.HINTAT))
+                    {
+                        current_node_text = current_node_text + "soon.}";
+                        hint_at_block = false;
+                    }//end if
                     if (story_act.Item1.Equals(Constant.LEADIN))
                     {
                         current_node_text = LeadIn(current_graph_node) + current_node_text;
@@ -202,11 +243,21 @@ namespace Dialogue_Data_Entry
                     {
                         current_node_text = current_node_text + TieBack(current_graph_node, current_target_node);
                     }//end else if
+                    else if (story_act.Item1.Equals(Constant.HINTAT))
+                    {
+                        if (!hint_at_block)
+                        {
+                            hint_at_block = true;
+                            current_node_text = current_node_text + "{We'll hear more about ";
+                        }//end if
+                        current_node_text = current_node_text + HintAt(current_graph_node, current_target_node);
+                    }//end else if
                     else if (story_act.Item1.Equals(Constant.LOCATIONCHANGE))
                     {
                         //current_node_text = LocationChange(current_graph_node, current_target_node) + current_node_text;
                     }//end else if
                 }//end foreach
+                
                 //Give the node its text.
                 current_node.text = current_node_text;
 
@@ -296,6 +347,42 @@ namespace Dialogue_Data_Entry
 
             return return_string;
         }//end method UserTurn
+        private string HintAt(Feature current_node, Feature target_node)
+        {
+            string return_string = "";
+
+            if ((!current_node.getRelationshipNeighbor(target_node.Id).Equals("")
+                && !(current_node.getRelationshipNeighbor(target_node.Id) == null)))
+            {
+                return_string = current_node.Name + " " + current_node.getRelationshipNeighbor(target_node.Id) + ", ";
+            }//end if
+            else if (!target_node.getRelationshipNeighbor(current_node.Id).Equals("")
+                && !(target_node.getRelationshipNeighbor(current_node.Id) == null))
+            {
+                return_string = " what " + target_node.getRelationshipNeighbor(current_node.Id) + " " + current_node.Name + ", ";
+            }//end else if
+
+            return return_string;
+        }//end method HintAt
+        private string Resolve(Feature current_node, Feature target_node)
+        {
+            string resolution_text = "";
+
+            if (!current_node.getRelationshipNeighbor(target_node.Id).Equals("")
+                && !(current_node.getRelationshipNeighbor(target_node.Id) == null))
+            {
+                resolution_text = "{And as it turns out, " + current_node.Name + " " + current_node.getRelationshipNeighbor(target_node.Id) + " "
+                    + target_node.Name + ".} ";
+            }//end if
+            else if (!target_node.getRelationshipNeighbor(current_node.Id).Equals("")
+                && !(target_node.getRelationshipNeighbor(current_node.Id) == null))
+            {
+                resolution_text = "{If you recall " + target_node.Name + ", " + target_node.Name + " " + target_node.getRelationshipNeighbor(current_node.Id) + " "
+                    + current_node.Name + ".} ";
+            }//end if
+
+            return resolution_text;
+        }//end method Resolve
         private string TieBack(Feature current_node, Feature target_node)
         {
             string tieback_text = "";

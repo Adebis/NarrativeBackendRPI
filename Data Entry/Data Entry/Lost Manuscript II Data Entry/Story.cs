@@ -155,6 +155,23 @@ namespace Dialogue_Data_Entry
             return last_location_info;
         }//end method GetLastLocation
 
+        /*public StoryNode GetNodeAtTurn(int turn)
+        {
+            StoryNode return_node = null;
+            foreach (StorySegment temp_segment in StorySequence)
+            {
+                return_node = temp_segment.GetNodeAtTurn(turn);
+                if (return_node != null)
+                    return return_node;
+            }//end foreach
+
+            return return_node;
+        }//end method GetNodeAtTurn*/
+        public StoryNode GetNodeAtTurn(int turn)
+        {
+            return GetNodeSequence()[turn];
+        }//end method GetNodeAtTurn
+
         public List<StorySegment> StorySequence
         {
             get

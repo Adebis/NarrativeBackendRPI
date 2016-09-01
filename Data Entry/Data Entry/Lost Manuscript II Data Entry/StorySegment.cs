@@ -47,6 +47,14 @@ namespace Dialogue_Data_Entry
             return return_list;
         }//end method GetSequence
 
+        public StoryNode GetNodeAtTurn(int turn)
+        {
+            if (turn < starting_turn || turn > starting_turn + length)
+                return null;
+            else
+                return sequence[turn - starting_turn];
+        }//end method GetNodeAtTurn
+
         public List<StoryNode> Sequence
         {
             get
