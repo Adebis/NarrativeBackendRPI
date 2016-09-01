@@ -191,13 +191,14 @@ namespace Dialogue_Data_Entry
                 }
             }
 
-            for (int i = 0; i < this.Count; i++)
+            /*for (int i = 0; i < this.Count; i++)
             {
                 if (Features[i].Id != i)
                 {
                     Console.WriteLine("Feature not in Id index");
                 }//end if
             }//end for
+			*/
 
                 //distance to itself is zero
                 for (int x = 0; x < this.Count; x++)

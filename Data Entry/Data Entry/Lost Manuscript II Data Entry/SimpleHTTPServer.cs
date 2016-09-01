@@ -87,6 +87,8 @@ class SimpleHTTPServer
 	private HttpListener _listener;
 	private int _port;
 
+	private static bool initialized = false;
+
 	private QueryHandler handler;
 
 	private Action<string> chatBoxCallback; //for writing messages to console
@@ -116,10 +118,17 @@ class SimpleHTTPServer
 	{
 		_serverThread.Abort();
 		_listener.Stop();
+		initialized = false;
 	}
 
 	private void Listen()
 	{
+		if (initialized) {
+			chatBoxCallback("Server already running!\n");
+			return;
+		}
+
+		initialized = true;
 		string listener_prefix = "http://*:" + _port.ToString() + "/";
 		if (Environment.OSVersion.Platform == PlatformID.Win32NT) {
 			//Give permission to the listener's URL
@@ -232,6 +241,20 @@ class SimpleHTTPServer
 				context.Response.OutputStream.Close();
 
 				break;
+
+			case "/test":
+				response = handler.ParseInputJSON("test_sequence");
+
+				//write response
+				b = Encoding.UTF8.GetBytes(response.ToString());
+				context.Response.StatusCode = (int)HttpStatusCode.OK;
+				context.Response.KeepAlive = false;
+				context.Response.ContentLength64 = b.Length;
+				context.Response.OutputStream.Write(b, 0, b.Length);
+				context.Response.OutputStream.Close();
+
+				break;
+				
 
 			case "/":
 

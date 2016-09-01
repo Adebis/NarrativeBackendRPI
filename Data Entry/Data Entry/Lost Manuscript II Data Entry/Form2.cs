@@ -115,8 +115,8 @@ namespace Dialogue_Data_Entry
 				myHandler = new QueryHandler(featGraph, temporalConstraintList);
 
 			//Start new thread for server
-			this.serverThread = new Thread(this.DoWork);
-			this.serverThread.Start();
+			//this.serverThread = new Thread(this.DoWork);
+			//this.serverThread.Start();
 			
 			//Start the HTTP Server
 			string myFolder = Directory.GetCurrentDirectory();
