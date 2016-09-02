@@ -121,17 +121,11 @@ namespace Dialogue_Data_Entry
 
                 //Start with the speak value of the node. Story acts will be appended to the front or end of the speak value.
                 current_node_text = current_graph_node.getSpeak(0);
-                bool hint_at_block = false;
 
                 //For each story node, we want to go through and speak each of its story acts.
                 foreach (Tuple<string, int> story_act in segment_node.story_acts)
                 {
                     current_target_node = graph.getFeature(story_act.Item2);
-                    if (hint_at_block && !story_act.Item1.Equals(Constant.HINTAT))
-                    {
-                        current_node_text = current_node_text + "soon.}";
-                        hint_at_block = false;
-                    }//end if
                     if (story_act.Item1.Equals(Constant.LEADIN))
                     {
                         current_node_text = LeadIn(current_graph_node) + current_node_text;
@@ -148,14 +142,9 @@ namespace Dialogue_Data_Entry
                     {
                         current_node_text = current_node_text + TieBack(current_graph_node, current_target_node);
                     }//end else if
-                    else if (story_act.Item1.Equals(Constant.HINTAT))
+                    else if (story_act.Item1.Equals(Constant.SWITCHPOINT))
                     {
-                        if (!hint_at_block)
-                        {
-                            hint_at_block = true;
-                            current_node_text = current_node_text + "{We'll hear more about ";
-                        }//end if
-                        current_node_text = current_node_text + HintAt(current_graph_node, current_target_node);
+                        current_node_text = current_node_text + SwitchPoint(current_graph_node, segment_to_speak);
                     }//end else if
                     else if (story_act.Item1.Equals(Constant.RESOLVE))
                     {
@@ -166,10 +155,7 @@ namespace Dialogue_Data_Entry
                         //current_node_text = LocationChange(current_graph_node, current_target_node) + current_node_text;
                     }//end else if
                 }//end foreach
-
-                if (hint_at_block)
-                    current_node_text = current_node_text + "soon.}";
-
+                    
                 //Give the node its text.
                 segment_node.text = current_node_text;
 
@@ -242,15 +228,6 @@ namespace Dialogue_Data_Entry
                     else if (story_act.Item1.Equals(Constant.TIEBACK))
                     {
                         current_node_text = current_node_text + TieBack(current_graph_node, current_target_node);
-                    }//end else if
-                    else if (story_act.Item1.Equals(Constant.HINTAT))
-                    {
-                        if (!hint_at_block)
-                        {
-                            hint_at_block = true;
-                            current_node_text = current_node_text + "{We'll hear more about ";
-                        }//end if
-                        current_node_text = current_node_text + HintAt(current_graph_node, current_target_node);
                     }//end else if
                     else if (story_act.Item1.Equals(Constant.LOCATIONCHANGE))
                     {
@@ -347,6 +324,23 @@ namespace Dialogue_Data_Entry
 
             return return_string;
         }//end method UserTurn
+        private string SwitchPoint(Feature current_node, StorySegment current_segment)
+        {
+            string return_string = "";
+
+            //Use all hint-ats
+            return_string = "{We'll hear more about ";
+            foreach (StoryNode temp_node in current_segment.Sequence)
+            {
+                foreach (Tuple<string, int> story_act in temp_node.story_acts)
+                    if (story_act.Item1.Equals(Constant.HINTAT))
+                        return_string = return_string + HintAt(graph.getFeature(temp_node.graph_node_id)
+                            , graph.getFeature(story_act.Item2));
+            }//end foreach
+            return_string = return_string + "soon. For now, let's talk about something else.}";
+
+            return return_string;
+        }//end method SwitchPoint
         private string HintAt(Feature current_node, Feature target_node)
         {
             string return_string = "";

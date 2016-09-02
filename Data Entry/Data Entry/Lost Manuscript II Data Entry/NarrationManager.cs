@@ -1165,6 +1165,7 @@ namespace Dialogue_Data_Entry
             StorySegment story_1_part_2 = new StorySegment();
             int switchpoint_turn = IdentifySwitchPointTurn(story_1);
             StoryNode switchpoint_node = story_1.GetNodeAtTurn(switchpoint_turn);
+            switchpoint_node.AddStoryAct(Constant.SWITCHPOINT, switchpoint_node.graph_node_id);
             Feature switchpoint_feature = feature_graph.getFeature(switchpoint_node.graph_node_id);
 
             for (int i = 0; i <= switchpoint_turn; i++)

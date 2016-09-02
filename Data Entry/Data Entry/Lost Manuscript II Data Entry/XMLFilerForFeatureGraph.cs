@@ -244,7 +244,7 @@ namespace Dialogue_Data_Entry
                 //If a node has one of the following relationships with a neighbor, the node is a character.
                 List<string> inner_character_relationships = new List<string>();
                 inner_character_relationships.Add("next");
-                inner_character_relationships.Add("regent");
+                inner_character_relationships.Add("was ruled by the regent");
                 inner_character_relationships.Add("death place");
                 inner_character_relationships.Add("birth place");
                 inner_character_relationships.Add("allegiance");

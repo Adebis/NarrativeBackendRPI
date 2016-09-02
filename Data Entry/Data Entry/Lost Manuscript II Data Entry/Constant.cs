@@ -56,6 +56,7 @@ namespace Dialogue_Data_Entry
         public const string HINTAT = "hint-at";
         public const string TIEBACK = "tie-back";
         public const string RESOLVE = "resolve";
+        public const string SWITCHPOINT = "switch-point";
 
         //Entity types
         public const string CHARACTER = "character";
