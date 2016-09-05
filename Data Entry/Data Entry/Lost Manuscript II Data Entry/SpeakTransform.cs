@@ -104,29 +104,6 @@ namespace Dialogue_Data_Entry
             return presentation;
         }//end method SpeakStory
 
-        public string SpeakStoryNoActs(Story story_to_speak)
-        {
-            string presentation = "";
-
-            foreach (StorySegment temp_segment in story_to_speak.StorySequence)
-            {
-                foreach (StoryNode temp_node in temp_segment.Sequence)
-                {
-                    Feature current_graph_node = graph.getFeature(temp_node.graph_node_id);
-
-                    //Start with the speak value of the node. Story acts will be appended to the front or end of the speak value.
-                    string current_node_text = current_graph_node.getSpeak(0);
-
-                    //Give the node its text.
-                    temp_node.text = current_node_text;
-
-                    presentation = presentation + " " + current_node_text;
-                }//end foreach
-            }//end foreach
-
-            return presentation;
-        }//end method SpeakStoryNoActs
-
         public string SpeakStorySegment(StorySegment segment_to_speak)
         {
             string text_presentation = "";

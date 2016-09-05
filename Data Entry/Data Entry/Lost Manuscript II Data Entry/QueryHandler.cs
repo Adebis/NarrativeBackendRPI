@@ -484,7 +484,6 @@ namespace Dialogue_Data_Entry
 
                     SpeakTransform t = new SpeakTransform(graph);
                     json_string = t.SpeakStory(interwoven_story);
-                    stories.Add(interwoven_story);
 
                     if (json_mode)
                         json_string = JsonConvert.SerializeObject(interwoven_story);
@@ -496,16 +495,7 @@ namespace Dialogue_Data_Entry
             {
                 ParseInputJSON("make_story:13:552:576:531:551");
                 ParseInputJSON("make_story:582:583:584:585:408");
-                ParseInputJSON("interweave_stories:0:1");
-                json_string = ParseInputJSON("read_last_story_no_acts");
-            }//end if
-            if (split_input[0].ToLower().Equals("read_last_story_no_acts"))
-            {
-                Story last_story = stories[stories.Count - 1];
-                SpeakTransform temp_transform = new SpeakTransform(graph);
-                json_string = temp_transform.SpeakStoryNoActs(last_story);
-                if (json_mode)
-                    json_string = JsonConvert.SerializeObject(last_story);
+                json_string = ParseInputJSON("interweave_stories:0:1");
             }//end if
             //INTERWEAVE command.
             // Creates two interwoven storylines.
