@@ -354,45 +354,70 @@ namespace Dialogue_Data_Entry
                     }//end else
                     if (anchor_node != null)
                     {
-                        //If we found an anchor node with this command, assemble the chronology.
-
-                        //Get the turn limit
-                        int turn_limit = 0;
-                        if (split_input[2] != null)
+                        //If we found an anchor node, check to see if there's an existing story. If not, make a new one.
+                        if (main_story == null)
                         {
-                            bool parse_success = int.TryParse(split_input[2], out turn_limit);
-                            if (parse_success)
+                            //Get the turn limit
+                            int turn_limit = 0;
+                            if (split_input[2] != null)
                             {
-                                Console.Out.WriteLine("Turn limit set to " + turn_limit);
+                                bool parse_success = int.TryParse(split_input[2], out turn_limit);
+                                if (parse_success)
+                                {
+                                    Console.Out.WriteLine("Turn limit set to " + turn_limit);
+                                }//end if
+                                else
+                                    Console.Out.WriteLine("Could not set turn limit.");
                             }//end if
+
+                            //Make a temporary graph to create the chronology's order before presenting it.
+                            FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(graph);
+
+                            json_string = "";
+
+                            NarrationManager temp_manager = new NarrationManager(graph, temporalConstraintList);
+                            Story chronology = temp_manager.GenerateChronology(anchor_node, turn_limit);
+
+                            //The chronology is generated in segments, separated by user turns.
+                            //Create its text.
+                            //SpeakTransform t = new SpeakTransform(graph);
+                            //t.SpeakStorySegment(last_segment);
+                            //Story temp_story = new Story(chronology.GetLastSegment());
+
+                            if (json_mode)
+                                json_string = JsonConvert.SerializeObject(chronology);
                             else
-                                Console.Out.WriteLine("Could not set turn limit.");
+                            {
+                                json_string = JsonConvert.SerializeObject(chronology);
+                            }//end else
+
+                            main_story = chronology;
                         }//end if
-
-                        //Make a temporary graph to create the chronology's order before presenting it.
-                        FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(graph);
-
-                        json_string = "";
-
-                        NarrationManager temp_manager = new NarrationManager(temp_graph, temporalConstraintList);
-                        Story chronology = temp_manager.GenerateChronology(anchor_node, turn_limit, main_story);
-
-                        //The chronology is generated in segments, separated by user turns.
-                        //Create its text.
-                        SpeakTransform t = new SpeakTransform(graph);
-                        StorySegment last_segment = chronology.GetLastSegment();
-                        t.SpeakStorySegment(last_segment);
-                        //Story temp_story = new Story(chronology.GetLastSegment());
-
-                        if (json_mode)
-                            json_string = JsonConvert.SerializeObject(last_segment);
                         else
                         {
-                            SpeakTransform temp_transform = new SpeakTransform(graph);
-                            json_string = temp_transform.SpeakStorySegment(last_segment);
-                        }//end else
+                            //Get the turn limit
+                            int turn_limit = 0;
+                            if (split_input[2] != null)
+                            {
+                                bool parse_success = int.TryParse(split_input[2], out turn_limit);
+                                if (parse_success)
+                                {
+                                    Console.Out.WriteLine("Turn limit set to " + turn_limit);
+                                }//end if
+                                else
+                                    Console.Out.WriteLine("Could not set turn limit.");
+                            }//end if
 
-                        main_story = chronology;
+                            NarrationManager temp_manager = new NarrationManager(graph, temporalConstraintList);
+                            Story chronology = temp_manager.GenerateChronology(anchor_node, turn_limit, user_story: true);
+
+                            if (json_mode)
+                                json_string = JsonConvert.SerializeObject(chronology);
+                            else
+                            {
+                                json_string = JsonConvert.SerializeObject(chronology);
+                            }//end else
+                        }//end else
                     }//end if
                 }//end if
             }//end if
@@ -507,100 +532,6 @@ namespace Dialogue_Data_Entry
                 if (json_mode)
                     json_string = JsonConvert.SerializeObject(last_story);
             }//end if
-            //INTERWEAVE command.
-            // Creates two interwoven storylines.
-            /*else if (split_input[0].Equals("INTERWEAVE"))
-            {
-                List<String> return_string_1_components = new List<String>();
-                List<String> return_string_2_components = new List<String>();
-                string return_string_1 = "";
-                string return_string_2 = "";
-
-                int storyline_length = 10;
-                //1 Arctic exploration, 20 Desert exploration
-                int story_1_root = 200;
-                int story_2_root = 1;
-
-                //Create the first story in its entirety
-                //Set the node that the story will start at
-                graph.Root = graph.getFeature(story_1_root);
-                NarrationManager manager_1 = new NarrationManager(graph, temporalConstraintList);
-                for (int i = 0; i < storyline_length; i++)
-                {
-                    return_string_1_components.Add(" " + manager_1.DefaultNextTopicResponse() + "\n");
-                    manager_1.Turn += 1;
-                }//end for
-                //Get the topic history from the first narration as the reference list for the second narration.
-                List<Feature> storyline_1 = manager_1.TopicHistory;
-                //Remove 1st node, it is a duplicate.
-                storyline_1.RemoveAt(0);
-
-                //Ask the manager for the first narration which node would be best as a switch point.
-                Feature switch_point = manager_1.IdentifySwitchPoint(storyline_1);
-
-
-                //Create the reference list from the first storyline up through the switch point.
-                List<Feature> reference_list = new List<Feature>();
-                foreach (Feature story_feature in storyline_1)
-                {
-                    reference_list.Add(story_feature);
-                    if (story_feature.Id.Equals(switch_point.Id))
-                        break;
-                }//end foreach
-
-                //Create the second story in its entirety
-                //Set the node that the story will start at
-                graph.Root = graph.getFeature(story_2_root);
-                NarrationManager manager_2 = new NarrationManager(graph, temporalConstraintList);
-                for (int i = 0; i < storyline_length; i++)
-                {
-                    return_string_2_components.Add(" " + manager_2.DefaultNextTopicResponse(reference_list) + "\n");
-                    manager_2.Turn += 1;
-                }//end for
-                List<Feature> storyline_2 = manager_2.TopicHistory;
-                //Remove 1st node, it is a duplicate
-                storyline_2.RemoveAt(0);
-
-                bool after_switch_point = false;
-                //Compile both return strings from their components
-                int switch_point_index = storyline_1.IndexOf(switch_point);
-                //Get the part of storyline 1 up to the switch point
-                List<Feature> storyline_1_first_half = storyline_1.GetRange(0, switch_point_index + 1);
-                //Get part of storyline 1 after the switch point
-                List<Feature> storyline_1_second_half = storyline_1.GetRange(switch_point_index + 1, storyline_1.Count - switch_point_index - 1);
-                foreach (string component_1 in return_string_1_components)
-                {
-                    //At the switch point, add all of the second storyline.
-                    int component_index = return_string_1_components.IndexOf(component_1);
-                    if (component_index == switch_point_index)
-                    {
-                        //Foreshadow future switch point information.
-                        foreach (Feature first_half_node in storyline_1_first_half)
-                        {
-                            return_string += " " + manager_1.Foreshadow(first_half_node, storyline_1_second_half) + "\n";
-                        }//end foreach
-                        //return_string += " " + manager_1.Foreshadow(switch_point, storyline_1_second_half) + "\n";
-
-                        return_string += " SWITCH TO STORYLINE 2 \n {But now, let's talk about something else.}";
-                        foreach (string component_2 in return_string_2_components)
-                        {
-                            return_string += component_2;
-                        }//end foreach
-                        return_string += " SWITCH TO STORYLINE 1 \n";
-                        after_switch_point = true;
-                    }//end if
-                    return_string += component_1;
-                    if (after_switch_point && component_index < storyline_1.Count)
-                    {
-                        //List<Feature> temp_list = new List<Feature>();
-                        //temp_list.Add(switch_point);
-                        return_string += " " + manager_1.TieBack(storyline_1.ElementAt(component_index), storyline_1_first_half, storyline_1.ElementAt(component_index - 1)) + "\n";
-                    }//end if
-                }//end foreach
-
-                return_string += " : switch point: " + switch_point.Name + " \n";
-            }//end else if*/
-
             //Toggle JSON response outputs on or off.
             else if (split_input[0].ToLower().Equals("toggle_json"))
             {
@@ -887,8 +818,6 @@ namespace Dialogue_Data_Entry
 
             return json_string;
         }//end method ParseInputJSON
-
-
 
         bool json_mode = true;
         bool user_interest_mode = false;

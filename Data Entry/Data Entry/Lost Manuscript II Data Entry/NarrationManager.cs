@@ -172,15 +172,6 @@ namespace Dialogue_Data_Entry
             return return_story;
         }//end method MakeStoryFromList
 
-        public Story GenerateAnalogicalStory(Feature starting_anchor, List<Feature> anchor_nodes, int turn_limit)
-        {
-            Story analogical_story = new Story();
-
-
-
-            return analogical_story;
-        }//end method GenerateAnalogicalStory
-
         //Generate a single segment of the story starting from the an anchor node.
         //If there is a starting story, this arc will be the next segment of the story.
         public Story GenerateStorySegment(Feature anchor_node, int turn_limit, Story starting_story = null)
@@ -188,7 +179,7 @@ namespace Dialogue_Data_Entry
             return null;
         }//end method GenerateStory
 
-        public Story GenerateChronology(Feature anchor_node, int turn_limit, Story starting_story = null)
+        public Story GenerateChronology(Feature anchor_node, int turn_limit, Story starting_story = null, bool user_story = false)
         {
             Story chronology = new Story();
             if (starting_story != null)
@@ -196,80 +187,7 @@ namespace Dialogue_Data_Entry
                 chronology = starting_story;
             }//end if
 
-            //For certain story roles, relationships match up with start and end dates.
-            //For characters, transfer start and end dates to birth and death places.
-            if (anchor_node.story_role == 1)
-            {
-                //Look for a birth place by looking for the word "birth" in any neighbor relationship
-                Feature birth_place = null;
-                foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
-                {
-                    if (neighbor_tuple.Item3.Contains("birth"))
-                    {
-                        birth_place = neighbor_tuple.Item1;
-                        break;
-                    }//end if
-                }//end foreach
-                //If the birth place is not null, update its date
-                if (birth_place != null)
-                {
-                    birth_place.start_date = anchor_node.start_date;
-                    birth_place.end_date = anchor_node.start_date;
-                }//end if
-                //Look for a death place by looking for the word "death" in any neighbor relationship
-                Feature death_place = null;
-                foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
-                {
-                    if (neighbor_tuple.Item3.Contains("death"))
-                    {
-                        death_place = neighbor_tuple.Item1;
-                        break;
-                    }//end if
-                }//end foreach
-                //If the death place is not null, update its date
-                if (death_place != null)
-                {
-                    death_place.start_date = anchor_node.end_date;
-                    death_place.end_date = anchor_node.end_date;
-                }//end if
-            }//end if
-
-            //Find the neighboring node whose date most closely matches the anchor node's start date.
-            Feature closest_start_neighbor = null;
-            TimeSpan closest_time_difference = TimeSpan.MaxValue;
-            foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
-            {
-                TimeSpan time_difference = neighbor_tuple.Item1.start_date - anchor_node.start_date;
-                TimeSpan time_difference_2 = neighbor_tuple.Item1.end_date - anchor_node.start_date;
-
-                if (time_difference_2.Duration() < time_difference.Duration())
-                    time_difference = time_difference_2;
-
-                if (time_difference.Duration() < closest_time_difference.Duration())
-                {
-                    closest_start_neighbor = neighbor_tuple.Item1;
-                    closest_time_difference = time_difference;
-                }//end if
-            }//end foreach
-
-            //Find the neighboring node whose date most closely matches the anchor node's end date.
-            Feature closest_end_neighbor = null;
-            closest_time_difference = TimeSpan.MaxValue;
-            foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
-            {
-                TimeSpan time_difference = neighbor_tuple.Item1.end_date - anchor_node.end_date;
-                TimeSpan time_difference_2 = neighbor_tuple.Item1.start_date - anchor_node.end_date;
-
-                if (time_difference_2.Duration() < time_difference.Duration())
-                    time_difference = time_difference_2;
-
-                if (time_difference.Duration() < closest_time_difference.Duration())
-                {
-                    closest_end_neighbor = neighbor_tuple.Item1;
-                    closest_time_difference = time_difference;
-                }//end if
-            }//end foreach
-
+            //1. Create the entire story as one segment.
             //Add the anchor node to the story.
             AddNodeToStory(anchor_node, chronology);
             //Add the closest start neighbor to the story.
@@ -277,7 +195,7 @@ namespace Dialogue_Data_Entry
 
             Feature current_feature = null;
             int local_turn = 0;
-            while (local_turn < turn_limit)
+            while (local_turn < turn_limit - 1)
             {
                 //Find the next best topic for the chronology.
                 current_feature = getNextChronologicalTopic(anchor_node, anchor_node.start_date, anchor_node.end_date);
@@ -286,47 +204,203 @@ namespace Dialogue_Data_Entry
                 if (current_feature != null)
                     AddNodeToStory(current_feature, chronology);
 
-                //Try to tie back the most recent node to the previous segment of the story.
-                //Check the last sequence (the one prior to the current one). Decide whether or not a tie-back is possible.
-                List<StoryNode> second_to_last_segment = new List<StoryNode>();
-                if (chronology.GetSecondToLastSegment() != null)
-                    second_to_last_segment = chronology.GetSecondToLastSegment().GetSequence();
-
-                Feature segment_feature = null;
-                current_node = chronology.GetLastNode();
-                /*foreach (StoryNode segment_node in second_to_last_segment)
-                {
-                    segment_feature = feature_graph.getFeature(segment_node.graph_node_id);
-                    if (current_feature.getNeighbor(segment_feature.Id) != null || segment_feature.getNeighbor(current_feature.Id) != null)
-                    {
-                        current_node.AddStoryAct(Constant.TIEBACK, segment_feature.Id);
-                        break;
-                    }//end if
-                }//end foreach*/
-                List<StoryNode> remainder_story = chronology.GetRemainderStory();
-                foreach (StoryNode segment_node in remainder_story)
-                {
-                    segment_feature = feature_graph.getFeature(segment_node.graph_node_id);
-                    if (current_feature.getNeighbor(segment_feature.Id) != null || segment_feature.getNeighbor(current_feature.Id) != null)
-                    {
-                        current_node.AddStoryAct(Constant.TIEBACK, segment_feature.Id);
-                        break;
-                    }//end if
-                }//end foreach
-
                 local_turn += 1;
             }//end while
 
-            //Give a user turn to the last node in the story.
-            chronology.GetLastNode().AddStoryAct(
-                Constant.USERTURN
-                , chronology.GetLastNode().graph_node_id);
+            if (!user_story)
+            {
+                //2. Identify the switch point
+                int switch_point_turn = calculator.IdentifySwitchPointTurn(chronology);
 
-            //Add the closest end neighbor to the story.
-            //AddNodeToStory(closest_end_neighbor, chronology);
+                //3. Split the story at the switch point
+                chronology.SplitSegment(switch_point_turn);
+
+                //4. Place a user turn and switch-point narrative event at the last node of the first segment.
+                chronology.GetNodeAtTurn(switch_point_turn).AddStoryAct(Constant.SWITCHPOINT
+                    , chronology.GetNodeAtTurn(switch_point_turn).graph_node_id);
+                chronology.GetNodeAtTurn(switch_point_turn).AddStoryAct(Constant.USERTURN
+                    , chronology.GetNodeAtTurn(switch_point_turn).graph_node_id);
+            }//end if
+
+            //5. Go through each node and generate text.
+            Feature graph_node = null;
+            Feature target_node = null;
+            string node_text = "";
+            foreach (StorySegment temp_segment in chronology.StorySequence)
+            {
+                foreach (StoryNode temp_node in temp_segment.Sequence)
+                {
+                    graph_node = feature_graph.getFeature(temp_node.graph_node_id);
+                    node_text = graph_node.getSpeak(0);
+                    foreach (Tuple<string, int> story_act in temp_node.story_acts)
+                    {
+                        target_node = feature_graph.getFeature(story_act.Item2);
+                        if (story_act.Item1.Equals(Constant.LEADIN))
+                        {
+                            //node_text = LeadIn(graph_node) + node_text;
+                        }//end if
+                        else if (story_act.Item1.Equals(Constant.RELATIONSHIP))
+                        {
+                            node_text = Relationship(graph_node, target_node) + node_text;
+                        }//end else if
+                        else if (story_act.Item1.Equals(Constant.SWITCHPOINT))
+                        {
+                            //Get both halves of the story.
+                            StorySegment first_half = temp_segment;
+                            int asdasd = chronology.StorySequence.IndexOf(first_half);
+                            StorySegment second_half = chronology.StorySequence[chronology.StorySequence.IndexOf(first_half) + 1];
+
+                            //Build a list of tuples identifying nodes in the first half that relate to nodes in the second half.
+                            List<Tuple<Feature, Feature>> hint_ats = new List<Tuple<Feature, Feature>>();
+                            foreach (StoryNode first_half_node in first_half.Sequence)
+                            {
+                                Feature f_feature = feature_graph.getFeature(first_half_node.graph_node_id);
+                                foreach (StoryNode second_half_node in second_half.Sequence)
+                                {
+                                    Feature s_feature = feature_graph.getFeature(second_half_node.graph_node_id);
+                                    if ((!f_feature.getRelationshipNeighbor(s_feature.Id).Equals("")
+                                        && !(f_feature.getRelationshipNeighbor(s_feature.Id) == null))
+                                        || (!s_feature.getRelationshipNeighbor(f_feature.Id).Equals("")
+                                        && !(s_feature.getRelationshipNeighbor(f_feature.Id) == null)))
+                                    {
+                                        hint_ats.Add(new Tuple<Feature, Feature>(f_feature, s_feature));
+                                    }//end if
+                                }//end foreach
+                            }//end foreach
+
+                            int max_hit_ats = 4;
+                            node_text = node_text + "{We'll hear more about";
+                            //Pick node pairs to hint at until we run out or we reach the maximum.
+                            for (int i = 0; i < Math.Min(max_hit_ats, hint_ats.Count); i++)
+                            {
+                                Feature f_feature = hint_ats[hint_ats.Count - 1 - i].Item1;
+                                Feature s_feature = hint_ats[hint_ats.Count - 1 - i].Item2;
+                                //Make the hint
+                                string rel = "";
+                                if (!f_feature.getRelationshipNeighbor(s_feature.Id).Equals("")
+                                        && !(f_feature.getRelationshipNeighbor(s_feature.Id) == null))
+                                {
+                                    rel = f_feature.getRelationshipNeighbor(s_feature.Id);
+                                }//end if
+                                else if (!s_feature.getRelationshipNeighbor(f_feature.Id).Equals("")
+                                        && !(s_feature.getRelationshipNeighbor(f_feature.Id) == null))
+                                {
+                                    rel = s_feature.getRelationshipNeighbor(f_feature.Id);
+                                }//end else if
+                                node_text = node_text + ", " + f_feature.Name + " " + rel;
+
+                                //Make sure the node in the second half of the storyline resolves back to the node
+                                //in the first half of the storyline.
+                                chronology.GetNodeByGraphId(s_feature.Id).AddStoryAct(Constant.RESOLVE, f_feature.Id);
+                            }//end for
+                            node_text = node_text + " later. But for now, let's talk about something else.} ";
+                        }//end else if
+                        else if (story_act.Item1.Equals(Constant.USERTURN))
+                        {
+                            node_text = node_text + "{What would you like to hear about?} ";
+                        }//end else if
+                        else if (story_act.Item1.Equals(Constant.RESOLVE))
+                        {
+                            node_text = node_text + Resolve(graph_node, target_node);
+                        }//end else if
+                        else if (story_act.Item1.Equals(Constant.TIEBACK))
+                        {
+                            node_text = node_text + TieBack(graph_node, target_node);
+                        }//end else if
+                    }//end foreach
+                    temp_node.text = node_text;
+                }//end foreach
+            
+            }//end foreach
 
             return chronology;
         }//end method GenerateChronology
+
+        private string TieBack(Feature current_feature, Feature past_feature)
+        {
+            string return_string = "";
+            // Check both directions for a non-blank relationship to use
+            if (!current_feature.getRelationshipNeighbor(past_feature.Id).Equals("")
+                && !(current_feature.getRelationshipNeighbor(past_feature.Id) == null))
+            {
+                return_string = "{Do you remember " + past_feature.Name + "? Well, " + current_feature.Name + " " + current_feature.getRelationshipNeighbor(past_feature.Id) + " "
+                    + past_feature.Name + ".} ";
+            }//end if
+            else if (!past_feature.getRelationshipNeighbor(current_feature.Id).Equals("")
+                && !(past_feature.getRelationshipNeighbor(current_feature.Id) == null))
+            {
+                return_string = "{And do you remember " + past_feature.Name + "? Well, " + past_feature.Name + " " + past_feature.getRelationshipNeighbor(current_feature.Id) + " "
+                    + current_feature.Name + ".} ";
+            }//end if
+
+            return return_string;
+        }//end method TieBack
+
+        private string Resolve(Feature current_feature, Feature past_feature)
+        {
+            string return_string = "";
+
+            if (!current_feature.getRelationshipNeighbor(past_feature.Id).Equals("")
+                 && !(current_feature.getRelationshipNeighbor(past_feature.Id) == null))
+            {
+                return_string = "{And as it turns out, " + current_feature.Name + " " + current_feature.getRelationshipNeighbor(past_feature.Id) + " "
+                    + past_feature.Name + ".} ";
+            }//end if
+            else if (!past_feature.getRelationshipNeighbor(current_feature.Id).Equals("")
+                && !(past_feature.getRelationshipNeighbor(current_feature.Id) == null))
+            {
+                return_string = "{If you recall " + past_feature.Name + ", it turns out that " + past_feature.Name + " " + past_feature.getRelationshipNeighbor(current_feature.Id) + " "
+                    + current_feature.Name + ".} ";
+            }//end if
+
+            return return_string;
+        }//end method Resolve
+
+        private string LeadIn(Feature node)
+        {
+            string return_string = "";
+
+            string node_name = node.Name;
+
+            //A set of lead-in statements for non-novel nodes
+            List<string> non_novel_lead_in_statements = new List<string>();
+            non_novel_lead_in_statements.Add("{Have you heard of " + node_name + "?} ");
+            non_novel_lead_in_statements.Add("{Let's talk about " + node_name + ".} ");
+            non_novel_lead_in_statements.Add("{I'll mention " + node_name + " real quick.} ");
+            non_novel_lead_in_statements.Add("{So, about " + node_name + ".} ");
+            non_novel_lead_in_statements.Add("{Now then, about " + node_name + ".} ");
+            non_novel_lead_in_statements.Add("{Let's talk about " + node_name + " for a moment.} ");
+            non_novel_lead_in_statements.Add("{Have I mentioned " + node_name + "?} ");
+            non_novel_lead_in_statements.Add("{Now, about " + node_name + ".} ");
+            non_novel_lead_in_statements.Add("{Now, let's talk about " + node_name + ".} ");
+            non_novel_lead_in_statements.Add("{I should touch on " + node_name + ".} ");
+
+            //Randomly choose a lead-in statement for the given node.
+            Random rand = new Random();
+            return_string = non_novel_lead_in_statements[rand.Next(non_novel_lead_in_statements.Count)];
+
+            return return_string;
+        }//end method LeadIn
+        private string Relationship(Feature current_node, Feature target_node)
+        {
+            string relationship_statement = "";
+
+            if (current_node.getRelationshipNeighbor(target_node.Id) != null
+                && current_node.getRelationshipNeighbor(target_node.Id) != "")
+            {
+                relationship_statement = "{" + current_node.Name + " " + current_node.getRelationshipNeighbor(target_node.Id)
+                    + " " + target_node.Name + ".} ";
+            }//end if
+            else if (target_node.getRelationshipNeighbor(current_node.Id) != null
+                && target_node.getRelationshipNeighbor(current_node.Id) != "")
+            {
+                relationship_statement = "{" + target_node.Name + " " + target_node.getRelationshipNeighbor(current_node.Id)
+                    + " " + current_node.Name + ".} ";
+            }//end else if
+
+            return relationship_statement;
+        }//end method Relationship
+
 
         public Feature getNextChronologicalTopic(Story story_in, DateTime start_date, DateTime end_date)
         {

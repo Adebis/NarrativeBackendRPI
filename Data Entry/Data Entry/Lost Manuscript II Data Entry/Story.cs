@@ -46,8 +46,8 @@ namespace Dialogue_Data_Entry
         {
             if (story_sequence.Count > 0)
             {
-                current_turn += 1;
                 story_sequence.Last<StorySegment>().AddStoryNode(new_story_node);
+                current_turn += 1;
             }//end if
             else
                 BeginStorySegment(new_story_node);
@@ -61,6 +61,38 @@ namespace Dialogue_Data_Entry
             last_segment_turn = story_sequence.Last<StorySegment>().starting_turn;
             last_anchor_id = anchor_node.graph_node_id;
         }//end method BeginStorySegment
+
+        //Split the segment at the given story turn into two segments.
+        //The point at which it splits becomes the end of the first segment.
+        public void SplitSegment(int turn_in)
+        {
+            StorySegment to_split = null;
+            //First, find the segment at the given turn.
+            foreach (StorySegment temp_segment in story_sequence)
+            {
+                if (temp_segment.starting_turn < turn_in)
+                {
+                    to_split = temp_segment;
+                }//end if
+            }//end foreach
+
+            //Split the segment in half.
+            List<StoryNode> first_half_sequence = to_split.Sequence.GetRange(0, turn_in - to_split.starting_turn + 1);
+            StorySegment first_half = new StorySegment(first_half_sequence, to_split.starting_turn);
+            List<StoryNode> second_half_sequence = to_split.Sequence.GetRange(turn_in + 1, to_split.length - first_half_sequence.Count);
+            StorySegment second_half = new StorySegment(second_half_sequence, turn_in + 1);
+
+            int to_split_index = story_sequence.IndexOf(to_split);
+            //Remove segment we've split from the sequence
+            story_sequence.RemoveAt(to_split_index);
+            //Insert the first half at the index.
+            story_sequence.Insert(to_split_index, first_half);
+            //Insert the second half after the first.
+            if (to_split_index + 1 >= story_sequence.Count)
+                story_sequence.Add(second_half);
+            else
+                story_sequence.Insert(to_split_index + 1, second_half);
+        }//end method SplitSegment
 
         public StoryNode GetLastNode()
         {
@@ -171,6 +203,16 @@ namespace Dialogue_Data_Entry
         {
             return GetNodeSequence()[turn];
         }//end method GetNodeAtTurn
+
+        public StoryNode GetNodeByGraphId(int graph_id)
+        {
+            foreach (StoryNode temp_node in GetNodeSequence())
+            {
+                if (temp_node.graph_node_id == graph_id)
+                    return temp_node;
+            }//end foreach
+            return null;
+        }//end method GetNodeByGraphId
 
         public List<StorySegment> StorySequence
         {

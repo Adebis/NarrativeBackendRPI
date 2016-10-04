@@ -25,6 +25,11 @@ namespace Dialogue_Data_Entry
             anchor_node_id = anchor_node.graph_node_id;
             starting_turn = 0;
         }//end constructor StorySegment
+        public StorySegment(List<StoryNode> starting_sequence, int start_turn_in)
+        {
+            sequence = starting_sequence;
+            starting_turn = start_turn_in;
+        }//end constructor StorySegment
 
         public void AddStoryNode(StoryNode to_add)
         {
