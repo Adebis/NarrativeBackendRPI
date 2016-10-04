@@ -70,7 +70,7 @@ namespace Dialogue_Data_Entry
             //First, find the segment at the given turn.
             foreach (StorySegment temp_segment in story_sequence)
             {
-                if (temp_segment.starting_turn < turn_in)
+                if (temp_segment.starting_turn <= turn_in)
                 {
                     to_split = temp_segment;
                 }//end if

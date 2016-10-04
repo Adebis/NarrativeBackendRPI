@@ -52,8 +52,8 @@ namespace Dialogue_Data_Entry
 
 		//NOTE: need to use (/) as path separator because it works on both mac and windows
 
-        //private string defaultFilename = @"/roman_empire_1000.xml";
-        private string defaultFilename = @"/roman_empire_1000_v3.xml";
+        private string defaultFilename = @"/roman_empire_1000_v2.xml";
+        //private string defaultFilename = @"/roman_empire_1000_v3.xml";
 
 		private string constraintFilename = @"/constraint.txt";
 

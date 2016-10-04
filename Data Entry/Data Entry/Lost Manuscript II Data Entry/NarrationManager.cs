@@ -195,15 +195,17 @@ namespace Dialogue_Data_Entry
 
             Feature current_feature = null;
             int local_turn = 0;
+            Feature last_node = anchor_node;
             while (local_turn < turn_limit - 1)
             {
                 //Find the next best topic for the chronology.
-                current_feature = getNextChronologicalTopic(anchor_node, anchor_node.start_date, anchor_node.end_date);
+                current_feature = getNextChronologicalTopic(last_node, anchor_node.start_date, anchor_node.end_date);
                 //Add it to the story.
-                StoryNode current_node = null;
                 if (current_feature != null)
+                {
                     AddNodeToStory(current_feature, chronology);
-
+                    last_node = current_feature;
+                }//end if
                 local_turn += 1;
             }//end while
 
