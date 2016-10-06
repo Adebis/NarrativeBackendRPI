@@ -182,10 +182,10 @@ namespace Dialogue_Data_Entry
         public Story GenerateChronology(Feature anchor_node, int turn_limit, Story starting_story = null, bool user_story = false)
         {
             Story chronology = new Story();
-            if (starting_story != null)
+            /*if (starting_story != null)
             {
                 chronology = starting_story;
-            }//end if
+            }//end if*/
 
             //1. Create the entire story as one segment.
             //Add the anchor node to the story.
@@ -243,7 +243,7 @@ namespace Dialogue_Data_Entry
                         }//end if
                         else if (story_act.Item1.Equals(Constant.RELATIONSHIP))
                         {
-                            node_text = Relationship(graph_node, target_node) + node_text;
+                            node_text = "<color=#0000ffff>" + Relationship(graph_node, target_node) + "</color>" + node_text;
                         }//end else if
                         else if (story_act.Item1.Equals(Constant.SWITCHPOINT))
                         {
@@ -271,7 +271,7 @@ namespace Dialogue_Data_Entry
                             }//end foreach
 
                             int max_hit_ats = 4;
-                            node_text = node_text + "{We'll hear more about";
+                            node_text = node_text + "<color=#800080ff>We'll hear more about";
                             //Pick node pairs to hint at until we run out or we reach the maximum.
                             for (int i = 0; i < Math.Min(max_hit_ats, hint_ats.Count); i++)
                             {
@@ -295,19 +295,19 @@ namespace Dialogue_Data_Entry
                                 //in the first half of the storyline.
                                 chronology.GetNodeByGraphId(s_feature.Id).AddStoryAct(Constant.RESOLVE, f_feature.Id);
                             }//end for
-                            node_text = node_text + " later. But for now, let's talk about something else.} ";
+                            node_text = node_text + " later. But for now, let's talk about something else.</color> ";
                         }//end else if
                         else if (story_act.Item1.Equals(Constant.USERTURN))
                         {
-                            node_text = node_text + "{What would you like to hear about?} ";
+                            node_text = node_text + "What would you like to hear about? ";
                         }//end else if
                         else if (story_act.Item1.Equals(Constant.RESOLVE))
                         {
-                            node_text = node_text + Resolve(graph_node, target_node);
+                            node_text = node_text + "<color=#ff00ffff>" + Resolve(graph_node, target_node) + "</color>";
                         }//end else if
                         else if (story_act.Item1.Equals(Constant.TIEBACK))
                         {
-                            node_text = node_text + TieBack(graph_node, target_node);
+                            node_text = node_text + "<color=#ffa500ff>" + TieBack(graph_node, target_node) + "</color>";
                         }//end else if
                     }//end foreach
                     temp_node.text = node_text;
@@ -325,14 +325,14 @@ namespace Dialogue_Data_Entry
             if (!current_feature.getRelationshipNeighbor(past_feature.Id).Equals("")
                 && !(current_feature.getRelationshipNeighbor(past_feature.Id) == null))
             {
-                return_string = "{Do you remember " + past_feature.Name + "? Well, " + current_feature.Name + " " + current_feature.getRelationshipNeighbor(past_feature.Id) + " "
-                    + past_feature.Name + ".} ";
+                return_string = "Do you remember " + past_feature.Name + "? Well, " + current_feature.Name + " " + current_feature.getRelationshipNeighbor(past_feature.Id) + " "
+                    + past_feature.Name + ". ";
             }//end if
             else if (!past_feature.getRelationshipNeighbor(current_feature.Id).Equals("")
                 && !(past_feature.getRelationshipNeighbor(current_feature.Id) == null))
             {
-                return_string = "{And do you remember " + past_feature.Name + "? Well, " + past_feature.Name + " " + past_feature.getRelationshipNeighbor(current_feature.Id) + " "
-                    + current_feature.Name + ".} ";
+                return_string = "And do you remember " + past_feature.Name + "? Well, " + past_feature.Name + " " + past_feature.getRelationshipNeighbor(current_feature.Id) + " "
+                    + current_feature.Name + ". ";
             }//end if
 
             return return_string;
@@ -345,14 +345,14 @@ namespace Dialogue_Data_Entry
             if (!current_feature.getRelationshipNeighbor(past_feature.Id).Equals("")
                  && !(current_feature.getRelationshipNeighbor(past_feature.Id) == null))
             {
-                return_string = "{And as it turns out, " + current_feature.Name + " " + current_feature.getRelationshipNeighbor(past_feature.Id) + " "
-                    + past_feature.Name + ".} ";
+                return_string = "And as it turns out, " + current_feature.Name + " " + current_feature.getRelationshipNeighbor(past_feature.Id) + " "
+                    + past_feature.Name + ". ";
             }//end if
             else if (!past_feature.getRelationshipNeighbor(current_feature.Id).Equals("")
                 && !(past_feature.getRelationshipNeighbor(current_feature.Id) == null))
             {
-                return_string = "{If you recall " + past_feature.Name + ", it turns out that " + past_feature.Name + " " + past_feature.getRelationshipNeighbor(current_feature.Id) + " "
-                    + current_feature.Name + ".} ";
+                return_string = "If you recall " + past_feature.Name + ", it turns out that " + past_feature.Name + " " + past_feature.getRelationshipNeighbor(current_feature.Id) + " "
+                    + current_feature.Name + ". ";
             }//end if
 
             return return_string;
@@ -390,14 +390,14 @@ namespace Dialogue_Data_Entry
             if (current_node.getRelationshipNeighbor(target_node.Id) != null
                 && current_node.getRelationshipNeighbor(target_node.Id) != "")
             {
-                relationship_statement = "{" + current_node.Name + " " + current_node.getRelationshipNeighbor(target_node.Id)
-                    + " " + target_node.Name + ".} ";
+                relationship_statement = current_node.Name + " " + current_node.getRelationshipNeighbor(target_node.Id)
+                    + " " + target_node.Name + ". ";
             }//end if
             else if (target_node.getRelationshipNeighbor(current_node.Id) != null
                 && target_node.getRelationshipNeighbor(current_node.Id) != "")
             {
-                relationship_statement = "{" + target_node.Name + " " + target_node.getRelationshipNeighbor(current_node.Id)
-                    + " " + current_node.Name + ".} ";
+                relationship_statement = target_node.Name + " " + target_node.getRelationshipNeighbor(current_node.Id)
+                    + " " + current_node.Name + ". ";
             }//end else if
 
             return relationship_statement;
