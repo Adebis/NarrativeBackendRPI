@@ -217,6 +217,12 @@ namespace Dialogue_Data_Entry
                         //If the year is 0, default it to 1.
                         if (start_year == 0)
                             start_year = 1;
+
+						//for when DBpedia screws up and joins two years, take part of it
+						if(start_year > 10000000) {
+							start_year = start_year % 10000;
+						}
+
                         //If the parse does work, the start date is the first day of the year identified.
                         start_date = new DateTime(start_year, 1, 1);
                         //Now that we have a start date, we are done.
