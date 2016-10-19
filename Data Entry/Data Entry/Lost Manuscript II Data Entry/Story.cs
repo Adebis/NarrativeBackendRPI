@@ -53,6 +53,19 @@ namespace Dialogue_Data_Entry
                 BeginStorySegment(new_story_node);
         }//end method AddStoryNode
 
+        public void AddStorySegment(StorySegment new_segment)
+        {
+            story_sequence.Add(new_segment);
+        }//end method AddStorySegment
+
+        public void AppendStorySegment(StorySegment new_segment)
+        {
+            foreach (StoryNode node in new_segment.GetSequence())
+            {
+                AddStoryNode(node);
+            }//end foreach
+        }//end method AppendStorySegment
+
         public void BeginStorySegment(StoryNode anchor_node)
         {
             story_sequence.Add(new StorySegment(anchor_node));

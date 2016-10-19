@@ -410,7 +410,6 @@ namespace Dialogue_Data_Entry
 
                             NarrationManager temp_manager = new NarrationManager(graph, temporalConstraintList);
                             Story chronology = temp_manager.GenerateChronology(anchor_node, 5, starting_story: main_story, user_story: true);
-
                             if (json_mode)
                                 json_string = JsonConvert.SerializeObject(chronology);
                             else

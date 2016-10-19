@@ -223,6 +223,26 @@ namespace Dialogue_Data_Entry
                 chronology.GetNodeAtTurn(switch_point_turn).AddStoryAct(Constant.USERTURN
                     , chronology.GetNodeAtTurn(switch_point_turn).graph_node_id);
             }//end if
+            else if (user_story)
+            {
+                foreach (StoryNode temp_node in chronology.GetNodeSequence())
+                {
+                    Feature temp_feat = feature_graph.getFeature(temp_node.graph_node_id);
+                    foreach (StoryNode prev_node in starting_story.StorySequence[0].GetSequence())
+                    {
+                        Feature prev_feat = feature_graph.getFeature(prev_node.graph_node_id);
+                        if (temp_feat.getNeighbor(prev_feat.Id) != null)
+                        {
+                            //If the node in the secondary storyline is related to a node in the
+                            //first half of the primary storyline, make a tie back.
+                            temp_node.AddStoryAct(Constant.TIEBACK, prev_feat.Id);
+                            //Add only the first one of these instances per secondary story node.
+                            break;
+                        }//end if
+                    }//end foreach
+                }//end foreach
+                chronology.AppendStorySegment(starting_story.GetLastSegment());
+            }//end else if
 
             //5. Go through each node and generate text.
             Feature graph_node = null;
@@ -271,7 +291,7 @@ namespace Dialogue_Data_Entry
                             }//end foreach
 
                             int max_hit_ats = 4;
-                            node_text = node_text + "<color=#800080ff>We'll hear more about";
+                            node_text = node_text + "<color=#800080ff> We'll hear more about";
                             //Pick node pairs to hint at until we run out or we reach the maximum.
                             for (int i = 0; i < Math.Min(max_hit_ats, hint_ats.Count); i++)
                             {
@@ -325,13 +345,13 @@ namespace Dialogue_Data_Entry
             if (!current_feature.getRelationshipNeighbor(past_feature.Id).Equals("")
                 && !(current_feature.getRelationshipNeighbor(past_feature.Id) == null))
             {
-                return_string = "Do you remember " + past_feature.Name + "? Well, " + current_feature.Name + " " + current_feature.getRelationshipNeighbor(past_feature.Id) + " "
+                return_string = " Do you remember " + past_feature.Name + "? Well, " + current_feature.Name + " " + current_feature.getRelationshipNeighbor(past_feature.Id) + " "
                     + past_feature.Name + ". ";
             }//end if
             else if (!past_feature.getRelationshipNeighbor(current_feature.Id).Equals("")
                 && !(past_feature.getRelationshipNeighbor(current_feature.Id) == null))
             {
-                return_string = "And do you remember " + past_feature.Name + "? Well, " + past_feature.Name + " " + past_feature.getRelationshipNeighbor(current_feature.Id) + " "
+                return_string = " And do you remember " + past_feature.Name + "? Well, " + past_feature.Name + " " + past_feature.getRelationshipNeighbor(current_feature.Id) + " "
                     + current_feature.Name + ". ";
             }//end if
 
@@ -345,13 +365,13 @@ namespace Dialogue_Data_Entry
             if (!current_feature.getRelationshipNeighbor(past_feature.Id).Equals("")
                  && !(current_feature.getRelationshipNeighbor(past_feature.Id) == null))
             {
-                return_string = "And as it turns out, " + current_feature.Name + " " + current_feature.getRelationshipNeighbor(past_feature.Id) + " "
+                return_string = " And as it turns out, " + current_feature.Name + " " + current_feature.getRelationshipNeighbor(past_feature.Id) + " "
                     + past_feature.Name + ". ";
             }//end if
             else if (!past_feature.getRelationshipNeighbor(current_feature.Id).Equals("")
                 && !(past_feature.getRelationshipNeighbor(current_feature.Id) == null))
             {
-                return_string = "If you recall " + past_feature.Name + ", it turns out that " + past_feature.Name + " " + past_feature.getRelationshipNeighbor(current_feature.Id) + " "
+                return_string = " If you recall " + past_feature.Name + ", it turns out that " + past_feature.Name + " " + past_feature.getRelationshipNeighbor(current_feature.Id) + " "
                     + current_feature.Name + ". ";
             }//end if
 
