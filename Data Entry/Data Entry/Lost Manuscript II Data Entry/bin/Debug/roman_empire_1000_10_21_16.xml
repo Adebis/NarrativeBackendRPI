@@ -1746,7 +1746,8 @@
         <neighbor dest="392" relationship="place of birth" weight="0"/>
         <neighbor dest="417" relationship="successor" weight="0"/>
       </neighbors>
-      <geodata/>
+      <geodata>
+	  </geodata>
       <timedata>
         <timeobj label="birth date" value="-063-09-23"/>
         <timeobj label="death date" value="--08-19"/>
