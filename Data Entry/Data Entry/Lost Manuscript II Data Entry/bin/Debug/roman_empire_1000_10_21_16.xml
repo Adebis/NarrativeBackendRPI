@@ -1747,6 +1747,7 @@
         <neighbor dest="417" relationship="successor" weight="0"/>
       </neighbors>
       <geodata>
+		<coordinates lat="44.4184" lon="12.2035"/>
 	  </geodata>
       <timedata>
         <timeobj label="birth date" value="-063-09-23"/>
