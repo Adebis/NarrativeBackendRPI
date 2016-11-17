@@ -2,6 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 using AIMLbot;
 
 namespace Dialogue_Data_Entry
@@ -153,12 +159,83 @@ namespace Dialogue_Data_Entry
                     new_story_node.story_acts.Add(new Tuple<string, int>(Constant.LEADIN, graph_node.Id));
                 }//end else
 
+                //Look for an analogy between this node and any previous node.
+                List<int> story_history = story.GetHistory();
+                foreach (int node_id in story_history)
+                {
+                    string analogy = RemoteAnalogy(graph_node, feature_graph.getFeature(node_id));
+                    if (analogy != "")
+                        Console.WriteLine(analogy);
+                }//end foreach
+
             }//end if
 
             story.AddStoryNode(new_story_node);
 
             return story;
         }//end method AddNodeToStory
+
+        //Make an analogy using the remote python-based analogy code.
+        //Source feature is the feature currently being talked about in
+        //the presentation. Target feature is the feature not currently being
+        //talked about that we wish to draw an analogy with. 
+        public string RemoteAnalogy(Feature source, Feature target)
+        {
+            string analogy = "";
+
+            using (var client = new HttpClient())
+            {
+                string url = "http://localhost:5000/get_analogy";
+                string url_parameters = "?id=" + source.Id.ToString()
+                    + "&filename=" + Uri.EscapeDataString(XMLFilerForFeatureGraph.current_file)
+                    + "&target_id=" + target.Id.ToString();// +"&port=9000";
+
+                //TODO: Send entire file
+
+                client.BaseAddress = new Uri(url);
+                client.DefaultRequestHeaders.Accept.Clear();
+                client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                //string http_get_text = "127.0.0.1:5000/get_analogy?id=" + feat.Id.ToString();// + "&port=5001";
+
+                HttpResponseMessage response = client.GetAsync(url_parameters).Result;
+
+                //Read the json string from the http response content
+                Task<string> read_string_task = response.Content.ReadAsStringAsync();
+                read_string_task.Wait(100000);
+
+                string content_string = read_string_task.Result;
+                JObject json_response = JObject.Parse(content_string);
+
+                //Check the n_rating
+                JToken n_rating = json_response["n_rating"];
+                //If it is less than 0.7, don't use this analogy.
+                double n_rating_numerical = 0;
+                double.TryParse(n_rating.ToString(), out n_rating_numerical);
+                if (n_rating_numerical < 0.5)
+                    return "";
+
+                //Check for empty evidence.
+                JToken evidence_list = json_response["evidence"];
+                if (!evidence_list.HasValues)
+                    return "";
+
+                string explanation = json_response["explanation"].ToString();
+
+                //JsonSerializer temp_serializer = new JsonSerializer();
+                //var deserialized_response = temp_serializer.Deserialize(json_response);
+
+                Console.WriteLine("Response to remote analogy: " + explanation);
+
+                analogy = explanation;
+
+                /*if (response.IsSuccessStatusCode)
+                {
+                }//end if*/
+            }//end using
+
+            return analogy;
+        }//end method RemoteAnalogy
 
         public Story MakeStoryFromList(List<Feature> story_features)
         {

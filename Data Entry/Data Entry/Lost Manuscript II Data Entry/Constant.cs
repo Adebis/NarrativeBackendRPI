@@ -48,7 +48,7 @@ namespace Dialogue_Data_Entry
         public const string HIERACHY = "hierachy";
         public const string FUN_FACT = "Fun Fact";
 
-        //Story acts
+        //Narrative Event
         public const string LEADIN = "lead-in";
         public const string RELATIONSHIP = "relationship";
         public const string USERTURN = "user-turn";
@@ -57,6 +57,7 @@ namespace Dialogue_Data_Entry
         public const string TIEBACK = "tie-back";
         public const string RESOLVE = "resolve";
         public const string SWITCHPOINT = "switch-point";
+        public const string ANALOGY = "analogy";
 
         //Entity types
         public const string CHARACTER = "character";
