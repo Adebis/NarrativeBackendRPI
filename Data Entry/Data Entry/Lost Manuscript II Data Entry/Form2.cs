@@ -33,23 +33,36 @@ namespace Dialogue_Data_Entry
 		public Form2(FeatureGraph myGraph, List<TemporalConstraint> myTemporalConstraintList, Form1 parent_f1)
 		{
 			InitializeComponent();
-			//pre-process shortest distance
-			myGraph.getMaxDistance();           
-			this.featGraph = myGraph;
-			this.temporalConstraintList = myTemporalConstraintList;
-            this.parent_form1 = parent_f1;
-			//clear discussedAmount
-			for (int x = 0; x < featGraph.Features.Count(); x++)
-			{
-				featGraph.Features[x].DiscussedAmount = 0;
-			}
-			featureWeight = .6f;
-			tagKeyWeight = .2f;
-			chatBox.AppendText("Hello, and Welcome to the Query. \r\n");
+
+            Initialize(myGraph, myTemporalConstraintList, parent_f1);
+
+            //Immediately start the server
+            StartServer();
 
 			inputBox.KeyDown += new KeyEventHandler(this.inputBox_KeyDown);
 			this.FormClosing += Window_Closing;
 		}
+
+        public void Initialize(FeatureGraph my_graph, List<TemporalConstraint> myTemporalConstraintList, Form1 parent_f1)
+        {
+            myHandler = null;
+            //pre-process shortest distance
+            my_graph.getMaxDistance();
+            this.featGraph = my_graph;
+            this.temporalConstraintList = myTemporalConstraintList;
+            this.parent_form1 = parent_f1;
+            //clear discussedAmount
+            for (int x = 0; x < featGraph.Features.Count(); x++)
+            {
+                featGraph.Features[x].DiscussedAmount = 0;
+            }
+            featureWeight = .6f;
+            tagKeyWeight = .2f;
+
+            string server_status = "";
+            server_status = server == null ? "false" : "true";
+            chatBox.AppendText("Hello, and Welcome to the Query. Server running: " + server_status + " \r\n");
+        }//end method Initialize
 
 		public void AddChatBoxMessage(string value) {
 			if (InvokeRequired) {
@@ -76,7 +89,7 @@ namespace Dialogue_Data_Entry
 		{
 			string query = inputBox.Text;
 			if (myHandler == null)
-				myHandler = new QueryHandler(featGraph, temporalConstraintList, parent_form1);
+				myHandler = new QueryHandler(featGraph, temporalConstraintList);
 
 			if (EnglishRadioButton.Checked)
 			{
@@ -126,7 +139,7 @@ namespace Dialogue_Data_Entry
 		{
 			//set up query handler
 			if (myHandler == null)
-                myHandler = new QueryHandler(featGraph, temporalConstraintList, parent_form1);
+                myHandler = new QueryHandler(featGraph, temporalConstraintList);
 
 			//Start new thread for server
 			//this.serverThread = new Thread(this.DoWork);
@@ -151,6 +164,39 @@ namespace Dialogue_Data_Entry
 			chatBox.AppendText("Local IP address is: " + localIP + "\n");
 
 		}
+
+        public void StartServer()
+        {
+            //set up query handler
+            if (myHandler == null)
+                myHandler = new QueryHandler(featGraph, temporalConstraintList);
+
+            //Start new thread for server
+            //this.serverThread = new Thread(this.DoWork);
+            //this.serverThread.Start();
+
+            chatBox.AppendText("Starting server.\n");
+
+            //Start the HTTP Server
+            string myFolder = Directory.GetCurrentDirectory();
+            int port = 8084;
+
+            server = new SimpleHTTPServer(myFolder, port, myHandler, AddChatBoxMessage);
+
+            IPHostEntry host;
+            string localIP = "<UNKNOWN>";
+            host = Dns.GetHostEntry(Dns.GetHostName());
+            foreach (IPAddress ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    localIP = ip.ToString();
+                }
+            }
+
+            chatBox.AppendText("HTTP Server is running on port: " + server.Port.ToString() + "\n");
+            chatBox.AppendText("Local IP address is: " + localIP + "\n");
+        }//end method StartServer
 
 		public void DoWork()
 		{
@@ -249,7 +295,7 @@ namespace Dialogue_Data_Entry
 				}
 				*/
 				if (myHandler == null)
-                    myHandler = new QueryHandler(featGraph, temporalConstraintList, parent_form1);
+                    myHandler = new QueryHandler(featGraph, temporalConstraintList);
 				Console.WriteLine("Query: " + query);
 				
 				this.Invoke((MethodInvoker)delegate

@@ -188,7 +188,8 @@ namespace Dialogue_Data_Entry
             clearAllTextBoxes();
             this.Text = "Data Entry - Concept Graph : " + file_name;
             //Now that there is a new featureGraph, open a new query window
-            openQueryWindow();
+            //openQueryWindow();
+            RefreshQueryWindow();
         }//end method openXML
 
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
@@ -952,6 +953,12 @@ namespace Dialogue_Data_Entry
 			myQuery = new Form2(featGraph, temporalConstraintList, this);
 			myQuery.Show();
 		}//end method openQueryWindow
+        //Refreshes the Query window
+        private void RefreshQueryWindow()
+        {
+            featGraph.setMaxDepth(-1);
+            myQuery.Initialize(featGraph, temporalConstraintList, this);
+        }//end method RefreshQueryWindow
 
 		// add neighbor checkedListBox method (+ parent)
 		private void childrenCheckedListBox_ItemCheck(Object sender, ItemCheckEventArgs e)

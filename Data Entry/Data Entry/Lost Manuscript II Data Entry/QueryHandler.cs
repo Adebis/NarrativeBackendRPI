@@ -149,9 +149,9 @@ namespace Dialogue_Data_Entry
 		/// Create a converter for the specified XML file
 		/// </summary>
 		/// <param name="xmlFilename"></param>
-		public QueryHandler(FeatureGraph graph, List<TemporalConstraint> myTemporalConstraintList, Form1 parent_f1)
+		public QueryHandler(FeatureGraph graph, List<TemporalConstraint> myTemporalConstraintList)
 		{
-            parent_form1 = parent_f1;
+            //parent_form1 = parent_f1;
 			// Load the AIML Bot
 			//this.bot = new Bot();
 			this.temporalConstraintList = myTemporalConstraintList;
