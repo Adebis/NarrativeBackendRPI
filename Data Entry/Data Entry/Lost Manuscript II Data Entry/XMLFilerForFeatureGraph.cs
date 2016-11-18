@@ -157,7 +157,7 @@ namespace Dialogue_Data_Entry
 					neighbors = neighbors[0].SelectNodes("neighbor");
 					foreach (XmlNode neighborNode in neighbors) {
 						int neighbor_id = Convert.ToInt32(neighborNode.Attributes["dest"].Value);
-						double weight = Convert.ToDouble(neighborNode.Attributes["weight"].Value);
+                        double weight = 0;  // Convert.ToDouble(neighborNode.Attributes["weight"].Value);
 						string relationship = "";
 						if (neighborNode.Attributes["relationship"] != null) {
 							relationship = unEscapeInvalidXML(Convert.ToString(neighborNode.Attributes["relationship"].Value));
