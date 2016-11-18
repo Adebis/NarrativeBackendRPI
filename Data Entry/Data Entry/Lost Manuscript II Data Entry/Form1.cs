@@ -52,8 +52,9 @@ namespace Dialogue_Data_Entry
 
 		//NOTE: need to use (/) as path separator because it works on both mac and windows
 
-        private string defaultFilename = @"/roman_empire_1000_10_21_16.xml";
+        //public string defaultFilename = @"/roman_empire_1000_10_21_16.xml";
         //private string defaultFilename = @"/roman_empire_1000_v3.xml";
+        private string defaultFilename = @"/roman_empire_1000_v3_AIMind.xml";
 
 		private string constraintFilename = @"/constraint.txt";
 
@@ -175,6 +176,21 @@ namespace Dialogue_Data_Entry
 				openQueryWindow();
 			}
 		}
+
+        public void OpenXML(string file_name)
+        {
+            featGraph = XMLFilerForFeatureGraph.readFeatureGraph(file_name);
+            selectedIndex = -1;
+            refreshAllButUpdateFeature();
+            tagListBox.Items.Clear();
+            listBox3.Items.Clear();
+            childrenCheckedListBox.Items.Clear();
+            clearAllTextBoxes();
+            this.Text = "Data Entry - Concept Graph : " + file_name;
+            //Now that there is a new featureGraph, open a new query window
+            openQueryWindow();
+        }//end method openXML
+
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
 		{
 			this.saveAs();
@@ -933,7 +949,7 @@ namespace Dialogue_Data_Entry
 				myQuery.Close();
 			}//end if
 			featGraph.setMaxDepth(-1); //so that we force them to recalculate every time you call query in case of updating graph
-			myQuery = new Form2(featGraph, temporalConstraintList);
+			myQuery = new Form2(featGraph, temporalConstraintList, this);
 			myQuery.Show();
 		}//end method openQueryWindow
 

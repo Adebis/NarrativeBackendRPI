@@ -8,6 +8,12 @@ using Dialogue_Data_Entry;
 using System.Windows.Forms;
 using System.Security;
 
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace Dialogue_Data_Entry
 {
 
@@ -111,6 +117,12 @@ namespace Dialogue_Data_Entry
 				XmlDocument doc = new XmlDocument();
 				doc.Load(toReadPath);
 				current_file = toReadPath;
+                string file_name = "";
+                if (toReadPath.Contains("/"))
+                    file_name = toReadPath.Substring(toReadPath.LastIndexOf("/") + 1);
+                else
+                    file_name = toReadPath.Substring(toReadPath.LastIndexOf("\\") + 1);
+                result_graph.file_name = file_name;
 				docOld = doc;
 				//Get the features
 				XmlNodeList features = doc.SelectNodes("AIMind");
@@ -394,51 +406,71 @@ namespace Dialogue_Data_Entry
 				catch (Exception) { }
 				if (rootId != -1) { result_graph.Root = result_graph.getFeature(rootId); }
 
+                try
+                {
+                    using (var client = new HttpClient())
+                    {
+                        string url = "http://localhost:5000/check_file";
+                        //string url_parameters = "?file=" + file_name;
 
+                        client.BaseAddress = new Uri(url);
+                        client.DefaultRequestHeaders.Accept.Clear();
+                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
+                        Dictionary<string, string> content = new Dictionary<string, string>
+                    {
+                        {"file", file_name}
+                    };
 
-				//analogy relation code
-				/*foreach (XmlNode relation in relations) {
-					string rid = relation.Attributes["id"].Value;
-					foreach (XmlNode relUsage in relation.SelectNodes("usages")[0].SelectNodes("usage")) {
-						string uid = relUsage.Attributes["id"].Value;
-						usage_map[rid + "," + uid] = new Tuple<string, string, string>(relation.Attributes["type"].Value,
-																					   relUsage.Attributes["src"].Value,
-																					   relUsage.Attributes["dest"].Value);
-					}
-				}
+                        var http_content = new FormUrlEncodedContent(content);
+                        HttpResponseMessage response = client.PostAsync(url, http_content).Result;
 
-				//get relations into dictionary 
-				Dictionary<string, HashSet<Tuple<string, string>>> relMap = new Dictionary<string, HashSet<Tuple<string, string>>>();
-				foreach (var usage in usage_map) {
-					string key = usage.Key;
-					string rtype = usage.Value.Item1;
-					string src = usage.Value.Item2;
-					string dest = usage.Value.Item3;
-					if (!String.IsNullOrEmpty(src)) {
-						HashSet <Tuple<string, string>> value;
-						if (!relMap.TryGetValue(usage_map[src].Item1, out value)) {
-							relMap.Add(usage_map[src].Item1, new HashSet<Tuple<string, string>>());
-						}
-						relMap[usage_map[src].Item1].Add(new Tuple<string, string>(usage_map[key].Item1, usage_map[dest].Item1));
-					}
-				}
+                        //Read the jsons tring from the http response
+                        Task<string> read_string_task = response.Content.ReadAsStringAsync();
+                        read_string_task.Wait(100000);
 
-				//invert relations for fast lookup
-				Dictionary<string, HashSet<Tuple<string, string>>> i_relMap = new Dictionary<string, HashSet<Tuple<string, string>>>();
-				foreach(var kvp in relMap) {
-					foreach(Tuple<string,string> r in kvp.Value) {
-						HashSet<Tuple<string, string>> value;
-						if (!i_relMap.TryGetValue(r.Item1, out value)) {
-							i_relMap.Add(r.Item1, new HashSet<Tuple<string, string>>());
-						}
-						i_relMap[r.Item1].Add(new Tuple<string, string>(kvp.Key, r.Item2));
-					}
-				}
+                        string content_string = read_string_task.Result;
 
-				//set the dictionaries
-				result_graph.relationMap = relMap;
-				result_graph.inverse_relationMap = i_relMap;*/
+                        if (content_string.Equals("false"))
+                        {
+                            Console.WriteLine("WARNING: File " + file_name + " not found in analogy server.");
+                            //TODO: Find way to send XML to server. Sending XML text is too long.
+                            /*//Since the file is not there, send it in its entirety as a string to the analogy server.
+                            url = "http://localhost:5000/add_file";
+
+                            string file_data = "";
+                            //Read the file's data in as text
+                            System.Xml.XmlTextReader reader = new System.Xml.XmlTextReader(current_file);
+                            while (reader.Read())
+                            {
+                                reader.MoveToContent();
+                                if (reader.NodeType == System.Xml.XmlNodeType.Element)
+                                    file_data += "<" + reader.Name + ">\n";
+                                if (reader.NodeType == System.Xml.XmlNodeType.Text)
+                                    file_data += reader.Value + "\n";
+                            }//end while
+
+                            content = new Dictionary<string, string>
+                            {
+                                {"file", file_name},
+                                {"data", file_data}
+                            };
+
+                            http_content = new FormUrlEncodedContent(content);
+                            response = client.PostAsync(url, http_content).Result;
+
+                            //Read the jsons tring from the http response
+                            read_string_task = response.Content.ReadAsStringAsync();
+                            read_string_task.Wait(100000);
+
+                            content_string = read_string_task.Result;*/
+                        }//end if
+                    }//end using
+                }//end try
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error contacting analogy server: " + e.Message);
+                }//end catch
 
 				return result_graph;
 			}

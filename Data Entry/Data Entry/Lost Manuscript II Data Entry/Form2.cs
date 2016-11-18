@@ -28,14 +28,16 @@ namespace Dialogue_Data_Entry
 		private SimpleHTTPServer server = null;
 		private volatile bool _shouldStop = false;
 		private List<TemporalConstraint> temporalConstraintList;
+        private Form1 parent_form1 = null;
 
-		public Form2(FeatureGraph myGraph, List<TemporalConstraint> myTemporalConstraintList)
+		public Form2(FeatureGraph myGraph, List<TemporalConstraint> myTemporalConstraintList, Form1 parent_f1)
 		{
 			InitializeComponent();
 			//pre-process shortest distance
 			myGraph.getMaxDistance();           
 			this.featGraph = myGraph;
 			this.temporalConstraintList = myTemporalConstraintList;
+            this.parent_form1 = parent_f1;
 			//clear discussedAmount
 			for (int x = 0; x < featGraph.Features.Count(); x++)
 			{
@@ -44,6 +46,7 @@ namespace Dialogue_Data_Entry
 			featureWeight = .6f;
 			tagKeyWeight = .2f;
 			chatBox.AppendText("Hello, and Welcome to the Query. \r\n");
+
 			inputBox.KeyDown += new KeyEventHandler(this.inputBox_KeyDown);
 			this.FormClosing += Window_Closing;
 		}
@@ -73,7 +76,7 @@ namespace Dialogue_Data_Entry
 		{
 			string query = inputBox.Text;
 			if (myHandler == null)
-				myHandler = new QueryHandler(featGraph, temporalConstraintList);
+				myHandler = new QueryHandler(featGraph, temporalConstraintList, parent_form1);
 
 			if (EnglishRadioButton.Checked)
 			{
@@ -106,13 +109,24 @@ namespace Dialogue_Data_Entry
 			}
 			
 			inputBox.Clear(); 
+
+            //Are we loading a new XML?
+            if(display.Contains(":"))
+            {
+                string[] split_display = display.Trim().Split(':');
+                if (split_display[0].Equals("load_xml"))
+                {
+                    string filename = split_display[1];
+                    parent_form1.OpenXML(filename);
+                }//end if
+            }//end if
 		}
 
 		private void ServerModeButton_Click(object sender, EventArgs e)
 		{
 			//set up query handler
 			if (myHandler == null)
-				myHandler = new QueryHandler(featGraph, temporalConstraintList);
+                myHandler = new QueryHandler(featGraph, temporalConstraintList, parent_form1);
 
 			//Start new thread for server
 			//this.serverThread = new Thread(this.DoWork);
@@ -235,7 +249,7 @@ namespace Dialogue_Data_Entry
 				}
 				*/
 				if (myHandler == null)
-					myHandler = new QueryHandler(featGraph, temporalConstraintList);
+                    myHandler = new QueryHandler(featGraph, temporalConstraintList, parent_form1);
 				Console.WriteLine("Query: " + query);
 				
 				this.Invoke((MethodInvoker)delegate

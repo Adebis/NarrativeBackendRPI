@@ -10,6 +10,10 @@ using System.Collections;
 using System.Diagnostics;
 using Newtonsoft.Json;
 
+using System.Net.Http;
+using System.Net.Http.Headers;
+using Newtonsoft.Json.Linq;
+
 namespace Dialogue_Data_Entry
 {
 	enum Direction : int
@@ -109,6 +113,8 @@ namespace Dialogue_Data_Entry
 		public int countFocusNode = 0;
 		public double noveltyValue = 0.0;
 
+        public Form1 parent_form1;
+
 		//A list of string lists, each of which represents a set of relationship
 		//words which may be interchangeable when used to find analogies.
 		public List<List<string>> equivalent_relationships = new List<List<string>>();
@@ -143,8 +149,9 @@ namespace Dialogue_Data_Entry
 		/// Create a converter for the specified XML file
 		/// </summary>
 		/// <param name="xmlFilename"></param>
-		public QueryHandler(FeatureGraph graph, List<TemporalConstraint> myTemporalConstraintList)
+		public QueryHandler(FeatureGraph graph, List<TemporalConstraint> myTemporalConstraintList, Form1 parent_f1)
 		{
+            parent_form1 = parent_f1;
 			// Load the AIML Bot
 			//this.bot = new Bot();
 			this.temporalConstraintList = myTemporalConstraintList;
@@ -371,7 +378,7 @@ namespace Dialogue_Data_Entry
                             }//end if
 
                             //Make a temporary graph to create the chronology's order before presenting it.
-                            FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(graph);
+                            //FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(graph);
 
                             json_string = "";
 
@@ -531,6 +538,67 @@ namespace Dialogue_Data_Entry
                 if (json_mode)
                     json_string = JsonConvert.SerializeObject(last_story);
             }//end if
+            //Load an XML by file name
+            else if (split_input[0].ToLower().Equals("load_xml"))
+            {
+                string filename = "";
+                if (split_input.Count() > 1)
+                {
+                    filename = split_input[1];
+                    //load_xml = true;
+                    //xml_to_load = filename;
+                    return "load_xml:" + filename;
+                }//end if
+                else
+                {
+                    json_string = "No file specified.";
+                }
+            }//end else if
+            else if (split_input[0].ToLower().Equals("analogy"))
+            {
+                int id_1 = -1;
+                bool success = int.TryParse(split_input[1], out id_1);
+                int id_2 = -1;
+                success = int.TryParse(split_input[2], out id_2);
+
+                string feature_name_1 = graph.getFeature(id_1).Name;
+                string feature_name_2 = graph.getFeature(id_2).Name;
+
+                try
+                {
+                    using (var client = new HttpClient())
+                    {
+                        string url = "http://localhost:5000/get_analogy";
+                        //string url_parameters = "?file=" + file_name;
+
+                        client.BaseAddress = new Uri(url);
+                        client.DefaultRequestHeaders.Accept.Clear();
+                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                        Dictionary<string, string> content = new Dictionary<string, string>
+                    {
+                        {"file1", graph.file_name},
+                        {"file2", graph.file_name},
+                        {"feature1", feature_name_1},
+                        {"feature2", feature_name_2}
+                    };
+
+                        var http_content = new FormUrlEncodedContent(content);
+                        HttpResponseMessage response = client.PostAsync(url, http_content).Result;
+
+                        //Read the jsons tring from the http response
+                        Task<string> read_string_task = response.Content.ReadAsStringAsync();
+                        read_string_task.Wait(100000);
+
+                        string content_string = read_string_task.Result;
+                        json_string = content_string;
+                    }//end using
+                }//end try
+                catch (Exception e)
+                {
+                    Console.WriteLine("Error contacting analogy server: " + e.Message);
+                }//end catch
+            }//end else if
             //Toggle JSON response outputs on or off.
             else if (split_input[0].ToLower().Equals("toggle_json"))
             {

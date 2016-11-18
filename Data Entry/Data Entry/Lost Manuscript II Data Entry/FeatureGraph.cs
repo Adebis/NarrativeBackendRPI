@@ -20,6 +20,8 @@ namespace Dialogue_Data_Entry
 		private int maxDepth;
 		private double maxDistance;
 
+        public string file_name;
+
 		/*
 		//map of specific relation usages and their ID
 		private Dictionary<string,RelationUsage> relation_usages;
