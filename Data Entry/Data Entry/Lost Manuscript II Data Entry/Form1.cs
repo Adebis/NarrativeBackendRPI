@@ -188,8 +188,8 @@ namespace Dialogue_Data_Entry
             clearAllTextBoxes();
             this.Text = "Data Entry - Concept Graph : " + file_name;
             //Now that there is a new featureGraph, open a new query window
-            //openQueryWindow();
-            RefreshQueryWindow();
+            openQueryWindow();
+            //RefreshQueryWindow();
         }//end method openXML
 
 		private void saveAsToolStripMenuItem_Click(object sender, EventArgs e)
