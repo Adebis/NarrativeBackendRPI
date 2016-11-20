@@ -411,16 +411,15 @@ namespace Dialogue_Data_Entry
                     using (var client = new HttpClient())
                     {
                         string url = "http://localhost:5000/check_file";
-                        //string url_parameters = "?file=" + file_name;
 
                         client.BaseAddress = new Uri(url);
                         client.DefaultRequestHeaders.Accept.Clear();
                         client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                         Dictionary<string, string> content = new Dictionary<string, string>
-                    {
-                        {"file", file_name}
-                    };
+						{
+							{"file", file_name}
+						};
 
                         var http_content = new FormUrlEncodedContent(content);
                         HttpResponseMessage response = client.PostAsync(url, http_content).Result;
@@ -435,20 +434,13 @@ namespace Dialogue_Data_Entry
                         {
                             Console.WriteLine("WARNING: File " + file_name + " not found in analogy server.");
                             //TODO: Find way to send XML to server. Sending XML text is too long.
-                            /*//Since the file is not there, send it in its entirety as a string to the analogy server.
+                            //Since the file is not there, send it in its entirety as a string to the analogy server.
                             url = "http://localhost:5000/add_file";
 
                             string file_data = "";
                             //Read the file's data in as text
-                            System.Xml.XmlTextReader reader = new System.Xml.XmlTextReader(current_file);
-                            while (reader.Read())
-                            {
-                                reader.MoveToContent();
-                                if (reader.NodeType == System.Xml.XmlNodeType.Element)
-                                    file_data += "<" + reader.Name + ">\n";
-                                if (reader.NodeType == System.Xml.XmlNodeType.Text)
-                                    file_data += reader.Value + "\n";
-                            }//end while
+
+							file_data = File.ReadAllText(current_file);
 
                             content = new Dictionary<string, string>
                             {
@@ -456,14 +448,17 @@ namespace Dialogue_Data_Entry
                                 {"data", file_data}
                             };
 
-                            http_content = new FormUrlEncodedContent(content);
-                            response = client.PostAsync(url, http_content).Result;
+							using (HttpContent httpContent = new StringContent(JsonConvert.SerializeObject(content),
+								                                               Encoding.UTF8,
+								                                               "application/json")) {
+								response = client.PostAsync(url, httpContent).Result;
+							}
 
                             //Read the jsons tring from the http response
                             read_string_task = response.Content.ReadAsStringAsync();
                             read_string_task.Wait(100000);
 
-                            content_string = read_string_task.Result;*/
+                            content_string = read_string_task.Result;
                         }//end if
                     }//end using
                 }//end try
