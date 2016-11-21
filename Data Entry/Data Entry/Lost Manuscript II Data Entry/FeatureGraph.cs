@@ -139,10 +139,10 @@ namespace Dialogue_Data_Entry
 			}
 			//initialize node's ShortestDistance to zero
 			node.ShortestDistance.Clear();
-			for (int x = 0; x < this.Count;x++)
-			{
-				node.ShortestDistance.Add(0.0);
-			}
+            foreach (Feature graph_node in features)
+            {
+                node.ShortestDistance.Add(graph_node.Id, 0.0);
+            }//end foreach
 			while (queue.Count > index)
 			{
 				current = queue[index]; index++;
@@ -154,7 +154,7 @@ namespace Dialogue_Data_Entry
 				if (!checkEntry[ind])
 				{
 					checkEntry[ind] = true;
-					node.ShortestDistance[ind] = current.Dist;
+                    node.ShortestDistance[current.Id] = current.Dist;
 					for (int x = 0; x < current.Neighbors.Count; x++)
 					{
 						if (current.Neighbors[x].Item1.Dist == 0)
@@ -187,10 +187,10 @@ namespace Dialogue_Data_Entry
             //initialize all distance to infinity
             for (int x = 0; x < this.Count; x++)
             {
-                for (int y = 0; y < this.Count + 1; y++)
+                foreach (Feature graph_node in features)
                 {
-                    this.Features[x].ShortestDistance.Add(2147483646); //maxint -1
-                }
+                    this.Features[x].ShortestDistance.Add(graph_node.Id, 2147483646);
+                }//end foreach
             }
 
             /*for (int i = 0; i < this.Count; i++)
@@ -205,7 +205,7 @@ namespace Dialogue_Data_Entry
                 //distance to itself is zero
                 for (int x = 0; x < this.Count; x++)
                 {
-                    this.Features[x].ShortestDistance[x] = 0;
+                    this.Features[x].ShortestDistance[Features[x].Id] = 0;
                 }
 
             Queue<Feature> bfs_queue = new Queue<Feature>();
@@ -263,15 +263,15 @@ namespace Dialogue_Data_Entry
 			//initialize all distance to infinity
 			for (int x = 0; x < this.Count; x++)
 			{
-				for (int y = 0; y < this.Count; y++)
-				{
-					this.Features[x].ShortestDistance.Add(2147483646); //maxint -1
-				}
+                foreach (Feature graph_node in features)
+                {
+                    this.Features[x].ShortestDistance.Add(graph_node.Id, 2147483646); //maxint -1
+                }//end foreach
 			}
 			//distance to itself is zero
 			for (int x = 0; x < this.Count; x++)
 			{
-				this.Features[x].ShortestDistance[x] = 0;
+				this.Features[x].ShortestDistance[Features[x].Id] = 0;
 			}
 			//for each edge (u,v) [if there is an edge connect between two nodes)
 			for (int x = 0; x < this.Count; x++)
@@ -286,14 +286,14 @@ namespace Dialogue_Data_Entry
 					{
 						dist = 1;
 					}
-					this.Features[x].ShortestDistance[ind] = dist;
+                    this.Features[x].ShortestDistance[this.Features[x].Neighbors[y].Item1.Id] = dist;
 				}
 				//Parent edge
 				for (int y = 0; y < this.Features[x].Parents.Count;y++)
 				{
 					int ind = this.getFeatureIndex(this.Features[x].Parents[y].Item1.Id);
 					double dist = this.Features[x].Parents[y].Item2;
-					this.Features[x].ShortestDistance[ind] = dist;
+                    this.Features[x].ShortestDistance[this.Features[x].Parents[y].Item1.Id] = dist;
 				}
 			}
 			//All-pair shortest path
@@ -464,13 +464,13 @@ namespace Dialogue_Data_Entry
 			//find max distance
 			for (int x = 0; x < this.Count;x++)
 			{
-				for (int y = 0; y < this.Count; y++)
-				{
-					if (this.Features[x].ShortestDistance[y] > this.MaxDistance)
-					{
-						this.maxDistance = this.Features[x].ShortestDistance[y];
-					}
-				}
+                foreach (Feature graph_node in features)
+                {
+                    if (this.Features[x].ShortestDistance[graph_node.Id] > this.MaxDistance)
+                    {
+                        this.maxDistance = this.Features[x].ShortestDistance[graph_node.Id];
+                    }
+                }//end foreach
 			}
 			//printShortestDistance();
 		}

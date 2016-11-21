@@ -325,8 +325,45 @@ namespace Dialogue_Data_Entry
             if (split_input[0].ToLower().Equals("chronology"))
             {
                 Feature anchor_node = null;
+                //TODO: Remove later; only for demo in November 2016
+                if (graph.file_name.Equals("roman_ww2_analogy.xml"))
+                {
+                    Console.Out.WriteLine("Roman ww2 analogy");
+                    int node_id_1 = 0;
+                    int node_id_2 = 0;
+                    Feature node_1 = null;
+                    Feature node_2 = null;
+                    bool parse_success = int.TryParse(split_input[1], out node_id_1);
+                    if (parse_success)
+                    {
+                        node_1 = graph.getFeature(node_id_1);
+                    }//end if
+                    parse_success = int.TryParse(split_input[2], out node_id_2);
+                    if (parse_success)
+                    {
+                        node_2 = graph.getFeature(node_id_2);
+                    }//end if
+                    if (node_1 != null && node_2 != null)
+                    {
+                        //Make a story using the two nodes given in the input.
+                        ParseInputJSON("make_story:" + split_input[1] + ":" + split_input[2]);
+                        //Grab the story that was just made
+                        Story new_story = stories[stories.Count - 1];
+                        //Add an analogy to the end of the second node
+                        //1. First, make the analogy.
+                        string analogy = MakeAnalogy(node_id_1, node_id_2);
+                        //2. Add an analogy event to the second node.
+                        new_story.GetLastNode().AddStoryAct(Constant.ANALOGY, node_id_1);
+                        //3. Append the analogy description to the text of the second node.
+                        JObject json_response = JObject.Parse(analogy);
+                        string explanation = json_response["explanation"].ToString();
+
+                        new_story.GetLastNode().text = new_story.GetLastNode().text + " " + explanation;
+                        json_string = ParseInputJSON("read_story:" + (stories.Count - 1));
+                    }//end if
+                }//end if
                 //Get the anchor node specified in this command 
-                if (split_input[1] != null)
+                else if (split_input[1] != null)
                 {
                     String string_topic = split_input[1];
                     //First, check if the topic is the empty string.
@@ -561,43 +598,7 @@ namespace Dialogue_Data_Entry
                 int id_2 = -1;
                 success = int.TryParse(split_input[2], out id_2);
 
-                string feature_name_1 = graph.getFeature(id_1).Name;
-                string feature_name_2 = graph.getFeature(id_2).Name;
-
-                try
-                {
-                    using (var client = new HttpClient())
-                    {
-                        string url = "http://localhost:5000/get_analogy";
-                        //string url_parameters = "?file=" + file_name;
-
-                        client.BaseAddress = new Uri(url);
-                        client.DefaultRequestHeaders.Accept.Clear();
-                        client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                        Dictionary<string, string> content = new Dictionary<string, string>
-                    {
-                        {"file1", graph.file_name},
-                        {"file2", graph.file_name},
-                        {"feature1", feature_name_1},
-                        {"feature2", feature_name_2}
-                    };
-
-                        var http_content = new FormUrlEncodedContent(content);
-                        HttpResponseMessage response = client.PostAsync(url, http_content).Result;
-
-                        //Read the jsons tring from the http response
-                        Task<string> read_string_task = response.Content.ReadAsStringAsync();
-                        read_string_task.Wait(100000);
-
-                        string content_string = read_string_task.Result;
-                        json_string = content_string;
-                    }//end using
-                }//end try
-                catch (Exception e)
-                {
-                    Console.WriteLine("Error contacting analogy server: " + e.Message);
-                }//end catch
+                json_string = MakeAnalogy(id_1, id_2);
             }//end else if
             //Toggle JSON response outputs on or off.
             else if (split_input[0].ToLower().Equals("toggle_json"))
@@ -885,6 +886,50 @@ namespace Dialogue_Data_Entry
 
             return json_string;
         }//end method ParseInputJSON
+
+        private string MakeAnalogy(int id_1, int id_2)
+        {
+            string analogy_string = "";
+            string feature_name_1 = graph.getFeature(id_1).Name;
+            string feature_name_2 = graph.getFeature(id_2).Name;
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    string url = "http://localhost:5000/get_analogy";
+                    //string url_parameters = "?file=" + file_name;
+
+                    client.BaseAddress = new Uri(url);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    Dictionary<string, string> content = new Dictionary<string, string>
+                    {
+                        {"file1", graph.file_name},
+                        {"file2", graph.file_name},
+                        {"feature1", feature_name_1},
+                        {"feature2", feature_name_2}
+                    };
+
+                    var http_content = new FormUrlEncodedContent(content);
+                    HttpResponseMessage response = client.PostAsync(url, http_content).Result;
+
+                    //Read the jsons tring from the http response
+                    Task<string> read_string_task = response.Content.ReadAsStringAsync();
+                    read_string_task.Wait(100000);
+
+                    string content_string = read_string_task.Result;
+                    analogy_string = content_string;
+                }//end using
+            }//end try
+            catch (Exception e)
+            {
+                Console.WriteLine("Error contacting analogy server: " + e.Message);
+            }//end catch
+
+            return analogy_string;
+        }//end function MakeAnalogy
 
         bool json_mode = true;
         bool user_interest_mode = false;

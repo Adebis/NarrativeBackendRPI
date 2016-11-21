@@ -4,6 +4,12 @@ using System.Linq;
 using System.Text;
 using AIMLbot;
 
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
 namespace Dialogue_Data_Entry
 {
 	//Narration Manager manages the flow of narration.

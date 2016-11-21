@@ -976,7 +976,7 @@ namespace Dialogue_Data_Entry
                 bfs_queue.Enqueue(previous_feature_neighbor.Item1);
             }//end foreach
 
-            double dist = previous_feature.ShortestDistance[feature_graph.getFeatureIndex(current_feature.Id)] / feature_graph.MaxDistance;
+            double dist = previous_feature.ShortestDistance[current_feature.Id] / feature_graph.MaxDistance;
 
             // previous talk
             double previousTalkPercentage = current_feature.getNeighborDiscussAmount();

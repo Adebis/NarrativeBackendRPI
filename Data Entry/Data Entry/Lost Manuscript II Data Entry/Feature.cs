@@ -42,7 +42,7 @@ namespace Dialogue_Data_Entry
                                                             //Redundant with story role, remove story role in future.
         
         
-        private List<double> shortestDistance;         //list of shortestDistance to all nodes (index is id)
+        private Dictionary<double, double> shortestDistance;         //list of shortestDistance to all nodes (index is id)
         private int level, dist;
         public bool flag;                                // This is a public general use flag that can be used for things like traversals and stuff like that
 
@@ -59,7 +59,7 @@ namespace Dialogue_Data_Entry
             this.parents = new List<Tuple<Feature, double, string>>();
             this.level = 0;
             this.dist = 0;
-            this.shortestDistance = new List<double>();
+            this.shortestDistance = new Dictionary<double, double>();
             this.timedata = new List<Tuple<string, string>>();
             this.geodata = new List<Tuple<double, double>>();
 
@@ -84,7 +84,7 @@ namespace Dialogue_Data_Entry
             this.parents = new List<Tuple<Feature, double, string>>();
             this.level = 0;
             this.dist = 0;
-            this.shortestDistance = new List<double>();
+            this.shortestDistance = new Dictionary<double, double>();
             this.timedata = new List<Tuple<string, string>>();
             this.geodata = new List<Tuple<double, double>>();
 
@@ -955,7 +955,7 @@ namespace Dialogue_Data_Entry
             }
         }
 
-        public List<double> ShortestDistance
+        public Dictionary<double, double> ShortestDistance
         {
             get
             {

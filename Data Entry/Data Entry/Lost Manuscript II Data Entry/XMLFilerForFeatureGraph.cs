@@ -207,6 +207,7 @@ namespace Dialogue_Data_Entry
 						geodata = geodata[0].SelectNodes("coordinates");
 						foreach (XmlNode coordinates in geodata)
 						{
+                            //Console.Out.WriteLine("lat:" + coordinates.Attributes["lat"].Value + ":lon:" + coordinates.Attributes["lon"].Value);
 							double lat = Convert.ToDouble(coordinates.Attributes["lat"].Value);
 							double lon = Convert.ToDouble(coordinates.Attributes["lon"].Value);
 							tmp.addGeoData(lat, lon);
