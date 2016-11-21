@@ -15,7 +15,7 @@
         <neighbor dest="10" relationship="event end" weight="0"/>
         <neighbor dest="11" relationship="event" weight="0"/>
         <neighbor dest="12" relationship="leader" weight="0"/>
-        <neighbor dest="13" relationship="leader" weight="0"/>
+        <neighbor dest="13" relationship="was ruled by" weight="0"/>
         <neighbor dest="14" relationship="leader" weight="0"/>
         <neighbor dest="15" relationship="Capital" weight="0"/>
         <neighbor dest="16" relationship="leader" weight="0"/>
@@ -132,7 +132,7 @@
         <picture url="https://upload.wikimedia.org/wikipedia/commons/b/bb/SPQRomani.svg" label="SPQRomani.svg"/>
         <picture url="https://upload.wikimedia.org/wikipedia/commons/9/98/Roman_SPQR_banner.svg" label="Roman SPQR banner.svg"/>
       </pictures>
-      <speak>The Roman Empire (Latin: Imperium Rōmānum; Classical Latin: [ɪmˈpɛ.ri.ũː roːˈmaː.nũː] Ancient and Medieval Greek: Βασιλεία τῶν Ῥωμαίων Basileia tōn Rhōmaiōn) was the post-Republican period of the ancient Roman civilization, characterized by government headed by emperors and large territorial holdings around the Mediterranean Sea in Europe, Africa and Asia.</speak>
+      <speak>The Roman Empire was the post-Republican period of the ancient Roman civilization, characterized by government headed by emperors and large territorial holdings around the Mediterranean Sea in Europe, Africa and Asia.</speak>
       <zh-speak/>
       <description>The Roman Empire (Latin: Imperium Rōmānum; Classical Latin: [ɪmˈpɛ.ri.ũː roːˈmaː.nũː] Ancient and Medieval Greek: Βασιλεία τῶν Ῥωμαίων Basileia tōn Rhōmaiōn) was the post-Republican period of the ancient Roman civilization, characterized by government headed by emperors and large territorial holdings around the Mediterranean Sea in Europe, Africa and Asia. The 500-year-old republic which preceded it was severely destabilized in a series of civil wars and political conflict, during which Julius Caesar was appointed as perpetual dictator and then assassinated in 44 BC. Civil wars and executions continued, culminating in the victory of Octavian, Caesar's adopted son, over Mark Antony and Cleopatra at the Battle of Actium in 31 BC and the annexation of Egypt. Octavian's power was now unassailable and in 27 BC the Roman Senate formally granted him overarching power and the new title Augustus, effectively marking the end of the Roman Republic.The imperial successor to the Republic lasted approximately 500 years. The first two centuries of the Empire's existence were a period of unprecedented political stability and prosperity known as the Pax Romana, or "Roman Peace". Following Octavian's victory, the size of the Empire was dramatically increased. After the assassination of Caligula in 41, the Senate briefly considered restoring the republic, but the Praetorian Guard proclaimed Claudius Emperor instead. Under Claudius, the Empire invaded Britannia, its first major expansion since Augustus. After Claudius' successor, Nero, committed suicide in 68, the Empire suffered a period of brief civil wars, as well as a concurrent major rebellion in Judea, during which four different legionary generals were proclaimed Emperor. Vespasian emerged triumphant in 69, establishing the Flavian dynasty, before being succeeded by his son Titus, who opened the Colosseum shortly after the eruption of Mt. Vesuvius. His short reign was followed by the long reign of his brother Domitian, who was eventually assassinated. The Senate then appointed the first of the Five Good Emperors. The Empire reached its greatest extent under Trajan, the second in this line.A period of increasing trouble and decline began with the reign of Commodus. Commodus' assassination in 192 triggered the Year of the Five Emperors, of which Septimius Severus emerged victorious. The assassination of Alexander Severus in 235 led to the Crisis of the Third Century in which 26 men were declared Emperor by the Roman Senate over a fifty-year period. It was not until the reign of Diocletian that the Empire was fully stabilized with the introduction of the Tetrarchy, which saw four Emperors rule the Empire at once. This arrangement was ultimately unsuccessful, leading to a civil war that was finally ended by Constantine I, who defeated his rivals and became the sole ruler of the Empire. Constantine subsequently shifted the capital to Byzantium, which was renamed Constantinople in his honor. It remained the capital of the east until its demise in 1453. Constantine also adopted Christianity which later became the official state religion of the Empire. This eastern part of the empire (known later as the Byzantine Empire) remained one of the leading powers in the world alongside its arch-rival the Sassanid Persian Empire, which had inherited a centuries-old Roman-Persian conflict from its predecessor the Parthians. Following the death of Theodosius I, the last Emperor to rule a united Empire, the dominion of the Empire was gradually eroded by abuses of power, civil wars, barbarian migrations and invasions, military reforms and economic depression. The Sack of Rome in 410 by the Visigoths and again in 455 by the Vandals accelerated the Western Empire's decay, while the deposition of the Emperor Romulus Augustulus in 476 by Odoacer is generally accepted to mark the end of the Empire in the west. However, with Romulus Augustulus technically being a usurper, the Western part of the empire only truly legally ceased to exist upon the death of the true Emperor Julius Nepos in 480. The Eastern Roman Empire endured for another thousand years, eventually falling to the Ottoman Turks in 1453.The Roman Empire was among the most powerful economic, cultural, political and military forces in the world of its time. It was the largest empire of the classical antiquity period, and one of the largest empires in world history. At its height under Trajan, it covered 5 million square kilometers and held sway over some 70 million people, at that time 21% of the world's entire population. The longevity and vast extent of the Empire ensured the lasting influence of Latin and Greek language, culture, religion, inventions, architecture, philosophy, law and forms of government on the Empire's descendants. Throughout the European medieval period, attempts were even made to establish successors to the Roman Empire, including the Crusader state, the Empire of Romania and the Holy Roman Empire. By means of European expansionism through the Spanish, French, Portuguese, Dutch, Italian, Russian, German, British and Belgian Empires, Roman and Greek culture was spread on a worldwide scale, playing a significant role in the development of the modern world.</description>
       <zh-data/>
@@ -140,7 +140,7 @@
     </Feature>
     <Feature data="Final War of the Roman Republic" zh-data="" id="2" uri="http://dbpedia.org/resource/Final_War_of_the_Roman_Republic">
       <neighbors>
-        <neighbor dest="49" relationship="commander" weight="0"/>
+        <neighbor dest="49" relationship="was fought by" weight="0"/>
         <neighbor dest="387" relationship="place of military conflict" weight="0"/>
         <neighbor dest="388" relationship="place of military conflict" weight="0"/>
         <neighbor dest="389" relationship="is part of military conflict" weight="0"/>
@@ -377,7 +377,7 @@
         <picture url="https://upload.wikimedia.org/wikipedia/commons/c/c6/Gentile_Bellini_003.jpg" label=""/>
         <picture url="https://upload.wikimedia.org/wikipedia/en/4/4a/Commons-logo.svg" label=""/>
       </pictures>
-      <speak>The Fall of Constantinople (Greek: Άλωση της Κωνσταντινούπολης, Alōsē tēs Kōnstantinoupolēs; Turkish: İstanbul'un Fethi Conquest of Istanbul) was the capture of the capital of the Eastern Roman (Byzantine) Empire by an invading army of the Ottoman Empire on Tuesday, 29 May 1453. The Ottomans were commanded by 21-year-old Ottoman Sultan Mehmed II, who defeated an army commanded by Byzantine Emperor Constantine XI Palaiologos.</speak>
+      <speak>The Fall of Constantinople was the capture of the capital of the Eastern Roman (Byzantine) Empire by an invading army of the Ottoman Empire on Tuesday, 29 May 1453. The Ottomans were commanded by 21-year-old Ottoman Sultan Mehmed II, who defeated an army commanded by Byzantine Emperor Constantine XI Palaiologos.</speak>
       <zh-speak/>
       <description>The Fall of Constantinople (Greek: Άλωση της Κωνσταντινούπολης, Alōsē tēs Kōnstantinoupolēs; Turkish: İstanbul'un Fethi Conquest of Istanbul) was the capture of the capital of the Eastern Roman (Byzantine) Empire by an invading army of the Ottoman Empire on Tuesday, 29 May 1453. The Ottomans were commanded by 21-year-old Ottoman Sultan Mehmed II, who defeated an army commanded by Byzantine Emperor Constantine XI Palaiologos. The conquest of Constantinople followed a seven-week siege that had begun on Friday, 6 April 1453.The capture of Constantinople (and two other Byzantine splinter territories soon thereafter) marked the end of the Roman Empire, an imperial state which had lasted for nearly 1,500 years. The Ottoman conquest of Constantinople also dealt a massive blow to Christendom, as the Ottoman armies thereafter were left unchecked to advance into Europe without an adversary to their rear. After the conquest, Sultan Mehmed II transferred the capital of the Ottoman Empire from Edirne to Constantinople. Several Greek and other intellectuals fled the city before and after the siege, with the majority of them migrating particularly to Italy, which helped fuel the Renaissance.The conquest of the city of Constantinople and the end of the Byzantine Empire was a key event in the Late Middle Ages which also marks, for some historians, the end of the Middle Ages.</description>
       <zh-data/>
@@ -451,17 +451,17 @@
         <neighbor dest="408" relationship="father" weight="0"/>
         <neighbor dest="526" relationship="birth place" weight="0"/>
         <neighbor dest="527" relationship="dynasty" weight="0"/>
-        <neighbor dest="528" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="528" relationship="regent" weight="0"/>
         <neighbor dest="529" relationship="spouse" weight="0"/>
         <neighbor dest="530" relationship="religion" weight="0"/>
-        <neighbor dest="531" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="531" relationship="regent" weight="0"/>
         <neighbor dest="532" relationship="birth place" weight="0"/>
-        <neighbor dest="533" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="533" relationship="regent" weight="0"/>
         <neighbor dest="534" relationship="death place" weight="0"/>
         <neighbor dest="535" relationship="venerated in" weight="0"/>
         <neighbor dest="536" relationship="issue" weight="0"/>
-        <neighbor dest="537" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="538" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="537" relationship="regent" weight="0"/>
+        <neighbor dest="538" relationship="regent" weight="0"/>
         <neighbor dest="539" relationship="venerated in" weight="0"/>
         <neighbor dest="540" relationship="spouse" weight="0"/>
         <neighbor dest="541" relationship="death place" weight="0"/>
@@ -528,16 +528,16 @@
     </Feature>
     <Feature data="Diocletian" zh-data="" id="13" uri="http://dbpedia.org/resource/Diocletian">
       <neighbors>
-        <neighbor dest="408" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="531" relationship="ruled alongside" weight="0"/>
-        <neighbor dest="551" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="552" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="556" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="408" relationship="regent" weight="0"/>
+        <neighbor dest="531" relationship="alongside" weight="0"/>
+        <neighbor dest="551" relationship="regent" weight="0"/>
+        <neighbor dest="552" relationship="regent" weight="0"/>
+        <neighbor dest="556" relationship="regent" weight="0"/>
         <neighbor dest="572" relationship="issue" weight="0"/>
         <neighbor dest="573" relationship="spouse" weight="0"/>
         <neighbor dest="574" relationship="birth place" weight="0"/>
         <neighbor dest="575" relationship="resting place" weight="0"/>
-        <neighbor dest="576" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="576" relationship="predecessor" weight="0"/>
         <neighbor dest="577" relationship="resting place" weight="0"/>
         <neighbor dest="578" relationship="death place" weight="0"/>
         <neighbor dest="579" relationship="birth place" weight="0"/>
@@ -589,7 +589,7 @@
         <picture url="https://upload.wikimedia.org/wikipedia/commons/5/56/Nummus_of_Diocletian_%28YORYM_2013_1295%29_obverse.jpg" label=""/>
         <picture url="https://upload.wikimedia.org/wikipedia/en/4/4a/Commons-logo.svg" label=""/>
       </pictures>
-      <speak>&lt;color=#ff0000ff&gt;First, let’s talk about Diocletian.&lt;/color&gt; Diocletian, born Diocles, (245–311) was a Roman emperor from 284 to 305. Born to a family of low status in the Roman province of Dalmatia, Diocletian rose through the ranks of the military to become cavalry commander to the Emperor Carus. After the deaths of Carus and his son Numerian on campaign in Persia, Diocletian was proclaimed emperor.</speak>
+      <speak>Diocletian, born Diocles, (245–311) was a Roman emperor from 284 to 305. Born to a family of low status in the Roman province of Dalmatia, Diocletian rose through the ranks of the military to become cavalry commander to the Emperor Carus. After the deaths of Carus and his son Numerian on campaign in Persia, Diocletian was proclaimed emperor.</speak>
       <zh-speak/>
       <description>Diocletian /ˌdaɪ.əˈkliːʃən/ (Latin: Gaius Aurelius Valerius Diocletianus Augustus), born Diocles, (245–311) was a Roman emperor from 284 to 305. Born to a family of low status in the Roman province of Dalmatia, Diocletian rose through the ranks of the military to become cavalry commander to the Emperor Carus. After the deaths of Carus and his son Numerian on campaign in Persia, Diocletian was proclaimed emperor. The title was also claimed by Carus' other surviving son, Carinus, but Diocletian defeated him in the Battle of the Margus. Diocletian's reign stabilized the empire and marks the end of the Crisis of the Third Century. He appointed fellow officer Maximian as Augustus, co-emperor, in 286.Diocletian delegated further on 1 March 293, appointing Galerius and Constantius as Caesars, junior co-emperors. Under this 'tetrarchy', or "rule of four", each emperor would rule over a quarter-division of the empire. Diocletian secured the empire's borders and purged it of all threats to his power. He defeated the Sarmatians and Carpi during several campaigns between 285 and 299, the Alamanni in 288, and usurpers in Egypt between 297 and 298. Galerius, aided by Diocletian, campaigned successfully against Sassanid Persia, the empire's traditional enemy. In 299 he sacked their capital, Ctesiphon. Diocletian led the subsequent negotiations and achieved a lasting and favorable peace. Diocletian separated and enlarged the empire's civil and military services and reorganized the empire's provincial divisions, establishing the largest and most bureaucratic government in the history of the empire. He established new administrative centers in Nicomedia, Mediolanum, Antioch, and Trier, closer to the empire's frontiers than the traditional capital at Rome had been. Building on third-century trends towards absolutism, he styled himself an autocrat, elevating himself above the empire's masses with imposing forms of court ceremonies and architecture. Bureaucratic and military growth, constant campaigning, and construction projects increased the state's expenditures and necessitated a comprehensive tax reform. From at least 297 on, imperial taxation was standardized, made more equitable, and levied at generally higher rates.Not all of Diocletian's plans were successful: the Edict on Maximum Prices (301), his attempt to curb inflation via price controls, was counterproductive and quickly ignored. Although effective while he ruled, Diocletian's tetrarchic system collapsed after his abdication under the competing dynastic claims of Maxentius and Constantine, sons of Maximian and Constantius respectively. The Diocletianic Persecution (303–11), the empire's last, largest, and bloodiest official persecution of Christianity, did not destroy the empire's Christian community; indeed, after 324 Christianity became the empire's preferred religion under its first Christian emperor, Constantine.In spite of his failures, Diocletian's reforms fundamentally changed the structure of Roman imperial government and helped stabilize the empire economically and militarily, enabling the empire to remain essentially intact for another hundred years despite being near the brink of collapse in Diocletian's youth. Weakened by illness, Diocletian left the imperial office on 1 May 305, and became the first Roman emperor to abdicate the position voluntarily. He lived out his retirement in his palace on the Dalmatian coast, tending to his vegetable gardens. His palace eventually became the core of the modern-day city of Split.</description>
       <zh-data/>
@@ -604,8 +604,8 @@
         <neighbor dest="588" relationship="dynasty" weight="0"/>
         <neighbor dest="589" relationship="with" weight="0"/>
         <neighbor dest="590" relationship="religion" weight="0"/>
-        <neighbor dest="591" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="592" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="591" relationship="predecessor" weight="0"/>
+        <neighbor dest="592" relationship="successor" weight="0"/>
         <neighbor dest="593" relationship="birth place" weight="0"/>
       </neighbors>
       <geodata/>
@@ -888,7 +888,7 @@
         <picture url="https://upload.wikimedia.org/wikipedia/en/4/4a/Commons-logo.svg" label=""/>
         <picture url="https://upload.wikimedia.org/wikipedia/commons/4/4c/Wikisource-logo.svg" label=""/>
       </pictures>
-      <speak>Constantinople (Greek: Κωνσταντινούπολις Konstantinoúpolis or Κωνσταντινούπολη Konstantinoúpoli; Latin: Constantinopolis; Ottoman Turkish: قسطنطینية, Kostantiniyye‎; Bulgarian: Цариград; modern Turkish: Istanbul) was the capital city of the Roman/Byzantine (330–1204 and 1261–1453), the Latin (1204–1261), and the Ottoman (1453–1924) empires.</speak>
+      <speak>Constantinople was the capital city of the Roman/Byzantine (330–1204 and 1261–1453), the Latin (1204–1261), and the Ottoman (1453–1924) empires.</speak>
       <zh-speak/>
       <description>Constantinople (Greek: Κωνσταντινούπολις Konstantinoúpolis or Κωνσταντινούπολη Konstantinoúpoli; Latin: Constantinopolis; Ottoman Turkish: قسطنطینية, Kostantiniyye‎; Bulgarian: Цариград; modern Turkish: Istanbul) was the capital city of the Roman/Byzantine (330–1204 and 1261–1453), the Latin (1204–1261), and the Ottoman (1453–1924) empires. It was reinaugurated in 324 AD at ancient Byzantium, as the new capital of the Roman Empire by Emperor Constantine the Great, after whom it was named, and dedicated on 11 May 330. In the 12th century, the city was the largest and wealthiest European city and it was instrumental in the advancement of Christianity during Roman and Byzantine times. After the loss of its territory, the Eastern Roman (Byzantine) Empire was reduced to just its capital city and its environs, eventually falling to the Ottomans in 1453. Following the Muslim conquest, the former bastion of Christianity in the east, Constantinople, was turned into the Islamic capital of the Ottoman Empire, under which it prospered and flourished again. For many centuries the city was popularly called "Istanbul", from a Greek phrase meaning "to the city" (εἰς τὴν πόλιν), while its official name remained Constantinople. Eventually, after the founding of the modern Republic of Turkey—the successor state of the Ottoman Empire—the city was formally renamed to "Istanbul" in 1930.Constantinople was famed for its massive defenses. Although besieged on numerous occasions by various peoples, the Byzantine city was taken only in 1204 by the Latin army of the Fourth Crusade, recovered in 1261 by the Byzantine Emperor Michael VIII Palaiologos, and in 1453 conquered by the Ottoman Sultan Mehmed II. The first, smaller wall was erected by Constantine I, and surrounded the city. Later, in the 5th century, Theodosius II constructed the Theodosian Walls, which consisted of a double wall lying about 2 km (1.2 miles) to the west of the first wall. The city was built on seven hills as well as on the Golden Horn and the Sea of Marmara and thus presented an impregnable fortress enclosing magnificent palaces, domes, and towers, spanning two continents.The city was also famed for its architectural masterpieces, such as the Greek Orthodox cathedral of Hagia Sophia which served as the seat of the Ecumenical Patriarchate, the sacred Imperial Palace where the Emperors lived, the Galata Tower, the Hippodrome, and the Golden Gate, lining the arcaded avenues and squares. Constantinople contained numerous artistic and literary treasures before it was sacked in 1204 and 1453. The city was virtually depopulated when it fell to the Ottoman Turks, but recovered rapidly, and was, by the mid-1600s, once again the world's largest city as the new capital of the Ottoman Empire.</description>
       <zh-data/>
@@ -957,9 +957,9 @@
     </Feature>
     <Feature data="Theodosius I" zh-data="" id="24" uri="http://dbpedia.org/resource/Theodosius_I">
       <neighbors>
-        <neighbor dest="11" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="11" relationship="predecessor" weight="0"/>
         <neighbor dest="20" relationship="place of burial" weight="0"/>
-        <neighbor dest="405" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="405" relationship="regent" weight="0"/>
         <neighbor dest="413" relationship="issue" weight="0"/>
         <neighbor dest="448" relationship="place of burial" weight="0"/>
         <neighbor dest="530" relationship="religion" weight="0"/>
@@ -1411,7 +1411,7 @@
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
         <neighbor dest="43" relationship="ordained by" weight="0"/>
-        <neighbor dest="58" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="58" relationship="successor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -1568,7 +1568,7 @@
     </Feature>
     <Feature data="Lucilla" zh-data="" id="44" uri="http://dbpedia.org/resource/Lucilla">
       <neighbors>
-        <neighbor dest="25" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="25" relationship="regent" weight="0"/>
         <neighbor dest="1" relationship="birth place" weight="0"/>
         <neighbor dest="15" relationship="birth place" weight="0"/>
         <neighbor dest="100" relationship="spouse" weight="0"/>
@@ -1739,14 +1739,16 @@
     </Feature>
     <Feature data="Augustus" zh-data="" id="49" uri="http://dbpedia.org/resource/Augustus">
       <neighbors>
-        <neighbor dest="1" relationship="death place" weight="0"/>
-        <neighbor dest="15" relationship="birth place" weight="0"/>
-        <neighbor dest="390" relationship="years" weight="0"/>
-        <neighbor dest="391" relationship="years" weight="0"/>
-        <neighbor dest="392" relationship="birth place" weight="0"/>
-        <neighbor dest="417" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="1" relationship="passed away within the" weight="0"/>
+        <neighbor dest="15" relationship="place of birth" weight="0"/>
+        <neighbor dest="390" relationship="was active at the same time as" weight="0"/>
+        <neighbor dest="391" relationship="was active at the same time as" weight="0"/>
+        <neighbor dest="392" relationship="place of birth" weight="0"/>
+        <neighbor dest="417" relationship="successor" weight="0"/>
       </neighbors>
-      <geodata/>
+      <geodata>
+		<coordinates lat="44.4184" lon="12.2035"/>
+	  </geodata>
       <timedata>
         <timeobj label="birth date" value="-063-09-23"/>
         <timeobj label="death date" value="--08-19"/>
@@ -1816,7 +1818,7 @@
         <picture url="https://upload.wikimedia.org/wikipedia/commons/2/25/Simple_gold_crown.svg" label="Simple gold crown.svg"/>
         <picture url="https://upload.wikimedia.org/wikipedia/commons/0/09/Capitoline_Wolf_of_Roman_Kingdom.svg" label="Capitoline Wolf of Roman Kingdom.svg"/>
       </pictures>
-      <speak>Augustus (Latin: Imperātor Caesar Dīvī Fīlius Augustus; 23 September 63 BC – 19 August 14 AD) was the founder of the Roman Empire and its first Emperor, ruling from 27 BC until his death in 14 AD.He was born Gaius Octavius into an old and wealthy equestrian branch of the plebeian Octavii family. Following the assassination of his maternal great-uncle Julius Caesar in 44 BC, Octavian was named in Caesar's will as his adopted son and heir.</speak>
+      <speak>Augustus was the founder of the Roman Empire and its first Emperor, ruling from 27 BC until his death in 14 AD. He was born Gaius Octavius into an old and wealthy equestrian branch of the plebeian Octavii family. Following the assassination of his maternal great-uncle Julius Caesar in 44 BC, Octavian was named in Caesar's will as his adopted son and heir.</speak>
       <zh-speak/>
       <description>Augustus (Latin: Imperātor Caesar Dīvī Fīlius Augustus; 23 September 63 BC – 19 August 14 AD) was the founder of the Roman Empire and its first Emperor, ruling from 27 BC until his death in 14 AD.He was born Gaius Octavius into an old and wealthy equestrian branch of the plebeian Octavii family. Following the assassination of his maternal great-uncle Julius Caesar in 44 BC, Octavian was named in Caesar's will as his adopted son and heir. Together with Mark Antony and Marcus Lepidus, he formed the Second Triumvirate to defeat the assassins of Caesar. Following their victory at Philippi, the Triumvirate divided the Roman Republic among themselves and ruled as military dictators. The Triumvirate was eventually torn apart under the competing ambitions of its members: Lepidus was driven into exile and stripped of his position, and Antony committed suicide following his defeat at the Battle of Actium by Octavian in 31 BC.After the demise of the Second Triumvirate, Augustus restored the outward facade of the free Republic, with governmental power vested in the Roman Senate, the executive magistrates, and the legislative assemblies. In reality, however, he retained his autocratic power over the Republic as a military dictator. By law, Augustus held a collection of powers granted to him for life by the Senate, including supreme military command, and those of tribune and censor. It took several years for Augustus to develop the framework within which a formally republican state could be led under his sole rule. He rejected monarchical titles, and instead called himself Princeps Civitatis ("First Citizen of the State"). The resulting constitutional framework became known as the Principate, the first phase of the Roman Empire.The reign of Augustus initiated an era of relative peace known as the Pax Romana (The Roman Peace). Despite continuous wars of imperial expansion on the Empire's frontiers and one year-long civil war over the imperial succession, the Roman world was largely free from large-scale conflict for more than two centuries. Augustus dramatically enlarged the Empire, annexing Egypt, Dalmatia, Pannonia, Noricum, and Raetia, expanded possessions in Africa, expanded into Germania, and completed the conquest of Hispania.Beyond the frontiers, he secured the Empire with a buffer region of client states, and made peace with the Parthian Empire through diplomacy. He reformed the Roman system of taxation, developed networks of roads with an official courier system, established a standing army, established the Praetorian Guard, created official police and fire-fighting services for Rome, and rebuilt much of the city during his reign.Augustus died in 14 AD at the age of 75. He may have died from natural causes, although there were unconfirmed rumors that his wife Livia poisoned him. He was succeeded as Emperor by his adopted son (also stepson and former son-in-law), Tiberius.</description>
       <zh-data/>
@@ -2022,8 +2024,8 @@
       <neighbors>
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="60" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="68" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="60" relationship="successor" weight="0"/>
+        <neighbor dest="68" relationship="predecessor" weight="0"/>
         <neighbor dest="614" relationship="birth place" weight="0"/>
       </neighbors>
       <geodata/>
@@ -2054,8 +2056,8 @@
       <neighbors>
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="79" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="81" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="79" relationship="successor" weight="0"/>
+        <neighbor dest="81" relationship="predecessor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -2085,8 +2087,8 @@
       <neighbors>
         <neighbor dest="1" relationship="birth place" weight="0"/>
         <neighbor dest="15" relationship="PLACE OF DEATH" weight="0"/>
-        <neighbor dest="76" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="78" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="76" relationship="predecessor" weight="0"/>
+        <neighbor dest="78" relationship="successor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -2113,10 +2115,10 @@
     </Feature>
     <Feature data="Pope Linus" zh-data="" id="58" uri="http://dbpedia.org/resource/Pope_Linus">
       <neighbors>
-        <neighbor dest="41" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="41" relationship="predecessor" weight="0"/>
         <neighbor dest="1" relationship="birth place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="94" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="94" relationship="successor" weight="0"/>
         <neighbor dest="200" relationship="ordained by" weight="0"/>
         <neighbor dest="539" relationship="venerated" weight="0"/>
         <neighbor dest="543" relationship="venerated" weight="0"/>
@@ -2152,8 +2154,8 @@
       <neighbors>
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="67" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="98" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="67" relationship="successor" weight="0"/>
+        <neighbor dest="98" relationship="predecessor" weight="0"/>
         <neighbor dest="614" relationship="birth place" weight="0"/>
       </neighbors>
       <geodata/>
@@ -2182,10 +2184,10 @@
     </Feature>
     <Feature data="Pope Sixtus I" zh-data="" id="60" uri="http://dbpedia.org/resource/Pope_Sixtus_I">
       <neighbors>
-        <neighbor dest="55" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="55" relationship="predecessor" weight="0"/>
         <neighbor dest="1" relationship="birth place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="70" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="70" relationship="successor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -2221,8 +2223,8 @@
       <neighbors>
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="62" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="76" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="62" relationship="predecessor" weight="0"/>
+        <neighbor dest="76" relationship="successor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -2250,10 +2252,10 @@
     </Feature>
     <Feature data="Pope Stephen I" zh-data="" id="62" uri="http://dbpedia.org/resource/Pope_Stephen_I">
       <neighbors>
-        <neighbor dest="61" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="61" relationship="successor" weight="0"/>
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="birth place" weight="0"/>
-        <neighbor dest="80" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="80" relationship="predecessor" weight="0"/>
         <neighbor dest="539" relationship="venerated" weight="0"/>
         <neighbor dest="543" relationship="venerated" weight="0"/>
       </neighbors>
@@ -2284,7 +2286,7 @@
       <neighbors>
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="PLACE OF DEATH" weight="0"/>
-        <neighbor dest="81" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="81" relationship="successor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -2314,8 +2316,8 @@
       <neighbors>
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="77" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="82" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="77" relationship="predecessor" weight="0"/>
+        <neighbor dest="82" relationship="successor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -2439,10 +2441,10 @@
     </Feature>
     <Feature data="Pope Anicetus" zh-data="" id="67" uri="http://dbpedia.org/resource/Pope_Anicetus">
       <neighbors>
-        <neighbor dest="59" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="59" relationship="predecessor" weight="0"/>
         <neighbor dest="1" relationship="PLACE OF DEATH" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="69" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="69" relationship="successor" weight="0"/>
         <neighbor dest="539" relationship="venerated in" weight="0"/>
         <neighbor dest="543" relationship="venerated in" weight="0"/>
       </neighbors>
@@ -2473,10 +2475,10 @@
     </Feature>
     <Feature data="Pope Evaristus" zh-data="" id="68" uri="http://dbpedia.org/resource/Pope_Evaristus">
       <neighbors>
-        <neighbor dest="55" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="55" relationship="successor" weight="0"/>
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="202" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="202" relationship="predecessor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -2507,8 +2509,8 @@
       <neighbors>
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="67" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="77" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="67" relationship="predecessor" weight="0"/>
+        <neighbor dest="77" relationship="successor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -2534,10 +2536,10 @@
     </Feature>
     <Feature data="Pope Telesphorus" zh-data="" id="70" uri="http://dbpedia.org/resource/Pope_Telesphorus">
       <neighbors>
-        <neighbor dest="60" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="60" relationship="predecessor" weight="0"/>
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="98" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="98" relationship="successor" weight="0"/>
         <neighbor dest="543" relationship="venerated" weight="0"/>
         <neighbor dest="614" relationship="death place" weight="0"/>
       </neighbors>
@@ -2711,8 +2713,8 @@
     <Feature data="Pope Cornelius" zh-data="" id="75" uri="http://dbpedia.org/resource/Pope_Cornelius">
       <neighbors>
         <neighbor dest="1" relationship="death place" weight="0"/>
-        <neighbor dest="79" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="80" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="79" relationship="predecessor" weight="0"/>
+        <neighbor dest="80" relationship="successor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -2742,8 +2744,8 @@
     </Feature>
     <Feature data="Pope Dionysius" zh-data="" id="76" uri="http://dbpedia.org/resource/Pope_Dionysius">
       <neighbors>
-        <neighbor dest="57" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="61" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="57" relationship="successor" weight="0"/>
+        <neighbor dest="61" relationship="predecessor" weight="0"/>
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
         <neighbor dest="543" relationship="venerated" weight="0"/>
@@ -2774,10 +2776,10 @@
     </Feature>
     <Feature data="Pope Eleuterus" zh-data="" id="77" uri="http://dbpedia.org/resource/Pope_Eleuterus">
       <neighbors>
-        <neighbor dest="64" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="64" relationship="successor" weight="0"/>
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="69" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="69" relationship="predecessor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -2808,10 +2810,10 @@
     </Feature>
     <Feature data="Pope Eutychian" zh-data="" id="78" uri="http://dbpedia.org/resource/Pope_Eutychian">
       <neighbors>
-        <neighbor dest="57" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="57" relationship="predecessor" weight="0"/>
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="512" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="512" relationship="successor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -2839,10 +2841,10 @@
     </Feature>
     <Feature data="Pope Fabian" zh-data="" id="79" uri="http://dbpedia.org/resource/Pope_Fabian">
       <neighbors>
-        <neighbor dest="56" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="56" relationship="predecessor" weight="0"/>
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="75" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="75" relationship="successor" weight="0"/>
         <neighbor dest="543" relationship="venerated" weight="0"/>
       </neighbors>
       <geodata/>
@@ -2875,10 +2877,10 @@
     </Feature>
     <Feature data="Pope Lucius I" zh-data="" id="80" uri="http://dbpedia.org/resource/Pope_Lucius_I">
       <neighbors>
-        <neighbor dest="62" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="62" relationship="successor" weight="0"/>
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="birth place" weight="0"/>
-        <neighbor dest="75" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="75" relationship="predecessor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -2909,8 +2911,8 @@
     </Feature>
     <Feature data="Pope Pontian" zh-data="" id="81" uri="http://dbpedia.org/resource/Pope_Pontian">
       <neighbors>
-        <neighbor dest="56" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="63" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="56" relationship="successor" weight="0"/>
+        <neighbor dest="63" relationship="predecessor" weight="0"/>
         <neighbor dest="1" relationship="death place" weight="0"/>
       </neighbors>
       <geodata/>
@@ -2942,7 +2944,7 @@
     </Feature>
     <Feature data="Pope Zephyrinus" zh-data="" id="82" uri="http://dbpedia.org/resource/Pope_Zephyrinus">
       <neighbors>
-        <neighbor dest="64" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="64" relationship="predecessor" weight="0"/>
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="birth place" weight="0"/>
       </neighbors>
@@ -3179,7 +3181,7 @@
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="birth place" weight="0"/>
         <neighbor dest="392" relationship="birth place" weight="0"/>
-        <neighbor dest="417" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="417" relationship="successor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -3300,10 +3302,10 @@
     </Feature>
     <Feature data="Pope Anacletus" zh-data="" id="94" uri="http://dbpedia.org/resource/Pope_Anacletus">
       <neighbors>
-        <neighbor dest="58" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="58" relationship="predecessor" weight="0"/>
         <neighbor dest="1" relationship="birth place" weight="0"/>
         <neighbor dest="15" relationship="birth place" weight="0"/>
-        <neighbor dest="202" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="202" relationship="successor" weight="0"/>
         <neighbor dest="539" relationship="venerated" weight="0"/>
         <neighbor dest="543" relationship="venerated" weight="0"/>
         <neighbor dest="614" relationship="birth place" weight="0"/>
@@ -3433,10 +3435,10 @@
     </Feature>
     <Feature data="Pope Hyginus" zh-data="" id="98" uri="http://dbpedia.org/resource/Pope_Hyginus">
       <neighbors>
-        <neighbor dest="59" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="59" relationship="successor" weight="0"/>
         <neighbor dest="1" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="70" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="70" relationship="predecessor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -4679,7 +4681,7 @@
       <neighbors>
         <neighbor dest="1" relationship="allegiance" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="412" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="412" relationship="regent" weight="0"/>
         <neighbor dest="487" relationship="occupation" weight="0"/>
       </neighbors>
       <geodata/>
@@ -5715,8 +5717,8 @@
         <neighbor dest="11" relationship="death place" weight="0"/>
         <neighbor dest="1" relationship="birth place" weight="0"/>
         <neighbor dest="15" relationship="birth place" weight="0"/>
-        <neighbor dest="505" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="515" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="505" relationship="successor" weight="0"/>
+        <neighbor dest="515" relationship="predecessor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -5750,8 +5752,8 @@
       <neighbors>
         <neighbor dest="1" relationship="birth place" weight="0"/>
         <neighbor dest="15" relationship="birth place" weight="0"/>
-        <neighbor dest="68" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="94" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="68" relationship="successor" weight="0"/>
+        <neighbor dest="94" relationship="predecessor" weight="0"/>
         <neighbor dest="535" relationship="venerated" weight="0"/>
         <neighbor dest="539" relationship="venerated" weight="0"/>
         <neighbor dest="543" relationship="venerated" weight="0"/>
@@ -10010,7 +10012,7 @@
         <picture url="https://upload.wikimedia.org/wikipedia/commons/4/4c/Wikisource-logo.svg" label=""/>
         <picture url="https://upload.wikimedia.org/wikipedia/en/4/4a/Commons-logo.svg" label=""/>
       </pictures>
-      <speak>Marcus Vipsanius Agrippa (/əˈɡrɪpə/; 23 October or November 64/63 BC – 12 BC) was a Roman statesman, general and architect.  He was a close friend, son-in-law, and lieutenant to Augustus and was responsible for the construction of some of the most beautiful buildings in the history of Rome and for important military victories, most notably at the Battle of Actium against the forces of Mark Antony and Cleopatra.</speak>
+      <speak>Marcus Vipsanius Agrippa was a Roman statesman, general and architect.  He was a close friend, son-in-law, and lieutenant to Augustus and was responsible for the construction of some of the most beautiful buildings in the history of Rome and for important military victories, most notably at the Battle of Actium against the forces of Mark Antony and Cleopatra.</speak>
       <zh-speak/>
       <description>Marcus Vipsanius Agrippa (/əˈɡrɪpə/; 23 October or November 64/63 BC – 12 BC) was a Roman statesman, general and architect.  He was a close friend, son-in-law, and lieutenant to Augustus and was responsible for the construction of some of the most beautiful buildings in the history of Rome and for important military victories, most notably at the Battle of Actium against the forces of Mark Antony and Cleopatra. As a result of these victories Octavian became the first Roman Emperor, adopting the name of Augustus. Agrippa assisted Augustus in making Rome a city of marble and renovating aqueducts to give all Romans, from every social class, access to the highest quality public services. He was responsible for the creation of many baths, porticoes and gardens and was once thought to have commissioned the construction of the Pantheon. Agrippa was also father-in-law to the second Emperor Tiberius, maternal grandfather to Caligula, and maternal great-grandfather to the Emperor Nero.</description>
       <zh-data/>
@@ -10074,7 +10076,7 @@
         <picture url="https://upload.wikimedia.org/wikipedia/commons/2/24/Wikinews-logo.svg" label=""/>
         <picture url="https://upload.wikimedia.org/wikipedia/en/4/4a/Commons-logo.svg" label=""/>
       </pictures>
-      <speak>Marcus Antonius (Latin: M·ANTONIVS·M·F·M·N; January 14, 83 BC – August 1, 30 BC), commonly known in English as Mark or Marc Antony, was a Roman politician and general who played a critical role in the transformation of the Roman Republic from an oligarchy into the autocratic Roman Empire.Antony was a supporter of Julius Caesar, and served as one of his generals during the conquest of Gaul and the Civil War.</speak>
+      <speak>Marcus Antonius, commonly known in English as Mark or Marc Antony, was a Roman politician and general who played a critical role in the transformation of the Roman Republic from an oligarchy into the autocratic Roman Empire. Antony was a supporter of Julius Caesar, and served as one of his generals during the conquest of Gaul and the Civil War.</speak>
       <zh-speak/>
       <description>Marcus Antonius (Latin: M·ANTONIVS·M·F·M·N; January 14, 83 BC – August 1, 30 BC), commonly known in English as Mark or Marc Antony, was a Roman politician and general who played a critical role in the transformation of the Roman Republic from an oligarchy into the autocratic Roman Empire.Antony was a supporter of Julius Caesar, and served as one of his generals during the conquest of Gaul and the Civil War. Antony was appointed administrator of Italy while Caesar eliminated political opponents in Greece, North Africa, and Spain. After Caesar's death in 44 BC, Antony joined forces with Marcus Aemilius Lepidus, another of Caesar's generals, and Octavian, Caesar's nephew and adopted son, forming a three-man dictatorship known to historians as the Second Triumvirate. The Triumvirs defeated Caesar's murderers, the Liberatores, at the Battle of Philippi in 42 BC, and divided the government of the Republic between themselves. Antony was assigned Rome's eastern provinces, including the client kingdom of Egypt, then ruled by Cleopatra VII Philopater, and was given the command in Rome's war against Parthia.Relations among the Triumvirs were strained as the various members sought greater political power. Civil war between Antony and Octavian was averted in 40 BC, when Antony married Octavian's sister, Octavia. Despite this marriage, Antony carried on a love affair with Cleopatra, who bore him three children, further straining Antony's relations with Octavian. Lepidus was expelled from the association in 36 BC, and in 33 BC disagreements between Antony and Octavian caused a split between the remaining Triumvirs.  Their ongoing hostility erupted into civil war in 31 BC, as the Roman Senate, at Octavian's direction, declared war on Cleopatra and proclaimed Antony a traitor. Later that year, Antony was defeated by Octavian's forces at the Battle of Actium. Defeated, Antony and Cleopatra fled to Egypt, where they committed suicide.With Antony dead, Octavian was the undisputed master of the Roman world. In 27 BC, he was granted the title of Augustus, marking the final stage in the transformation of the Roman Republic into an empire, with himself as the first Roman emperor.</description>
       <zh-data/>
@@ -10130,7 +10132,7 @@
         <picture url="https://upload.wikimedia.org/wikipedia/en/4/4a/Commons-logo.svg" label=""/>
         <picture url="https://upload.wikimedia.org/wikipedia/commons/b/bb/SPQRomani.svg" label="SPQRomani.svg"/>
       </pictures>
-      <speak>The Roman Republic (Latin: Res publica Romana; Classical Latin: [ˈreːs ˈpuːb.lɪ.ka roːˈmaː.na]) was the period of ancient Roman civilization beginning with the overthrow of the Roman Kingdom, traditionally dated to 509 BC, and ending in 27 BC with the establishment of the Roman Empire. It was during this period that Rome's control expanded from the city's immediate surroundings to hegemony over the entire Mediterranean world.</speak>
+      <speak>The Roman Republic was the period of ancient Roman civilization beginning with the overthrow of the Roman Kingdom, traditionally dated to 509 BC, and ending in 27 BC with the establishment of the Roman Empire. It was during this period that Rome's control expanded from the city's immediate surroundings to hegemony over the entire Mediterranean world.</speak>
       <zh-speak/>
       <description>The Roman Republic (Latin: Res publica Romana; Classical Latin: [ˈreːs ˈpuːb.lɪ.ka roːˈmaː.na]) was the period of ancient Roman civilization beginning with the overthrow of the Roman Kingdom, traditionally dated to 509 BC, and ending in 27 BC with the establishment of the Roman Empire. It was during this period that Rome's control expanded from the city's immediate surroundings to hegemony over the entire Mediterranean world. During the first two centuries of its existence the Roman Republic expanded through a combination of conquest and alliance, from central Italy to the entire Italian peninsula. By the following century it included North Africa, Spain, and what is now southern France. Two centuries after that, towards the end of the 1st century BC, it included the rest of modern France, Greece, and much of the eastern Mediterranean. By this time, internal tensions led to a series of civil wars, culminating with the assassination of Julius Caesar, which led to the transition from republic to empire. The exact date of transition can be a matter of interpretation. Historians have variously proposed Julius Caesar's crossing of the Rubicon River in 49 BC, Caesar's appointment as dictator for life in 44 BC, and the defeat of Mark Antony and Cleopatra at the Battle of Actium in 31 BC. However, most use the same date as did the ancient Romans themselves, the Roman Senate's grant of extraordinary powers to Octavian and his adopting the title Augustus in 27 BC, as the defining event ending the Republic..Roman government was headed by two consuls, elected annually by the citizens and advised by a senate composed of appointed magistrates. As Roman society was very hierarchical by modern standards, the evolution of the Roman government was heavily influenced by the struggle between the patricians, Rome's land-holding aristocracy, who traced their ancestry to the founding of Rome, and the plebeians, the far more numerous citizen-commoners. Over time, the laws that gave patricians exclusive rights to Rome's highest offices were repealed or weakened, and leading plebeian families became full members of the aristocracy. The leaders of the Republic developed a strong tradition and morality requiring public service and patronage in peace and war, making military and political success inextricably linked. Many of Rome's legal and legislative structures (later codified into the Justinian Code, and again into the Napoleonic Code) can still be observed throughout Europe and much of the world in modern nation states and international organizations.</description>
       <zh-data/>
@@ -10218,28 +10220,28 @@
     </Feature>
     <Feature data="History of the Roman Empire" zh-data="" id="395" uri="http://dbpedia.org/resource/History_of_the_Roman_Empire">
       <neighbors>
-        <neighbor dest="2" relationship="event pre" weight="0"/>
+        <neighbor dest="2" relationship="began after the" weight="0"/>
         <neighbor dest="3" relationship="event start" weight="0"/>
         <neighbor dest="4" relationship="religion" weight="0"/>
-        <neighbor dest="5" relationship="title leader" weight="0"/>
+        <neighbor dest="5" relationship="title take by rulers" weight="0"/>
         <neighbor dest="6" relationship="government type" weight="0"/>
         <neighbor dest="7" relationship="currency" weight="0"/>
         <neighbor dest="8" relationship="event" weight="0"/>
         <neighbor dest="9" relationship="Legislature" weight="0"/>
         <neighbor dest="10" relationship="event end" weight="0"/>
         <neighbor dest="11" relationship="event" weight="0"/>
-        <neighbor dest="12" relationship="leader" weight="0"/>
-        <neighbor dest="13" relationship="leader" weight="0"/>
-        <neighbor dest="14" relationship="leader" weight="0"/>
-        <neighbor dest="15" relationship="capital" weight="0"/>
-        <neighbor dest="17" relationship="capital" weight="0"/>
-        <neighbor dest="18" relationship="leader" weight="0"/>
+        <neighbor dest="12" relationship="important leader" weight="0"/>
+        <neighbor dest="13" relationship="important leader" weight="0"/>
+        <neighbor dest="14" relationship="important leader" weight="0"/>
+        <neighbor dest="15" relationship="location of the capital" weight="0"/>
+        <neighbor dest="17" relationship="location of the capital" weight="0"/>
+        <neighbor dest="18" relationship="important leader" weight="0"/>
         <neighbor dest="19" relationship="event" weight="0"/>
         <neighbor dest="20" relationship="event" weight="0"/>
         <neighbor dest="21" relationship="government type" weight="0"/>
         <neighbor dest="22" relationship="region" weight="0"/>
         <neighbor dest="23" relationship="currency" weight="0"/>
-        <neighbor dest="24" relationship="leader" weight="0"/>
+        <neighbor dest="24" relationship="important leader" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -10384,7 +10386,7 @@
     <Feature data="Romulus Augustulus" zh-data="" id="399" uri="http://dbpedia.org/resource/Romulus_Augustulus">
       <neighbors>
         <neighbor dest="11" relationship="title" weight="0"/>
-        <neighbor dest="509" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="509" relationship="predecessor" weight="0"/>
         <neighbor dest="581" relationship="title" weight="0"/>
       </neighbors>
       <geodata/>
@@ -10436,7 +10438,7 @@
         <picture url="https://upload.wikimedia.org/wikipedia/commons/b/be/ConstantinoXI.jpg" label=""/>
         <picture url="https://upload.wikimedia.org/wikipedia/en/4/4a/Commons-logo.svg" label=""/>
       </pictures>
-      <speak>Constantine XI Dragases Palaiologos, Latinized as Palaeologus (Greek: Κωνσταντινος ΙΑ' Δραγάσης Παλαιολόγος, Kōnstantinos XI Dragasēs Palaiologos; 8 February 1405 – 29 May 1453) was the last reigning Byzantine Emperor, reigning as a member of the Palaiologos dynasty from 1449 to his death in battle at the fall of Constantinople.</speak>
+      <speak>Constantine XI Dragases Palaiologos was the last reigning Byzantine Emperor, reigning as a member of the Palaiologos dynasty from 1449 to his death in battle at the fall of Constantinople.</speak>
       <zh-speak/>
       <description>Constantine XI Dragases Palaiologos, Latinized as Palaeologus (Greek: Κωνσταντινος ΙΑ' Δραγάσης Παλαιολόγος, Kōnstantinos XI Dragasēs Palaiologos; 8 February 1405 – 29 May 1453) was the last reigning Byzantine Emperor, reigning as a member of the Palaiologos dynasty from 1449 to his death in battle at the fall of Constantinople. Following his death, he became a legendary figure in Greek folklore as the "Marble Emperor" who would awaken and recover the Empire and Constantinople from the Ottomans. His death marked the end of the Roman Empire, which had continued in the East for 977 years after the fall of the Western Roman Empire.</description>
       <zh-data/>
@@ -10446,7 +10448,7 @@
       <neighbors>
         <neighbor dest="5" relationship="title" weight="0"/>
         <neighbor dest="20" relationship="death place" weight="0"/>
-        <neighbor dest="484" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="484" relationship="successor" weight="0"/>
         <neighbor dest="562" relationship="title" weight="0"/>
       </neighbors>
       <geodata/>
@@ -10522,7 +10524,7 @@
       <neighbors>
         <neighbor dest="5" relationship="title" weight="0"/>
         <neighbor dest="11" relationship="title" weight="0"/>
-        <neighbor dest="413" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="413" relationship="predecessor" weight="0"/>
         <neighbor dest="526" relationship="birth date" weight="0"/>
       </neighbors>
       <geodata/>
@@ -10580,7 +10582,7 @@
     <Feature data="Gratian" zh-data="" id="405" uri="http://dbpedia.org/resource/Gratian">
       <neighbors>
         <neighbor dest="5" relationship="title" weight="0"/>
-        <neighbor dest="24" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="24" relationship="regent" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -10619,8 +10621,8 @@
     <Feature data="Majorian" zh-data="" id="406" uri="http://dbpedia.org/resource/Majorian">
       <neighbors>
         <neighbor dest="5" relationship="title" weight="0"/>
-        <neighbor dest="421" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="424" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="421" relationship="predecessor" weight="0"/>
+        <neighbor dest="424" relationship="successor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -10656,11 +10658,11 @@
     <Feature data="Maximinus II" zh-data="" id="407" uri="http://dbpedia.org/resource/Maximinus_II">
       <neighbors>
         <neighbor dest="5" relationship="title" weight="0"/>
-        <neighbor dest="12" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="531" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="533" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="551" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="570" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="12" relationship="regent" weight="0"/>
+        <neighbor dest="531" relationship="regent" weight="0"/>
+        <neighbor dest="533" relationship="successor" weight="0"/>
+        <neighbor dest="551" relationship="predecessor" weight="0"/>
+        <neighbor dest="570" relationship="regent" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -10695,12 +10697,12 @@
       <neighbors>
         <neighbor dest="5" relationship="title" weight="0"/>
         <neighbor dest="12" relationship="issue" weight="0"/>
-        <neighbor dest="13" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="13" relationship="regent" weight="0"/>
         <neighbor dest="527" relationship="dynasty" weight="0"/>
-        <neighbor dest="531" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="531" relationship="predecessor" weight="0"/>
         <neighbor dest="542" relationship="spouse" weight="0"/>
-        <neighbor dest="551" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="570" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="551" relationship="regent" weight="0"/>
+        <neighbor dest="570" relationship="successor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -10725,7 +10727,7 @@
         <picture url="https://upload.wikimedia.org/wikipedia/commons/9/90/Constantius_I_capturing_London_after_defeating_Allectus_Beaurains_hoard.jpg" label=""/>
         <picture url="https://upload.wikimedia.org/wikipedia/en/4/4a/Commons-logo.svg" label=""/>
       </pictures>
-      <speak>{Let’s talk about Constantius Chlorus.} Constantius I was Roman Emperor from 293 to 306, commonly known as Constantius Chlorus. He was the father of Constantine the Great and founder of the Constantinian dynasty. As Caesar, he defeated the usurper Allectus in Britain and campaigned extensively along the Rhine frontier, defeating the Alamanni and Franks. {And do you remember Maxentius? Well, Maxentius was preceeded by Constantius Chlorus. But that’s all we’re going to say about that.}</speak>
+      <speak>Constantius I (Latin: Marcus Flavius Valerius Constantius Herculius Augustus; 31 March c. 250 – 25 July 306) was Roman Emperor from 293 to 306, commonly known as Constantius Chlorus (Greek: Κωνστάντιος Χλωρός, Kōnstantios Khlōrós, lit. "Constantius the Pale"). He was the father of Constantine the Great and founder of the Constantinian dynasty.As Caesar, he defeated the usurper Allectus in Britain and campaigned extensively along the Rhine frontier, defeating the Alamanni and Franks.</speak>
       <zh-speak/>
       <description>Constantius I (Latin: Marcus Flavius Valerius Constantius Herculius Augustus; 31 March c. 250 – 25 July 306) was Roman Emperor from 293 to 306, commonly known as Constantius Chlorus (Greek: Κωνστάντιος Χλωρός, Kōnstantios Khlōrós, lit. "Constantius the Pale"). He was the father of Constantine the Great and founder of the Constantinian dynasty.As Caesar, he defeated the usurper Allectus in Britain and campaigned extensively along the Rhine frontier, defeating the Alamanni and Franks. Upon becoming Augustus in 305, Constantius launched a successful punitive campaign against the Picts beyond the Antonine Wall. However, Constantius died suddenly in Eburacum (York) the following year. His death sparked the collapse of the tetrarchic system of government inaugurated by the Emperor Diocletian.</description>
       <zh-data/>
@@ -10762,11 +10764,11 @@
         <neighbor dest="5" relationship="title" weight="0"/>
         <neighbor dest="409" relationship="spouse" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="413" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="425" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="426" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="413" relationship="predecessor" weight="0"/>
+        <neighbor dest="425" relationship="successor" weight="0"/>
+        <neighbor dest="426" relationship="regent" weight="0"/>
         <neighbor dest="478" relationship="birth place" weight="0"/>
-        <neighbor dest="518" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="518" relationship="regent" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -10799,10 +10801,10 @@
     </Feature>
     <Feature data="Joannes" zh-data="" id="411" uri="http://dbpedia.org/resource/Joannes">
       <neighbors>
-        <neighbor dest="403" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="403" relationship="predecessor" weight="0"/>
         <neighbor dest="5" relationship="title" weight="0"/>
-        <neighbor dest="410" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="413" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="410" relationship="successor" weight="0"/>
+        <neighbor dest="413" relationship="predecessor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -10866,12 +10868,12 @@
     </Feature>
     <Feature data="Honorius (emperor)" zh-data="" id="413" uri="http://dbpedia.org/resource/Honorius_(emperor)">
       <neighbors>
-        <neighbor dest="403" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="403" relationship="regent" weight="0"/>
         <neighbor dest="5" relationship="title" weight="0"/>
-        <neighbor dest="411" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="411" relationship="successor" weight="0"/>
         <neighbor dest="20" relationship="birth place" weight="0"/>
         <neighbor dest="24" relationship="father" weight="0"/>
-        <neighbor dest="426" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="426" relationship="regent" weight="0"/>
         <neighbor dest="478" relationship="death place" weight="0"/>
         <neighbor dest="530" relationship="religion" weight="0"/>
       </neighbors>
@@ -10918,7 +10920,7 @@
     <Feature data="Severus Alexander" zh-data="" id="414" uri="http://dbpedia.org/resource/Severus_Alexander">
       <neighbors>
         <neighbor dest="5" relationship="title" weight="0"/>
-        <neighbor dest="412" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="412" relationship="predecessor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -10987,8 +10989,8 @@
       <neighbors>
         <neighbor dest="5" relationship="title" weight="0"/>
         <neighbor dest="11" relationship="title" weight="0"/>
-        <neighbor dest="509" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="511" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="509" relationship="successor" weight="0"/>
+        <neighbor dest="511" relationship="predecessor" weight="0"/>
         <neighbor dest="579" relationship="death place" weight="0"/>
       </neighbors>
       <geodata/>
@@ -11018,8 +11020,8 @@
       <neighbors>
         <neighbor dest="5" relationship="title" weight="0"/>
         <neighbor dest="178" relationship="with" weight="0"/>
-        <neighbor dest="49" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="50" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="49" relationship="predecessor" weight="0"/>
+        <neighbor dest="50" relationship="successor" weight="0"/>
         <neighbor dest="51" relationship="with" weight="0"/>
         <neighbor dest="15" relationship="birth place" weight="0"/>
       </neighbors>
@@ -11196,8 +11198,8 @@
     <Feature data="Avitus" zh-data="" id="421" uri="http://dbpedia.org/resource/Avitus">
       <neighbors>
         <neighbor dest="5" relationship="title" weight="0"/>
-        <neighbor dest="406" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="425" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="406" relationship="successor" weight="0"/>
+        <neighbor dest="425" relationship="predecessor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -11296,8 +11298,8 @@
     <Feature data="Libius Severus" zh-data="" id="424" uri="http://dbpedia.org/resource/Libius_Severus">
       <neighbors>
         <neighbor dest="5" relationship="title" weight="0"/>
-        <neighbor dest="406" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="518" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="406" relationship="predecessor" weight="0"/>
+        <neighbor dest="518" relationship="successor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -11325,8 +11327,8 @@
       <neighbors>
         <neighbor dest="5" relationship="title" weight="0"/>
         <neighbor dest="409" relationship="spouse" weight="0"/>
-        <neighbor dest="410" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="421" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="410" relationship="predecessor" weight="0"/>
+        <neighbor dest="421" relationship="successor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -11358,9 +11360,9 @@
       <neighbors>
         <neighbor dest="5" relationship="title" weight="0"/>
         <neighbor dest="409" relationship="issue" weight="0"/>
-        <neighbor dest="410" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="411" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="425" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="410" relationship="regent" weight="0"/>
+        <neighbor dest="411" relationship="regent" weight="0"/>
+        <neighbor dest="425" relationship="regent" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -11682,8 +11684,8 @@
     </Feature>
     <Feature data="Isaac II Angelos" zh-data="" id="434" uri="http://dbpedia.org/resource/Isaac_II_Angelos">
       <neighbors>
-        <neighbor dest="439" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="443" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="439" relationship="regent" weight="0"/>
+        <neighbor dest="443" relationship="successor" weight="0"/>
         <neighbor dest="562" relationship="title" weight="0"/>
       </neighbors>
       <geodata/>
@@ -11855,8 +11857,8 @@
     <Feature data="Alexios IV Angelos" zh-data="" id="439" uri="http://dbpedia.org/resource/Alexios_IV_Angelos">
       <neighbors>
         <neighbor dest="434" relationship="parent" weight="0"/>
-        <neighbor dest="443" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="444" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="443" relationship="predecessor" weight="0"/>
+        <neighbor dest="444" relationship="successor" weight="0"/>
         <neighbor dest="562" relationship="title" weight="0"/>
       </neighbors>
       <geodata/>
@@ -11964,8 +11966,8 @@
     </Feature>
     <Feature data="Alexios III Angelos" zh-data="" id="443" uri="http://dbpedia.org/resource/Alexios_III_Angelos">
       <neighbors>
-        <neighbor dest="434" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="439" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="434" relationship="predecessor" weight="0"/>
+        <neighbor dest="439" relationship="successor" weight="0"/>
         <neighbor dest="455" relationship="issue" weight="0"/>
         <neighbor dest="562" relationship="title" weight="0"/>
       </neighbors>
@@ -11987,8 +11989,8 @@
     </Feature>
     <Feature data="Alexios V Doukas" zh-data="" id="444" uri="http://dbpedia.org/resource/Alexios_V_Doukas">
       <neighbors>
-        <neighbor dest="434" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="439" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="434" relationship="predecessor" weight="0"/>
+        <neighbor dest="439" relationship="predecessor" weight="0"/>
         <neighbor dest="562" relationship="title" weight="0"/>
       </neighbors>
       <geodata/>
@@ -12544,7 +12546,7 @@
         <picture url="https://upload.wikimedia.org/wikipedia/commons/6/6a/PriseDeConstantinople1204PalmaLeJeune.JPG" label=""/>
         <picture url="https://upload.wikimedia.org/wikipedia/commons/6/65/Venice_-_St._Marc%27s_Basilica_10.jpg" label=""/>
       </pictures>
-      <speak>The Sack of Constantinople or Siege of Constantinople  (also called the Fourth Crusade) occurred in 1204; it looted and destroyed parts of the capital of the Byzantine Empire as the city was captured by Western European and Venetian Crusaders.</speak>
+      <speak>The Sack of Constantinople or Siege of Constantinople (also called the Fourth Crusade) occurred in 1204; it looted and destroyed parts of the capital of the Byzantine Empire as the city was captured by Western European and Venetian Crusaders.</speak>
       <zh-speak/>
       <description>The Sack of Constantinople or Siege of Constantinople  (also called the Fourth Crusade) occurred in 1204; it looted and destroyed parts of the capital of the Byzantine Empire as the city was captured by Western European and Venetian Crusaders. After the capture, the Byzantine Empire fragmented into a number of small successor states, the Crusader-led Latin Empire was founded in its place and Baldwin of Flanders was crowned Emperor Baldwin I of Constantinople in the Hagia Sophia.Although one of the Empire's spin-off states would eventually manage to recapture the city in 1261 and proclaim the reinstatement of the Roman Empire, the weakened Byzantine state would never manage to restore its former territories, wealth, or imperial status. For this reason, the events of 1204 are sometimes considered to herald the irreversible decline of the Byzantine Empire, ultimately leading to its final demise in the Ottoman siege of 1453 and the arrival of a new Islamic empire on European soil.</description>
       <zh-data/>
@@ -13235,8 +13237,8 @@
     </Feature>
     <Feature data="Basiliscus" zh-data="" id="484" uri="http://dbpedia.org/resource/Basiliscus">
       <neighbors>
-        <neighbor dest="401" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="488" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="401" relationship="successor" weight="0"/>
+        <neighbor dest="488" relationship="regent" weight="0"/>
         <neighbor dest="562" relationship="title" weight="0"/>
       </neighbors>
       <geodata/>
@@ -13468,7 +13470,7 @@
       <neighbors>
         <neighbor dest="11" relationship="birth place" weight="0"/>
         <neighbor dest="15" relationship="birth place" weight="0"/>
-        <neighbor dest="496" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="496" relationship="predecessor" weight="0"/>
         <neighbor dest="510" relationship="PLACE OF DEATH" weight="0"/>
       </neighbors>
       <geodata/>
@@ -13497,11 +13499,11 @@
     </Feature>
     <Feature data="Pope Simplicius" zh-data="" id="496" uri="http://dbpedia.org/resource/Pope_Simplicius">
       <neighbors>
-        <neighbor dest="495" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="495" relationship="successor" weight="0"/>
         <neighbor dest="11" relationship="birth place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
         <neighbor dest="510" relationship="death place" weight="0"/>
-        <neighbor dest="513" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="513" relationship="predecessor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -13675,7 +13677,7 @@
       <neighbors>
         <neighbor dest="11" relationship="birth place" weight="0"/>
         <neighbor dest="15" relationship="PLACE OF BIRTH" weight="0"/>
-        <neighbor dest="508" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="508" relationship="successor" weight="0"/>
         <neighbor dest="543" relationship="venerated" weight="0"/>
       </neighbors>
       <geodata/>
@@ -13744,8 +13746,8 @@
     <Feature data="Pope Eusebius" zh-data="" id="505" uri="http://dbpedia.org/resource/Pope_Eusebius">
       <neighbors>
         <neighbor dest="11" relationship="death place" weight="0"/>
-        <neighbor dest="201" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="507" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="201" relationship="predecessor" weight="0"/>
+        <neighbor dest="507" relationship="successor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -13777,7 +13779,7 @@
       <neighbors>
         <neighbor dest="11" relationship="PLACE OF DEATH" weight="0"/>
         <neighbor dest="15" relationship="birth place" weight="0"/>
-        <neighbor dest="522" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="522" relationship="predecessor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -13807,7 +13809,7 @@
     <Feature data="Pope Miltiades" zh-data="" id="507" uri="http://dbpedia.org/resource/Pope_Miltiades">
       <neighbors>
         <neighbor dest="11" relationship="PLACE OF DEATH" weight="0"/>
-        <neighbor dest="505" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="505" relationship="predecessor" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
       </neighbors>
       <geodata/>
@@ -13836,9 +13838,9 @@
     <Feature data="Pope Sixtus III" zh-data="" id="508" uri="http://dbpedia.org/resource/Pope_Sixtus_III">
       <neighbors>
         <neighbor dest="11" relationship="death place" weight="0"/>
-        <neighbor dest="503" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="503" relationship="predecessor" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="514" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="514" relationship="successor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -13867,8 +13869,8 @@
       <neighbors>
         <neighbor dest="404" relationship="after" weight="0"/>
         <neighbor dest="11" relationship="title" weight="0"/>
-        <neighbor dest="399" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="416" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="399" relationship="successor" weight="0"/>
+        <neighbor dest="416" relationship="predecessor" weight="0"/>
         <neighbor dest="578" relationship="death place" weight="0"/>
         <neighbor dest="581" relationship="title" weight="0"/>
       </neighbors>
@@ -13953,8 +13955,8 @@
     <Feature data="Olybrius" zh-data="" id="511" uri="http://dbpedia.org/resource/Olybrius">
       <neighbors>
         <neighbor dest="11" relationship="title" weight="0"/>
-        <neighbor dest="416" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="518" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="416" relationship="successor" weight="0"/>
+        <neighbor dest="518" relationship="predecessor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -13978,8 +13980,8 @@
       <neighbors>
         <neighbor dest="11" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="78" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="515" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="78" relationship="predecessor" weight="0"/>
+        <neighbor dest="515" relationship="successor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -14008,10 +14010,10 @@
     </Feature>
     <Feature data="Pope Hilarius" zh-data="" id="513" uri="http://dbpedia.org/resource/Pope_Hilarius">
       <neighbors>
-        <neighbor dest="496" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="496" relationship="successor" weight="0"/>
         <neighbor dest="11" relationship="birth place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="514" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="514" relationship="predecessor" weight="0"/>
         <neighbor dest="539" relationship="venerated" weight="0"/>
         <neighbor dest="543" relationship="venerated" weight="0"/>
         <neighbor dest="544" relationship="venerated" weight="0"/>
@@ -14043,9 +14045,9 @@
     <Feature data="Pope Leo I" zh-data="" id="514" uri="http://dbpedia.org/resource/Pope_Leo_I">
       <neighbors>
         <neighbor dest="11" relationship="death place" weight="0"/>
-        <neighbor dest="508" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="508" relationship="predecessor" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="513" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="513" relationship="successor" weight="0"/>
         <neighbor dest="535" relationship="venerated" weight="0"/>
         <neighbor dest="539" relationship="venerated" weight="0"/>
         <neighbor dest="543" relationship="venerated" weight="0"/>
@@ -14086,9 +14088,9 @@
     <Feature data="Pope Marcellinus" zh-data="" id="515" uri="http://dbpedia.org/resource/Pope_Marcellinus">
       <neighbors>
         <neighbor dest="11" relationship="death place" weight="0"/>
-        <neighbor dest="201" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="201" relationship="successor" weight="0"/>
         <neighbor dest="15" relationship="PLACE OF DEATH" weight="0"/>
-        <neighbor dest="512" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="512" relationship="predecessor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -14168,9 +14170,9 @@
       <neighbors>
         <neighbor dest="11" relationship="title" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
-        <neighbor dest="511" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="511" relationship="successor" weight="0"/>
         <neighbor dest="20" relationship="birth place" weight="0"/>
-        <neighbor dest="424" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="424" relationship="predecessor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -14258,7 +14260,7 @@
     <Feature data="Pope Mark" zh-data="" id="522" uri="http://dbpedia.org/resource/Pope_Mark">
       <neighbors>
         <neighbor dest="11" relationship="death place" weight="0"/>
-        <neighbor dest="506" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="506" relationship="successor" weight="0"/>
         <neighbor dest="15" relationship="PLACE OF DEATH" weight="0"/>
       </neighbors>
       <geodata/>
@@ -14444,9 +14446,9 @@
     </Feature>
     <Feature data="Licinius II" zh-data="" id="528" uri="http://dbpedia.org/resource/Licinius_II">
       <neighbors>
-        <neighbor dest="12" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="533" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="537" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="12" relationship="regent" weight="0"/>
+        <neighbor dest="533" relationship="regent" weight="0"/>
+        <neighbor dest="537" relationship="regent" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -14471,7 +14473,7 @@
     </Feature>
     <Feature data="Minervina" zh-data="" id="529" uri="http://dbpedia.org/resource/Minervina">
       <neighbors>
-        <neighbor dest="572" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="572" relationship="regent" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -14506,15 +14508,15 @@
     </Feature>
     <Feature data="Maximian" zh-data="" id="531" uri="http://dbpedia.org/resource/Maximian">
       <neighbors>
-        <neighbor dest="407" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="408" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="12" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="13" relationship="ruled alongside" weight="0"/>
+        <neighbor dest="407" relationship="regent" weight="0"/>
+        <neighbor dest="408" relationship="successor" weight="0"/>
+        <neighbor dest="12" relationship="regent" weight="0"/>
+        <neighbor dest="13" relationship="alongside" weight="0"/>
         <neighbor dest="540" relationship="issue" weight="0"/>
-        <neighbor dest="551" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="551" relationship="regent" weight="0"/>
         <neighbor dest="552" relationship="issue" weight="0"/>
-        <neighbor dest="570" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="576" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="570" relationship="regent" weight="0"/>
+        <neighbor dest="576" relationship="predecessor" weight="0"/>
         <neighbor dest="581" relationship="title" weight="0"/>
       </neighbors>
       <geodata/>
@@ -14552,7 +14554,7 @@
         <picture url="https://upload.wikimedia.org/wikipedia/commons/1/1f/Argenteus_of_Maximian_%28YORYM_2001_797%29_obverse.jpg" label=""/>
         <picture url="https://upload.wikimedia.org/wikipedia/en/4/4a/Commons-logo.svg" label=""/>
       </pictures>
-      <speak>&lt;color=#ff0000ff&gt;Back to what we were discussing before. When we left off, we were talking about Carinus.&lt;/color&gt; &lt;color=#0000ffff&gt;Maximian succeeded Carinus.&lt;/color&gt; Maximian was Roman Emperor from 286 to 305. He was Caesar from 285 to 286, then Augustus from 286 to 305. He shared the latter title with his co-emperor and superior, Diocletian, whose political brain complemented Maximian's military brawn. Maximian established his residence at Trier but spent most of his time on campaign. In the late summer of 285, he suppressed rebels in Gaul known as the Bagaudae. &lt;color=#ff00ffff&gt;Do you recall Maxentius? As it turns out, Maximian was Maxentius’ father.&lt;/color&gt;</speak>
+      <speak>Maximian (Latin: Marcus Aurelius Valerius Maximianus Herculius Augustus; c. 250 – c. July 310) was Roman Emperor from 286 to 305. He was Caesar from 285 to 286, then Augustus from 286 to 305. He shared the latter title with his co-emperor and superior, Diocletian, whose political brain complemented Maximian's military brawn. Maximian established his residence at Trier but spent most of his time on campaign. In the late summer of 285, he suppressed rebels in Gaul known as the Bagaudae.</speak>
       <zh-speak/>
       <description>Maximian (Latin: Marcus Aurelius Valerius Maximianus Herculius Augustus; c. 250 – c. July 310) was Roman Emperor from 286 to 305. He was Caesar from 285 to 286, then Augustus from 286 to 305. He shared the latter title with his co-emperor and superior, Diocletian, whose political brain complemented Maximian's military brawn. Maximian established his residence at Trier but spent most of his time on campaign. In the late summer of 285, he suppressed rebels in Gaul known as the Bagaudae. From 285 to 288, he fought against Germanic tribes along the Rhine frontier. Together with Diocletian, he launched a scorched earth campaign deep into Alamannic territory in 288, temporarily relieving the Rhine provinces from the threat of Germanic invasion.The man he appointed to police the Channel shores, Carausius, rebelled in 286, causing the secession of Britain and northwestern Gaul. Maximian failed to oust Carausius, and his invasion fleet was destroyed by storms in 289 or 290. Maximian's subordinate, Constantius, campaigned against Carausius' successor, Allectus, while Maximian held the Rhine frontier. The rebel leader was ousted in 296, and Maximian moved south to combat piracy near Hispania and Berber incursions in Mauretania. When these campaigns concluded in 298, he departed for Italy, where he lived in comfort until 305. At Diocletian's behest, Maximian abdicated on May 1, 305, gave the Augustan office to Constantius, and retired to southern Italy.In late 306, Maximian took the title of Augustus again and aided his son Maxentius' rebellion in Italy. In April 307, he attempted to depose his son, but failed and fled to the court of Constantius' successor, Constantine (who was both Maximian's step-grandson and also his son-in-law), in Trier. At the Council of Carnuntum in November 308, Diocletian and his successor, Galerius, forced Maximian to renounce his imperial claim again. In early 310, Maximian attempted to seize Constantine's title while the emperor was on campaign on the Rhine. Few supported him, and he was captured by Constantine in Marseille. Maximian committed suicide in the summer of 310 on Constantine's orders. During Constantine's war with Maxentius, Maximian's image was purged from all public places. However, after Constantine ousted and killed Maxentius, Maximian's image was rehabilitated, and he was deified.</description>
       <zh-data/>
@@ -14581,14 +14583,14 @@
     </Feature>
     <Feature data="Licinius" zh-data="" id="533" uri="http://dbpedia.org/resource/Licinius">
       <neighbors>
-        <neighbor dest="528" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="407" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="528" relationship="regent" weight="0"/>
+        <neighbor dest="407" relationship="regent" weight="0"/>
         <neighbor dest="532" relationship="birth place" weight="0"/>
-        <neighbor dest="12" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="537" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="552" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="556" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="570" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="12" relationship="successor" weight="0"/>
+        <neighbor dest="537" relationship="regent" weight="0"/>
+        <neighbor dest="552" relationship="regent" weight="0"/>
+        <neighbor dest="556" relationship="regent" weight="0"/>
+        <neighbor dest="570" relationship="predecessor" weight="0"/>
         <neighbor dest="581" relationship="title" weight="0"/>
       </neighbors>
       <geodata/>
@@ -14733,7 +14735,7 @@
       <neighbors>
         <neighbor dest="527" relationship="dynasty" weight="0"/>
         <neighbor dest="12" relationship="parent" weight="0"/>
-        <neighbor dest="538" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="538" relationship="regent" weight="0"/>
         <neighbor dest="540" relationship="mother" weight="0"/>
         <neighbor dest="581" relationship="title" weight="0"/>
       </neighbors>
@@ -14770,11 +14772,11 @@
     <Feature data="Constantine II (emperor)" zh-data="" id="537" uri="http://dbpedia.org/resource/Constantine_II_(emperor)">
       <neighbors>
         <neighbor dest="527" relationship="dynasty" weight="0"/>
-        <neighbor dest="528" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="533" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="536" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="528" relationship="regent" weight="0"/>
+        <neighbor dest="533" relationship="regent" weight="0"/>
+        <neighbor dest="536" relationship="successor" weight="0"/>
         <neighbor dest="12" relationship="father" weight="0"/>
-        <neighbor dest="538" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="538" relationship="successor" weight="0"/>
         <neighbor dest="581" relationship="title" weight="0"/>
       </neighbors>
       <geodata/>
@@ -14809,7 +14811,7 @@
     <Feature data="Constantius II" zh-data="" id="538" uri="http://dbpedia.org/resource/Constantius_II">
       <neighbors>
         <neighbor dest="527" relationship="dynasty" weight="0"/>
-        <neighbor dest="536" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="536" relationship="regent" weight="0"/>
         <neighbor dest="12" relationship="father" weight="0"/>
         <neighbor dest="540" relationship="mother" weight="0"/>
         <neighbor dest="581" relationship="title" weight="0"/>
@@ -14925,7 +14927,7 @@
         <neighbor dest="538" relationship="issue" weight="0"/>
         <neighbor dest="15" relationship="birth place" weight="0"/>
         <neighbor dest="545" relationship="issue" weight="0"/>
-        <neighbor dest="572" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="572" relationship="regent" weight="0"/>
         <neighbor dest="614" relationship="birth place" weight="0"/>
       </neighbors>
       <geodata/>
@@ -15202,8 +15204,8 @@
     </Feature>
     <Feature data="Martinian (Sextus Martinianus)" zh-data="" id="548" uri="http://dbpedia.org/resource/Martinian_(Sextus_Martinianus)">
       <neighbors>
-        <neighbor dest="533" relationship="ruled alongside" weight="0"/>
-        <neighbor dest="12" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="533" relationship="alongside" weight="0"/>
+        <neighbor dest="12" relationship="predecessor" weight="0"/>
         <neighbor dest="581" relationship="title" weight="0"/>
       </neighbors>
       <geodata/>
@@ -15270,14 +15272,14 @@
     </Feature>
     <Feature data="Galerius" zh-data="" id="551" uri="http://dbpedia.org/resource/Galerius">
       <neighbors>
-        <neighbor dest="531" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="407" relationship="ruled alongside" weight="0"/>
-        <neighbor dest="408" relationship="ruled alongside" weight="0"/>
-        <neighbor dest="533" relationship="ruled alongside" weight="0"/>
-        <neighbor dest="12" relationship="ruled alongside" weight="0"/>
-        <neighbor dest="13" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="556" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="570" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="531" relationship="regent" weight="0"/>
+        <neighbor dest="407" relationship="alongside" weight="0"/>
+        <neighbor dest="408" relationship="alongside" weight="0"/>
+        <neighbor dest="533" relationship="alongside" weight="0"/>
+        <neighbor dest="12" relationship="alongside" weight="0"/>
+        <neighbor dest="13" relationship="regent" weight="0"/>
+        <neighbor dest="556" relationship="regent" weight="0"/>
+        <neighbor dest="570" relationship="regent" weight="0"/>
         <neighbor dest="572" relationship="spouse" weight="0"/>
         <neighbor dest="581" relationship="title" weight="0"/>
       </neighbors>
@@ -15307,7 +15309,7 @@
         <picture url="https://upload.wikimedia.org/wikipedia/commons/c/cb/Thessaloniki-Arch_of_Galerius_%28detail%29.jpg" label=""/>
         <picture url="https://upload.wikimedia.org/wikipedia/en/4/4a/Commons-logo.svg" label=""/>
       </pictures>
-      <speak>{Galerius was ruled by the regent Maximian.} Galerius was Roman Emperor from 305 to 311.  During his reign he campaigned, aided by Diocletian, against the Sassanid Empire, sacking their capital Ctesiphon in 299.  He also campaigned across the Danube against the Carpi, defeating them in 297 and 300. Although he was a staunch opponent of Christianity, Galerius ended the Diocletianic Persecution when he issued an edict of toleration in 311. {We said earlier that we were going to talk about who ruled alongside Diocletian. As it turns out, Galerius ruled alongside Diocletian.}</speak>
+      <speak>Galerius (Latin: Gaius Galerius Valerius Maximianus Augustus; c. 260 – April or May 311), was Roman Emperor from 305 to 311.  During his reign he campaigned, aided by Diocletian, against the Sassanid Empire, sacking their capital Ctesiphon in 299.  He also campaigned across the Danube against the Carpi, defeating them in 297 and 300. Although he was a staunch opponent of Christianity, Galerius ended the Diocletianic Persecution when he issued an edict of toleration in 311.</speak>
       <zh-speak/>
       <description>Galerius (Latin: Gaius Galerius Valerius Maximianus Augustus; c. 260 – April or May 311), was Roman Emperor from 305 to 311.  During his reign he campaigned, aided by Diocletian, against the Sassanid Empire, sacking their capital Ctesiphon in 299.  He also campaigned across the Danube against the Carpi, defeating them in 297 and 300. Although he was a staunch opponent of Christianity, Galerius ended the Diocletianic Persecution when he issued an edict of toleration in 311.</description>
       <zh-data/>
@@ -15315,12 +15317,12 @@
     </Feature>
     <Feature data="Maxentius" zh-data="" id="552" uri="http://dbpedia.org/resource/Maxentius">
       <neighbors>
-        <neighbor dest="551" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="551" relationship="regent" weight="0"/>
         <neighbor dest="531" relationship="parent" weight="0"/>
-        <neighbor dest="408" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="533" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="12" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="13" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="408" relationship="predecessor" weight="0"/>
+        <neighbor dest="533" relationship="regent" weight="0"/>
+        <neighbor dest="12" relationship="successor" weight="0"/>
+        <neighbor dest="13" relationship="regent" weight="0"/>
         <neighbor dest="556" relationship="issue" weight="0"/>
         <neighbor dest="563" relationship="death place" weight="0"/>
       </neighbors>
@@ -15346,7 +15348,7 @@
         <picture url="https://upload.wikimedia.org/wikipedia/commons/e/e3/Nummus_of_Maxentius_%28YORYM_2001_10017%29_obverse.jpg" label=""/>
         <picture url="https://upload.wikimedia.org/wikipedia/en/4/4a/Commons-logo.svg" label=""/>
       </pictures>
-      <speak>&lt;color=#0000ffff&gt;One of Diocletian’s subjects was Maxentius.&lt;/color&gt; Maxentius was Roman Emperor from 306 to 312. &lt;color=#008000ff&gt;He and Diocletian were alike in many respects. Maxentius built the Basilica of Maxentius in the same way that Diocletian built the Baths of Diocletian, Valerius Romulus was the regent of both Maxentius and Diocletian, Maxentius was a commander at the Battle of the Milvian Bridge much like how Diocletian fought in the Battle of the Margus, and Maxentius' father was Maximian, who Diocletian ruled alongside.&lt;/color&gt;</speak>
+      <speak>For the saint of the same name see Saint MaxentiusMaxentius (Latin: Marcus Aurelius Valerius Maxentius Augustus; c. 278 – 28 October 312) was Roman Emperor from 306 to 312. He was the son of former Emperor Maximian and the son-in-law of Emperor Galerius.</speak>
       <zh-speak/>
       <description>For the saint of the same name see Saint MaxentiusMaxentius (Latin: Marcus Aurelius Valerius Maxentius Augustus; c. 278 – 28 October 312) was Roman Emperor from 306 to 312. He was the son of former Emperor Maximian and the son-in-law of Emperor Galerius.</description>
       <zh-data/>
@@ -15391,7 +15393,7 @@
     <Feature data="Calocaerus" zh-data="" id="555" uri="http://dbpedia.org/resource/Calocaerus">
       <neighbors>
         <neighbor dest="527" relationship="dynasty" weight="0"/>
-        <neighbor dest="12" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="12" relationship="predecessor" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -15414,11 +15416,11 @@
     </Feature>
     <Feature data="Valerius Romulus" zh-data="" id="556" uri="http://dbpedia.org/resource/Valerius_Romulus">
       <neighbors>
-        <neighbor dest="551" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="552" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="533" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="12" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="13" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="551" relationship="regent" weight="0"/>
+        <neighbor dest="552" relationship="regent" weight="0"/>
+        <neighbor dest="533" relationship="regent" weight="0"/>
+        <neighbor dest="12" relationship="regent" weight="0"/>
+        <neighbor dest="13" relationship="regent" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -15901,12 +15903,12 @@
     </Feature>
     <Feature data="Flavius Valerius Severus" zh-data="" id="570" uri="http://dbpedia.org/resource/Flavius_Valerius_Severus">
       <neighbors>
-        <neighbor dest="551" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="552" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="407" relationship="was ruled by the regent" weight="0"/>
-        <neighbor dest="408" relationship="was preceeded by" weight="0"/>
-        <neighbor dest="533" relationship="was succeeded by" weight="0"/>
-        <neighbor dest="12" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="551" relationship="regent" weight="0"/>
+        <neighbor dest="552" relationship="successor" weight="0"/>
+        <neighbor dest="407" relationship="regent" weight="0"/>
+        <neighbor dest="408" relationship="predecessor" weight="0"/>
+        <neighbor dest="533" relationship="successor" weight="0"/>
+        <neighbor dest="12" relationship="regent" weight="0"/>
         <neighbor dest="581" relationship="title" weight="0"/>
       </neighbors>
       <geodata/>
@@ -15951,7 +15953,7 @@
     </Feature>
     <Feature data="Galeria Valeria" zh-data="" id="572" uri="http://dbpedia.org/resource/Galeria_Valeria">
       <neighbors>
-        <neighbor dest="540" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="540" relationship="regent" weight="0"/>
         <neighbor dest="573" relationship="before" weight="0"/>
       </neighbors>
       <geodata/>
@@ -16062,10 +16064,10 @@
     </Feature>
     <Feature data="Carinus" zh-data="" id="576" uri="http://dbpedia.org/resource/Carinus">
       <neighbors>
-        <neighbor dest="13" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="13" relationship="successor" weight="0"/>
         <neighbor dest="581" relationship="title" weight="0"/>
         <neighbor dest="582" relationship="death place" weight="0"/>
-        <neighbor dest="583" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="583" relationship="regent" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -16083,7 +16085,7 @@
         <picture url="https://upload.wikimedia.org/wikipedia/en/4/4a/Commons-logo.svg" label=""/>
         <picture url="https://upload.wikimedia.org/wikipedia/en/4/4a/Commons-logo.svg" label=""/>
       </pictures>
-      <speak>&lt;color=#ff0000ff&gt;And have I mentioned Carinus?&lt;/color&gt; Carinus was Roman Emperor from 282 to 285. The elder son of emperor Carus, he was first appointed Caesar and in the beginning of 283 co-emperor of the western portion of the empire by his father. Official accounts of his character and career have been filtered through the propaganda of his successful opponent, Diocletian.</speak>
+      <speak>Carinus (Latin: Marcus Aurelius Carinus Augustus; died 285) was Roman Emperor from 282 to 285. The elder son of emperor Carus, he was first appointed Caesar and in the beginning of 283 co-emperor of the western portion of the empire by his father.  Official accounts of his character and career have been filtered through the propaganda of his successful opponent, Diocletian.</speak>
       <zh-speak/>
       <description>Carinus (Latin: Marcus Aurelius Carinus Augustus; died 285) was Roman Emperor from 282 to 285. The elder son of emperor Carus, he was first appointed Caesar and in the beginning of 283 co-emperor of the western portion of the empire by his father.  Official accounts of his character and career have been filtered through the propaganda of his successful opponent, Diocletian.</description>
       <zh-data/>
@@ -16533,7 +16535,7 @@
       <pictures>
         <picture url="https://upload.wikimedia.org/wikipedia/commons/d/d2/Gladii.svg" label="Stub icon"/>
       </pictures>
-      <speak>&lt;color=#800080ff&gt;We'll hear more about who Diocletian ruled alongside, Maxentius’ parents, and who succeeded Carinus soon. For now, let's talk about something else.&lt;/color&gt; &lt;color=#ffa500ff&gt;We discussed both Diocletian and Carinus previously. Both were combatants in the Battle of the Margus.&lt;/color&gt; The Battle of the Margus was fought in July 285 between the armies of Roman Emperors Diocletian and Carinus in the valley of the Margus River (today Great Morava) in Moesia (present day Serbia). Diocletian's victory was the tipping-point that led to the eventual resolution of the Crisis of the Third Century and the return of stability to the Empire. Carinus led the larger force, but the loyalty of this army was definitely questionable.</speak>
+      <speak>The Battle of the Margus was fought in July 285 between the armies of Roman Emperors Diocletian and Carinus in the valley of the Margus River (today Great Morava) in Moesia (present day Serbia). Diocletian's victory was the tipping-point that led to the eventual resolution of the Crisis of the Third Century and the return of stability to the Empire.Carinus led the larger force, but the loyalty of this army was definitely questionable.</speak>
       <zh-speak/>
       <description>The Battle of the Margus was fought in July 285 between the armies of Roman Emperors Diocletian and Carinus in the valley of the Margus River (today Great Morava) in Moesia (present day Serbia). Diocletian's victory was the tipping-point that led to the eventual resolution of the Crisis of the Third Century and the return of stability to the Empire.Carinus led the larger force, but the loyalty of this army was definitely questionable. Carinus had allegedly alienated men whose support his success depended upon, including mistreating the Senate  and its womenfolk and seducing the wives of his officers. The exact circumstances of the battle are in doubt, but it is known for certain that Carinus was killed in the course of the battle, most probably by one of his own officers.Diocletian was then left in sole control of the Roman Empire. The tide of the battle may have tilted to Carinus at first, only to shift in Diocletian's favor after the defection of Carinus' Praetorian Prefect, Aristobulus. Some scholars suspect that Aristobulus was the officer responsible for the murder of Carinus, an argument that gains credibility in the fact that Diocletian afterward rewarded Aristobulus by confirming him in office as Praetorian Prefect and Consul for the remainder of 285.</description>
       <zh-data/>
@@ -16541,8 +16543,8 @@
     </Feature>
     <Feature data="Numerian" zh-data="" id="583" uri="http://dbpedia.org/resource/Numerian">
       <neighbors>
-        <neighbor dest="576" relationship="ruled alongside" weight="0"/>
-        <neighbor dest="13" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="576" relationship="alongside" weight="0"/>
+        <neighbor dest="13" relationship="successor" weight="0"/>
         <neighbor dest="581" relationship="title" weight="0"/>
       </neighbors>
       <geodata/>
@@ -16559,7 +16561,7 @@
         <picture url="https://upload.wikimedia.org/wikipedia/commons/f/f5/NumerianusAntoninianus.jpg" label="NumerianusAntoninianus.jpg"/>
         <picture url="https://upload.wikimedia.org/wikipedia/en/4/4a/Commons-logo.svg" label=""/>
       </pictures>
-      <speak>{I’d like to touch on Numerian.} Numerian was Roman Emperor from 282 to 284 with his older brother Carinus. They were sons of Carus, a general raised to the office of praetorian prefect under Emperor Probus in 282. {And do you remember Diocletian? Well, Numerian was succeeded by Diocletian.}</speak>
+      <speak>Numerian (Latin: Marcus Aurelius Numerius Numerianus Augustus; died November 284) was Roman Emperor from 282 to 284 with his older brother Carinus. They were sons of Carus, a general raised to the office of praetorian prefect under Emperor Probus in 282.</speak>
       <zh-speak/>
       <description>Numerian (Latin: Marcus Aurelius Numerius Numerianus Augustus; died November 284) was Roman Emperor from 282 to 284 with his older brother Carinus. They were sons of Carus, a general raised to the office of praetorian prefect under Emperor Probus in 282.</description>
       <zh-data/>
@@ -16567,7 +16569,7 @@
     </Feature>
     <Feature data="Lucius Caesonius Ovinius Manlius Rufinianus Bassus" zh-data="" id="584" uri="http://dbpedia.org/resource/Lucius_Caesonius_Ovinius_Manlius_Rufinianus_Bassus">
       <neighbors>
-        <neighbor dest="13" relationship="was ruled by the regent" weight="0"/>
+        <neighbor dest="13" relationship="regent" weight="0"/>
       </neighbors>
       <geodata/>
       <timedata>
@@ -16575,7 +16577,7 @@
         <timeobj label="years" value="around AD 260"/>
       </timedata>
       <pictures/>
-      <speak>{Have you heard of Lucius Bassus?} Lucius Caesonius Ovinius Manlius Rufinianus Bassus was a Roman military officer and senator who was appointed suffect consul twice, in around AD 260 and 284. {Earlier we talked about Diocletian. Lucius Caesonius Ovinius Manlius Rufinianus Bassus was ruled by the regent Diocletian.}</speak>
+      <speak>Lucius Caesonius Ovinius Manlius Rufinianus Bassus (c. AD 227 – c. AD 300) was a Roman military officer and senator who was appointed suffect consul twice, in around AD 260 and 284.</speak>
       <zh-speak/>
       <description>Lucius Caesonius Ovinius Manlius Rufinianus Bassus (c. AD 227 – c. AD 300) was a Roman military officer and senator who was appointed suffect consul twice, in around AD 260 and 284.</description>
       <zh-data/>
@@ -16599,7 +16601,7 @@
         <picture url="https://upload.wikimedia.org/wikipedia/commons/9/98/San_Bernardo_alle_Terme-facciata.jpg" label=""/>
         <picture url="https://upload.wikimedia.org/wikipedia/en/4/4a/Commons-logo.svg" label=""/>
       </pictures>
-      <speak>{Now, about the Baths of Diocletian.} The Baths of Diocletian (Thermae Diocletiani) in Rome were the grandest of the public baths, or thermae built by successive emperors. Diocletian's Baths, dedicated in 306, were the largest and most sumptuous of the imperial baths. The baths were built between the years 298 and 306. The project was originally commissioned by Maximian upon his return to Rome in the autumn of 298 and was continued after his and Diocletian's abdication under Constantius, father of Constantine. {The Baths of Diocletian were built by Diocletian, who we mentioned previously.}</speak>
+      <speak>The Baths of Diocletian (Thermae Diocletiani) in Rome were the grandest of the public baths, or thermae built by successive emperors. Diocletian's Baths, dedicated in 306, were the largest and most sumptuous of the imperial baths. The baths were built between the years 298 and 306. The project was originally commissioned by Maximian upon his return to Rome in the autumn of 298 and was continued after his and Diocletian's abdication under Constantius, father of Constantine.</speak>
       <zh-speak/>
       <description>The Baths of Diocletian (Thermae Diocletiani) in Rome were the grandest of the public baths, or thermae built by successive emperors. Diocletian's Baths, dedicated in 306, were the largest and most sumptuous of the imperial baths. The baths were built between the years 298 and 306. The project was originally commissioned by Maximian upon his return to Rome in the autumn of 298 and was continued after his and Diocletian's abdication under Constantius, father of Constantine. Although many baths in and around Rome had the same elements, the Baths of Diocletian are unique by their size.</description>
       <zh-data/>
@@ -16714,7 +16716,7 @@
       <neighbors>
         <neighbor dest="526" relationship="birth place" weight="0"/>
         <neighbor dest="588" relationship="dynasty" weight="0"/>
-        <neighbor dest="14" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="14" relationship="successor" weight="0"/>
         <neighbor dest="562" relationship="title" weight="0"/>
       </neighbors>
       <geodata/>
@@ -16747,7 +16749,7 @@
     <Feature data="Justin II" zh-data="" id="592" uri="http://dbpedia.org/resource/Justin_II">
       <neighbors>
         <neighbor dest="588" relationship="dynasty" weight="0"/>
-        <neighbor dest="14" relationship="was preceeded by" weight="0"/>
+        <neighbor dest="14" relationship="predecessor" weight="0"/>
         <neighbor dest="562" relationship="title" weight="0"/>
       </neighbors>
       <geodata/>
@@ -21365,7 +21367,7 @@
     </Feature>
     <Feature data="Eqrem Libohova" zh-data="" id="774" uri="http://dbpedia.org/resource/Eqrem_Libohova">
       <neighbors>
-        <neighbor dest="774" relationship="was succeeded by" weight="0"/>
+        <neighbor dest="774" relationship="successor" weight="0"/>
         <neighbor dest="614" relationship="death place" weight="0"/>
         <neighbor dest="15" relationship="death place" weight="0"/>
       </neighbors>
