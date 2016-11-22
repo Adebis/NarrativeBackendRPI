@@ -72,6 +72,14 @@ namespace Dialogue_Data_Entry
 			chatBox.AppendText(value);
 		}
 
+		public void LoadXML(string filename) {
+			if (InvokeRequired) {
+				this.BeginInvoke(new Action<string>(LoadXML), new object[] { filename });
+				return;
+			}
+			this.parent_form1.OpenXML(filename);
+		}
+
 		private void label1_Click(object sender, EventArgs e)
 		{
 
@@ -150,7 +158,7 @@ namespace Dialogue_Data_Entry
 			string myFolder = Directory.GetCurrentDirectory();
 			int port = 8084;
 
-			server = new SimpleHTTPServer(myFolder, port, myHandler, AddChatBoxMessage, this.parent_form1);
+			server = new SimpleHTTPServer(myFolder, port, myHandler, AddChatBoxMessage, LoadXML);
 
 			IPHostEntry host;
 			string localIP = "<UNKNOWN>";
@@ -182,7 +190,7 @@ namespace Dialogue_Data_Entry
             string myFolder = Directory.GetCurrentDirectory();
             int port = 8084;
 
-            server = new SimpleHTTPServer(myFolder, port, myHandler, AddChatBoxMessage, this.parent_form1);
+            server = new SimpleHTTPServer(myFolder, port, myHandler, AddChatBoxMessage, LoadXML);
 
             IPHostEntry host;
             string localIP = "<UNKNOWN>";

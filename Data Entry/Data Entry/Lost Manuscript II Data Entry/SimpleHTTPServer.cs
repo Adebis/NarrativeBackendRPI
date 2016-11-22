@@ -90,9 +90,10 @@ class SimpleHTTPServer
 	private static bool initialized = false;
 
 	private QueryHandler handler;
-	private Form1 formref;
 
 	private Action<string> chatBoxCallback; //for writing messages to console
+	private Action<string> form1loadcallback; //for triggering a file load
+
 
 	public int Port
 	{
@@ -105,12 +106,12 @@ class SimpleHTTPServer
 	/// </summary>
 	/// <param name="path">Directory path to serve.</param>
 	/// <param name="port">Port of the server.</param>
-	public SimpleHTTPServer(string path, int port, QueryHandler handler, Action<string> chatBoxCallback, Form1 formref)
+	public SimpleHTTPServer(string path, int port, QueryHandler handler, Action<string> chatBoxCallback, Action<string> form1loadcallback)
 	{
 		this.handler = handler;
 		this.Initialize(path, port);
 		this.chatBoxCallback = chatBoxCallback;
-		this.formref = formref;
+		this.form1loadcallback = form1loadcallback;
 	}
 
 	/// <summary>
@@ -270,7 +271,7 @@ class SimpleHTTPServer
 				//handler.ParseInputJSON("load_xml:" + data.file);
 				Console.WriteLine("aaaaaaaaaaaaaaa");
 				//handler.parent_form1.OpenXML(data.file);
-				formref.OpenXML("roman_ww2_analogy.xml");//data.file);
+				this.form1loadcallback("roman_ww2_analogy.xml");//data.file);
 				Console.WriteLine("wqewqewqewqe");
 
 
