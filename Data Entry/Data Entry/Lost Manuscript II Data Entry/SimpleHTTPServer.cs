@@ -90,6 +90,7 @@ class SimpleHTTPServer
 	private static bool initialized = false;
 
 	private QueryHandler handler;
+	private Form1 formref;
 
 	private Action<string> chatBoxCallback; //for writing messages to console
 
@@ -104,11 +105,12 @@ class SimpleHTTPServer
 	/// </summary>
 	/// <param name="path">Directory path to serve.</param>
 	/// <param name="port">Port of the server.</param>
-	public SimpleHTTPServer(string path, int port, QueryHandler handler, Action<string> chatBoxCallback)
+	public SimpleHTTPServer(string path, int port, QueryHandler handler, Action<string> chatBoxCallback, Form1 formref)
 	{
 		this.handler = handler;
 		this.Initialize(path, port);
 		this.chatBoxCallback = chatBoxCallback;
+		this.formref = formref;
 	}
 
 	/// <summary>
@@ -254,7 +256,28 @@ class SimpleHTTPServer
 				context.Response.OutputStream.Close();
 
 				break;
+
+
+			case "/load_xml":
+				b = Encoding.UTF8.GetBytes("null");
+				context.Response.StatusCode = (int)HttpStatusCode.OK;
+				context.Response.KeepAlive = false;
+				context.Response.ContentLength64 = b.Length;
+				context.Response.OutputStream.Write(b, 0, b.Length);
+				context.Response.OutputStream.Close();
+
+
+				//handler.ParseInputJSON("load_xml:" + data.file);
+				Console.WriteLine("aaaaaaaaaaaaaaa");
+				//handler.parent_form1.OpenXML(data.file);
+				formref.OpenXML("roman_ww2_analogy.xml");//data.file);
+				Console.WriteLine("wqewqewqewqe");
+
+
+
 				
+				break;
+
 
 			case "/":
 

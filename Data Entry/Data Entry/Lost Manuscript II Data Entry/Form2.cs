@@ -130,7 +130,8 @@ namespace Dialogue_Data_Entry
                 if (split_display[0].Equals("load_xml"))
                 {
                     string filename = split_display[1];
-                    parent_form1.OpenXML(filename);
+					Console.WriteLine("loading xml: " + filename);
+					parent_form1.OpenXML(filename);
                 }//end if
             }//end if
 		}
@@ -149,7 +150,7 @@ namespace Dialogue_Data_Entry
 			string myFolder = Directory.GetCurrentDirectory();
 			int port = 8084;
 
-			server = new SimpleHTTPServer(myFolder, port, myHandler, AddChatBoxMessage);
+			server = new SimpleHTTPServer(myFolder, port, myHandler, AddChatBoxMessage, this.parent_form1);
 
 			IPHostEntry host;
 			string localIP = "<UNKNOWN>";
@@ -181,7 +182,7 @@ namespace Dialogue_Data_Entry
             string myFolder = Directory.GetCurrentDirectory();
             int port = 8084;
 
-            server = new SimpleHTTPServer(myFolder, port, myHandler, AddChatBoxMessage);
+            server = new SimpleHTTPServer(myFolder, port, myHandler, AddChatBoxMessage, this.parent_form1);
 
             IPHostEntry host;
             string localIP = "<UNKNOWN>";

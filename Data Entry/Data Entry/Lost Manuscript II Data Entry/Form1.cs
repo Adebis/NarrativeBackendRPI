@@ -179,6 +179,7 @@ namespace Dialogue_Data_Entry
 
         public void OpenXML(string file_name)
         {
+			Console.WriteLine("Opening xml: " + file_name);
             featGraph = XMLFilerForFeatureGraph.readFeatureGraph(file_name);
             selectedIndex = -1;
             refreshAllButUpdateFeature();
