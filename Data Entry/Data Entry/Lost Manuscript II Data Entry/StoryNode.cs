@@ -14,18 +14,21 @@ namespace Dialogue_Data_Entry
         public List<Tuple<string, int>> story_acts;
         //The text presentation for this node, based on its story acts.
         public string text;
+        public string analogy;
 
         public StoryNode(int graph_node_id_in)
         {
             graph_node_id = graph_node_id_in;
             story_acts = new List<Tuple<string, int>>();
             text = "";
+            analogy = "";
         }//end constructor StoryNode
         public StoryNode()
         {
             graph_node_id = -1;
             story_acts = new List<Tuple<string, int>>();
             text = "";
+            analogy = "";
         }//end constructor StoryNode
 
         public void AddStoryAct(string act_name, int target_id)

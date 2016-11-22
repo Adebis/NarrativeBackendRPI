@@ -326,40 +326,47 @@ namespace Dialogue_Data_Entry
             {
                 Feature anchor_node = null;
                 //TODO: Remove later; only for demo in November 2016
-                if (graph.file_name.Equals("roman_ww2_analogy.xml"))
+                if (graph.file_name.Equals("roman_ww2_analogy.xml") || graph.file_name.Equals("roman_ww2_analogy_2.xml"))
                 {
                     Console.Out.WriteLine("Roman ww2 analogy");
-                    int node_id_1 = 0;
-                    int node_id_2 = 0;
-                    Feature node_1 = null;
-                    Feature node_2 = null;
-                    bool parse_success = int.TryParse(split_input[1], out node_id_1);
-                    if (parse_success)
+                    List<Feature> story_features = new List<Feature>();
+                    int node_id = 0;
+                    Feature node = null;
+                    for (int i = 1; i < split_input.Length; i++)
                     {
-                        node_1 = graph.getFeature(node_id_1);
-                    }//end if
-                    parse_success = int.TryParse(split_input[2], out node_id_2);
-                    if (parse_success)
+                        bool parse_success = int.TryParse(split_input[i], out node_id);
+                        if (parse_success)
+                        {
+                            node = graph.getFeature(node_id);
+                            story_features.Add(node);
+                        }//end if
+                    }//end for
+                    story_features.Add(graph.getFeature(6));
+                    if (story_features.Count > 0)
                     {
-                        node_2 = graph.getFeature(node_id_2);
-                    }//end if
-                    if (node_1 != null && node_2 != null)
-                    {
-                        //Make a story using the two nodes given in the input.
-                        ParseInputJSON("make_story:" + split_input[1] + ":" + split_input[2]);
+                        //Make a story using the nodes given in the input.
+                        string make_story_text = "make_story";
+                        foreach (Feature n in story_features)
+                        {
+                            make_story_text = make_story_text + ":" + n.Id;
+                        }//end foreach
+                        ParseInputJSON(make_story_text);
+
                         //Grab the story that was just made
                         Story new_story = stories[stories.Count - 1];
                         //Add an analogy to the end of the second node
                         //1. First, make the analogy.
-                        string analogy = MakeAnalogy(node_id_1, node_id_2);
+                        //string analogy = MakeAnalogy(node_id_1, node_id_2);
                         //2. Add an analogy event to the second node.
-                        new_story.GetLastNode().AddStoryAct(Constant.ANALOGY, node_id_1);
+                        //new_story.GetLastNode().AddStoryAct(Constant.ANALOGY, node_id_1);
                         //3. Append the analogy description to the text of the second node.
-                        JObject json_response = JObject.Parse(analogy);
-                        string explanation = json_response["explanation"].ToString();
+                        //JObject json_response = JObject.Parse(analogy);
+                        string analogy_json = "analogy json here";
+                        string analogy_text = "analogy text here";
 
                         ParseInputJSON("read_story:" + (stories.Count - 1));
-                        new_story.GetLastNode().text = new_story.GetLastNode().text + " And you know, " + explanation;
+                        new_story.GetLastNode().text = new_story.GetLastNode().text + " And you know, " + analogy_text;
+                        new_story.GetLastNode().analogy = analogy_json;
 
                         if (json_mode)
                             json_string = JsonConvert.SerializeObject(new_story);

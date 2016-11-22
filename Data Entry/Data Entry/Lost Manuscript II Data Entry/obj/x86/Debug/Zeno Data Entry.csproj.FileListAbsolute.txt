@@ -277,3 +277,4 @@ C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Man
 C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Zeno Data Entry.csproj.GenerateResource.Cache
 C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue Data Entry.exe
 C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue Data Entry.pdb
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Zeno Data Entry.csprojResolveAssemblyReference.cache
