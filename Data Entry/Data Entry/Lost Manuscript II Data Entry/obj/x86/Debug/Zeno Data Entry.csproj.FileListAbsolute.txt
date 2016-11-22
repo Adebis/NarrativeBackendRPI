@@ -254,3 +254,26 @@ D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Man
 D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Zeno Data Entry.csproj.GenerateResource.Cache
 D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue Data Entry.exe
 D:\Documents\Schoolwork\Research\NarrativeBackend\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue Data Entry.pdb
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\Dialogue Data Entry.exe.config
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\Dialogue Data Entry.exe
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\Dialogue Data Entry.pdb
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\AIMLbot.dll
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.dll
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.Formatting.dll
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.WebRequest.dll
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Web.Http.dll
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Web.Http.SelfHost.dll
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.xml
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.Formatting.xml
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Net.Http.WebRequest.xml
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Web.Http.xml
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\bin\Debug\System.Web.Http.SelfHost.xml
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.Form1.resources
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.Form2.resources
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.Form3.resources
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.Properties.Resources.resources
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.Searcher.resources
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue_Data_Entry.TreeFrom.resources
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Zeno Data Entry.csproj.GenerateResource.Cache
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue Data Entry.exe
+C:\Users\CISL\Desktop\CISLVIS\NarrativeBackendRPI\Data Entry\Data Entry\Lost Manuscript II Data Entry\obj\x86\Debug\Dialogue Data Entry.pdb

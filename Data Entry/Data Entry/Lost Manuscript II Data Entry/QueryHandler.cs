@@ -358,8 +358,15 @@ namespace Dialogue_Data_Entry
                         JObject json_response = JObject.Parse(analogy);
                         string explanation = json_response["explanation"].ToString();
 
-                        new_story.GetLastNode().text = new_story.GetLastNode().text + " " + explanation;
-                        json_string = ParseInputJSON("read_story:" + (stories.Count - 1));
+                        ParseInputJSON("read_story:" + (stories.Count - 1));
+                        new_story.GetLastNode().text = new_story.GetLastNode().text + " And you know, " + explanation;
+
+                        if (json_mode)
+                            json_string = JsonConvert.SerializeObject(new_story);
+                        else
+                        {
+                            json_string = JsonConvert.SerializeObject(new_story);
+                        }//end else
                     }//end if
                 }//end if
                 //Get the anchor node specified in this command 
