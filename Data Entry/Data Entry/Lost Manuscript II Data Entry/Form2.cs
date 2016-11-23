@@ -97,7 +97,7 @@ namespace Dialogue_Data_Entry
 		{
 			string query = inputBox.Text;
 			if (myHandler == null)
-				myHandler = new QueryHandler(featGraph, temporalConstraintList);
+				myHandler = new QueryHandler(featGraph, temporalConstraintList, parent_form1);
 
 			if (EnglishRadioButton.Checked)
 			{
@@ -148,7 +148,7 @@ namespace Dialogue_Data_Entry
 		{
 			//set up query handler
 			if (myHandler == null)
-                myHandler = new QueryHandler(featGraph, temporalConstraintList);
+                myHandler = new QueryHandler(featGraph, temporalConstraintList, parent_form1);
 
 			//Start new thread for server
 			//this.serverThread = new Thread(this.DoWork);
@@ -178,7 +178,7 @@ namespace Dialogue_Data_Entry
         {
             //set up query handler
             if (myHandler == null)
-                myHandler = new QueryHandler(featGraph, temporalConstraintList);
+                myHandler = new QueryHandler(featGraph, temporalConstraintList, parent_form1);
 
             //Start new thread for server
             //this.serverThread = new Thread(this.DoWork);
@@ -304,7 +304,7 @@ namespace Dialogue_Data_Entry
 				}
 				*/
 				if (myHandler == null)
-                    myHandler = new QueryHandler(featGraph, temporalConstraintList);
+                    myHandler = new QueryHandler(featGraph, temporalConstraintList, parent_form1);
 				Console.WriteLine("Query: " + query);
 				
 				this.Invoke((MethodInvoker)delegate

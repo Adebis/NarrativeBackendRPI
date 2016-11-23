@@ -149,9 +149,9 @@ namespace Dialogue_Data_Entry
 		/// Create a converter for the specified XML file
 		/// </summary>
 		/// <param name="xmlFilename"></param>
-		public QueryHandler(FeatureGraph graph, List<TemporalConstraint> myTemporalConstraintList)
+		public QueryHandler(FeatureGraph graph, List<TemporalConstraint> myTemporalConstraintList, Form1 parent_f1)
 		{
-            //parent_form1 = parent_f1;
+            parent_form1 = parent_f1;
 			// Load the AIML Bot
 			//this.bot = new Bot();
 			this.temporalConstraintList = myTemporalConstraintList;
@@ -342,6 +342,7 @@ namespace Dialogue_Data_Entry
                         }//end if
                     }//end for
                     story_features.Add(graph.getFeature(6));
+                    story_features.Add(graph.getFeature(992));
                     if (story_features.Count > 0)
                     {
                         //Make a story using the nodes given in the input.
@@ -362,10 +363,10 @@ namespace Dialogue_Data_Entry
                         //3. Append the analogy description to the text of the second node.
                         //JObject json_response = JObject.Parse(analogy);
                         string analogy_json = "{'asserts': {'combatant': 'place of military conflict', 'event': 'partof', 'commander': 'commander', 'battle': 'is part of military conflict', 'battles': 'battle'}, 'confidence': 1.0, 'explanation': '', 'mapping': {('OUTGOING', 'combatant', 'Ptolemaic Kingdom'): ('place of military conflict', 'World War II', 1.0, 1.0),('OUTGOING', 'event', 'Roman Republic'): ('partof', 'World War II', 1.0, 1.0),('OUTGOING', 'commander', 'Marcus Vipsanius Agrippa'): ('commander', 'Benito Mussolini', 1.0, 1.0),('OUTGOING', 'battle', 'Legio XI Claudia'): ('is part of military conflict', 'North African Campaign', 1.0, 1.0),('OUTGOING', 'battles', 'Legio XI Fretensis'): ('battle', 'Charles Crombie', 1.0, 1.0)}, 'rating': 1.0, 'src': 'Battle of Actium', 'target': 'Mediterranean and Middle East theatre of World War II', 'total_score': 1.0}";
-                        string analogy_text = "Battle of Actium is like Mediterranean and Middle East theatre of World War II. This is because 'Battle of Actium' <combatant> 'Ptolemaic Kingdom' in the same way that 'World War II' <place of military conflict> 'Mediterranean and Middle East theatre of World War II', 'Roman Republic' <event> 'Battle of Actium' in the same way that 'Mediterranean and Middle East theatre of World War II' <partof> 'World War II', 'Battle of Actium' <commander> 'Marcus Vipsanius Agrippa' in the same way that 'Mediterranean and Middle East theatre of World War II' <commander> 'Benito Mussolini','Legio XI Claudia' <battle> 'Battle of Actium' in the same way that 'North African Campaign' <is part of military conflict> 'Mediterranean and Middle East theatre of World War II', and 'Legio X Fretensis' <battles> 'Battle of Actium' in the same way that 'Charles Crombie' <battle> 'Mediterranean and Middle East theatre of World War II'.";
+                        string analogy_text = "Remember Battle of Actium? Mediterranean and Middle East theatre of World War II is like Battle of Actium. This is because 'Battle of Actium' <combatant> 'Ptolemaic Kingdom' in the same way that 'World War II' <place of military conflict> 'Mediterranean and Middle East theatre of World War II', 'Roman Republic' <event> 'Battle of Actium' in the same way that 'Mediterranean and Middle East theatre of World War II' <partof> 'World War II', 'Battle of Actium' <commander> 'Marcus Vipsanius Agrippa' in the same way that 'Mediterranean and Middle East theatre of World War II' <commander> 'Benito Mussolini','Legio XI Claudia' <battle> 'Battle of Actium' in the same way that 'North African Campaign' <is part of military conflict> 'Mediterranean and Middle East theatre of World War II', and 'Legio X Fretensis' <battles> 'Battle of Actium' in the same way that 'Charles Crombie' <battle> 'Mediterranean and Middle East theatre of World War II'.";
 
                         //ParseInputJSON("read_story:" + (stories.Count - 1));
-                        new_story.GetLastNode().text = new_story.GetLastNode().text + " <color=#228b22ff>And you know, " + analogy_text + "</color>";
+                        new_story.GetLastNode().text = new_story.GetLastNode().text + " <color=#228b22ff> " + analogy_text + "</color>";
                         new_story.GetLastNode().analogy = analogy_json;
 
                         if (json_mode)
