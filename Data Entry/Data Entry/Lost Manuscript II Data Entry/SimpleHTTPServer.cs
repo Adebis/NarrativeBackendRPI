@@ -260,8 +260,16 @@ class SimpleHTTPServer
 
 
 			case "/load_xml":
-				b = Encoding.UTF8.GetBytes("null");
-				context.Response.StatusCode = (int)HttpStatusCode.OK;
+                
+                chatBoxCallback("<LOAD XML REQUEST: " + context.Request.RemoteEndPoint + ">\n");
+                query = "load_xml:" + data.url;
+                response = handler.ParseInputJSON(query);
+                string command_file_name = data.url;
+                this.form1loadcallback(command_file_name);
+                //handler.parent_form1.OpenXML(command_file_name);
+
+                b = Encoding.UTF8.GetBytes(response.ToString());
+                context.Response.StatusCode = (int)HttpStatusCode.OK;
 				context.Response.KeepAlive = false;
 				context.Response.ContentLength64 = b.Length;
 				context.Response.OutputStream.Write(b, 0, b.Length);
@@ -269,10 +277,10 @@ class SimpleHTTPServer
 
 
 				//handler.ParseInputJSON("load_xml:" + data.file);
-				Console.WriteLine("aaaaaaaaaaaaaaa");
+				//Console.WriteLine("aaaaaaaaaaaaaaa");
 				//handler.parent_form1.OpenXML(data.file);
-				this.form1loadcallback("roman_ww2_analogy.xml");//data.file);
-				Console.WriteLine("wqewqewqewqe");
+				//this.form1loadcallback(data.url);//data.file);
+				//Console.WriteLine("wqewqewqewqe");
 
 
 
