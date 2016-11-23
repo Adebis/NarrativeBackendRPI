@@ -149,7 +149,9 @@
         <neighbor dest="392" relationship="combatant" weight="0"/>
         <neighbor dest="393" relationship="commander" weight="0"/>
       </neighbors>
-      <geodata/>
+      <geodata>
+		<coordinates lat="37.58" lon="23.43"/>
+	  </geodata>
       <timedata>
         <timeobj label="date" value="--08-30"/>
         <timeobj label="date" value="The Senate's declaration of war against Cleopatra VII of Egypt to the naming of Octavian as Pharaoh of Egypt"/>
@@ -9927,7 +9929,9 @@
       <neighbors>
         <neighbor dest="385" relationship="common languages" weight="0"/>
       </neighbors>
-      <geodata/>
+      <geodata>
+		<coordinates lat="26.8206" lon="30.8025"/>
+	  </geodata>
       <timedata>
         <timeobj label="year end" value="30"/>
         <timeobj label="year leader" value="51"/>
@@ -9980,7 +9984,9 @@
         <neighbor dest="2" relationship="battle" weight="0"/>
         <neighbor dest="397" relationship="battle" weight="0"/>
       </neighbors>
-      <geodata/>
+      <geodata>
+		<coordinates lat="41.1099" lon="14.8475"/>
+	  </geodata>
       <timedata>
         <timeobj label="death date" value="-012"/>
         <timeobj label="birth date" value="--10-23"/>
@@ -10028,7 +10034,9 @@
         <neighbor dest="392" relationship="birth place" weight="0"/>
         <neighbor dest="397" relationship="battle" weight="0"/>
       </neighbors>
-      <geodata/>
+      <geodata>
+		<coordinates lat="31.2001" lon="29.9187"/>
+	  </geodata>
       <timedata>
         <timeobj label="death date" value="-030-08-01"/>
         <timeobj label="death date" value="-030"/>
@@ -10144,7 +10152,9 @@
         <neighbor dest="388" relationship="death place" weight="0"/>
         <neighbor dest="391" relationship="spouse" weight="0"/>
       </neighbors>
-      <geodata/>
+      <geodata>
+		<coordinates lat="31.2001" lon="29.9187"/>
+	  </geodata>
       <timedata>
         <timeobj label="death date" value="1930-08-12"/>
         <timeobj label="birth date" value="0069"/>
@@ -10343,7 +10353,9 @@
         <neighbor dest="391" relationship="commander" weight="0"/>
         <neighbor dest="393" relationship="commander" weight="0"/>
       </neighbors>
-      <geodata/>
+      <geodata>
+		<coordinates lat="38.56" lon="20.44"/>
+	  </geodata>
       <timedata>
         <timeobj label="date" value="-031-09-02"/>
       </timedata>
