@@ -175,6 +175,8 @@ namespace Dialogue_Data_Entry
                 AddNodeToStory(to_add, return_story);
             }//end foreach
 
+            return_story = GenerateStoryText(return_story);
+
             return return_story;
         }//end method MakeStoryFromList
 
@@ -251,10 +253,17 @@ namespace Dialogue_Data_Entry
             }//end else if
 
             //5. Go through each node and generate text.
+            chronology = GenerateStoryText(chronology);
+
+            return chronology;
+        }//end method GenerateChronology
+
+        private Story GenerateStoryText(Story story_in)
+        {
             Feature graph_node = null;
             Feature target_node = null;
             string node_text = "";
-            foreach (StorySegment temp_segment in chronology.StorySequence)
+            foreach (StorySegment temp_segment in story_in.StorySequence)
             {
                 foreach (StoryNode temp_node in temp_segment.Sequence)
                 {
@@ -275,8 +284,8 @@ namespace Dialogue_Data_Entry
                         {
                             //Get both halves of the story.
                             StorySegment first_half = temp_segment;
-                            int asdasd = chronology.StorySequence.IndexOf(first_half);
-                            StorySegment second_half = chronology.StorySequence[chronology.StorySequence.IndexOf(first_half) + 1];
+                            int asdasd = story_in.StorySequence.IndexOf(first_half);
+                            StorySegment second_half = story_in.StorySequence[story_in.StorySequence.IndexOf(first_half) + 1];
 
                             //Build a list of tuples identifying nodes in the first half that relate to nodes in the second half.
                             List<Tuple<Feature, Feature>> hint_ats = new List<Tuple<Feature, Feature>>();
@@ -319,7 +328,7 @@ namespace Dialogue_Data_Entry
 
                                 //Make sure the node in the second half of the storyline resolves back to the node
                                 //in the first half of the storyline.
-                                chronology.GetNodeByGraphId(s_feature.Id).AddStoryAct(Constant.RESOLVE, f_feature.Id);
+                                story_in.GetNodeByGraphId(s_feature.Id).AddStoryAct(Constant.RESOLVE, f_feature.Id);
                             }//end for
                             node_text = node_text + " later. But for now, let's talk about something else.</color> ";
                         }//end else if
@@ -338,11 +347,11 @@ namespace Dialogue_Data_Entry
                     }//end foreach
                     temp_node.text = node_text;
                 }//end foreach
-            
+
             }//end foreach
 
-            return chronology;
-        }//end method GenerateChronology
+            return story_in;
+        }//end method GenerateNodeText
 
         private string TieBack(Feature current_feature, Feature past_feature)
         {

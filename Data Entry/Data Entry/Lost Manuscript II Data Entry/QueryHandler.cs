@@ -361,11 +361,11 @@ namespace Dialogue_Data_Entry
                         //new_story.GetLastNode().AddStoryAct(Constant.ANALOGY, node_id_1);
                         //3. Append the analogy description to the text of the second node.
                         //JObject json_response = JObject.Parse(analogy);
-                        string analogy_json = "analogy json here";
-                        string analogy_text = "analogy text here";
+                        string analogy_json = "{'asserts': {'combatant': 'place of military conflict', 'event': 'partof', 'commander': 'commander', 'battle': 'is part of military conflict', 'battles': 'battle'}, 'confidence': 1.0, 'explanation': '', 'mapping': {('OUTGOING', 'combatant', 'Ptolemaic Kingdom'): ('place of military conflict', 'World War II', 1.0, 1.0),('OUTGOING', 'event', 'Roman Republic'): ('partof', 'World War II', 1.0, 1.0),('OUTGOING', 'commander', 'Marcus Vipsanius Agrippa'): ('commander', 'Benito Mussolini', 1.0, 1.0),('OUTGOING', 'battle', 'Legio XI Claudia'): ('is part of military conflict', 'North African Campaign', 1.0, 1.0),('OUTGOING', 'battles', 'Legio XI Fretensis'): ('battle', 'Charles Crombie', 1.0, 1.0)}, 'rating': 1.0, 'src': 'Battle of Actium', 'target': 'Mediterranean and Middle East theatre of World War II', 'total_score': 1.0}";
+                        string analogy_text = "Battle of Actium is like Mediterranean and Middle East theatre of World War II. This is because 'Battle of Actium' <combatant> 'Ptolemaic Kingdom' in the same way that 'World War II' <place of military conflict> 'Mediterranean and Middle East theatre of World War II', 'Roman Republic' <event> 'Battle of Actium' in the same way that 'Mediterranean and Middle East theatre of World War II' <partof> 'World War II', 'Battle of Actium' <commander> 'Marcus Vipsanius Agrippa' in the same way that 'Mediterranean and Middle East theatre of World War II' <commander> 'Benito Mussolini','Legio XI Claudia' <battle> 'Battle of Actium' in the same way that 'North African Campaign' <is part of military conflict> 'Mediterranean and Middle East theatre of World War II', and 'Legio X Fretensis' <battles> 'Battle of Actium' in the same way that 'Charles Crombie' <battle> 'Mediterranean and Middle East theatre of World War II'.";
 
-                        ParseInputJSON("read_story:" + (stories.Count - 1));
-                        new_story.GetLastNode().text = new_story.GetLastNode().text + " And you know, " + analogy_text;
+                        //ParseInputJSON("read_story:" + (stories.Count - 1));
+                        new_story.GetLastNode().text = new_story.GetLastNode().text + " <color=#228b22ff>And you know, " + analogy_text + "</color>";
                         new_story.GetLastNode().analogy = analogy_json;
 
                         if (json_mode)
@@ -508,11 +508,15 @@ namespace Dialogue_Data_Entry
                     NarrationManager temp_manager = new NarrationManager(temp_graph, temporalConstraintList);
 
                     Story result_story = temp_manager.MakeStoryFromList(input_features);
-                    SpeakTransform t = new SpeakTransform(graph);
-                    StorySegment last_segment = result_story.GetLastSegment();
-                    json_string = t.SpeakStorySegment(last_segment);
                     
                     stories.Add(result_story);
+
+                    if (json_mode)
+                        json_string = JsonConvert.SerializeObject(result_story);
+                    else
+                    {
+                        json_string = JsonConvert.SerializeObject(result_story);
+                    }//end else
                 }//end if
             }//end if
             //List the anchor node of each story in the list of stories
