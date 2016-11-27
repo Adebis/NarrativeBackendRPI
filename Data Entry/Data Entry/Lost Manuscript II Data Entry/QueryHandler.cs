@@ -367,7 +367,7 @@ namespace Dialogue_Data_Entry
                         string analogy_text = "Remember the Battle of Actium? Well, the Mediterranean and Middle East theatre of World War II is like the Battle of Actium. This is because the Battle of Actium was fought by the Ptolemaic Kingdom in the same way that World War II took place in the Mediterranean and Middle East theatre, Marcus Vipsanius Agrippa was a commander in the Battle of Actium in the same way that Benito Mussolini was a commander in the Mediterranean and Middle East theatre, and Legio X Fretensis fought in the Battle of Actium in the same way that Charles Crombie fought in the Mediterranean and Middle East theatre.";
 
                         //ParseInputJSON("read_story:" + (stories.Count - 1));
-                        new_story.GetLastNode().text = new_story.GetLastNode().text + " <color=#228b22ff> " + analogy_text + "</color>";
+                        new_story.GetLastNode().text = " <color=#228b22ff> " + analogy_text + "</color>" + new_story.GetLastNode().text;
                         new_story.GetLastNode().analogy = analogy_json;
 
                         if (json_mode)

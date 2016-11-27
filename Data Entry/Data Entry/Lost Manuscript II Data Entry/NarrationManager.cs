@@ -220,7 +220,8 @@ namespace Dialogue_Data_Entry
             if (!user_story)
             {
                 //2. Identify the switch point
-                int switch_point_turn = calculator.IdentifySwitchPointTurn(chronology);
+                //TODO: Hack for demo, change back to the commented out line later!
+                int switch_point_turn = 2; // calculator.IdentifySwitchPointTurn(chronology);
 
                 //3. Split the story at the switch point
                 chronology.SplitSegment(switch_point_turn);
@@ -342,7 +343,7 @@ namespace Dialogue_Data_Entry
                         }//end else if
                         else if (story_act.Item1.Equals(Constant.TIEBACK))
                         {
-                            node_text = node_text + "<color=#ffa500ff>" + TieBack(graph_node, target_node) + "</color>";
+                            node_text = node_text + "<color=#b8860bff>" + TieBack(graph_node, target_node) + "</color>";
                         }//end else if
                     }//end foreach
                     temp_node.text = node_text;
