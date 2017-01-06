@@ -146,7 +146,7 @@ namespace Dialogue_Data_Entry
                 current_node_text = current_graph_node.getSpeak(0);
 
                 //For each story node, we want to go through and speak each of its story acts.
-                foreach (Tuple<string, int> story_act in segment_node.story_acts)
+                foreach (Tuple<string, int, string> story_act in segment_node.story_acts)
                 {
                     current_target_node = graph.getFeature(story_act.Item2);
                     if (story_act.Item1.Equals(Constant.LEADIN))
@@ -228,7 +228,7 @@ namespace Dialogue_Data_Entry
 
                 bool hint_at_block = false;
                 //For each story node, we want to go through and speak each of its story acts.
-                foreach (Tuple<string, int> story_act in current_node.story_acts)
+                foreach (Tuple<string, int, string> story_act in current_node.story_acts)
                 {
                     current_target_node = graph.getFeature(story_act.Item2);
                     if (hint_at_block && story_act.Item1.Equals(Constant.HINTAT))
@@ -355,7 +355,7 @@ namespace Dialogue_Data_Entry
             return_string = "{We'll hear more about ";
             foreach (StoryNode temp_node in current_segment.Sequence)
             {
-                foreach (Tuple<string, int> story_act in temp_node.story_acts)
+                foreach (Tuple<string, int, string> story_act in temp_node.story_acts)
                     if (story_act.Item1.Equals(Constant.HINTAT))
                         return_string = return_string + HintAt(graph.getFeature(temp_node.graph_node_id)
                             , graph.getFeature(story_act.Item2));

@@ -11,7 +11,7 @@ namespace Dialogue_Data_Entry
         public int graph_node_id;
         //A list of tuples representing story acts. First item is the name of the act,
         //second item is the id of the target of the act (relative to the current node).
-        public List<Tuple<string, int>> story_acts;
+        public List<Tuple<string, int, string>> story_acts;
         //The text presentation for this node, based on its story acts.
         public string text;
         public string analogy;
@@ -19,27 +19,27 @@ namespace Dialogue_Data_Entry
         public StoryNode(int graph_node_id_in)
         {
             graph_node_id = graph_node_id_in;
-            story_acts = new List<Tuple<string, int>>();
+            story_acts = new List<Tuple<string, int, string>>();
             text = "";
             analogy = "";
         }//end constructor StoryNode
         public StoryNode()
         {
             graph_node_id = -1;
-            story_acts = new List<Tuple<string, int>>();
+            story_acts = new List<Tuple<string, int, string>>();
             text = "";
             analogy = "";
         }//end constructor StoryNode
 
-        public void AddStoryAct(string act_name, int target_id)
+        public void AddStoryAct(string act_name, int target_id, string act_text)
         {
-            story_acts.Add(new Tuple<string, int>(act_name, target_id));
+            story_acts.Add(new Tuple<string, int, string>(act_name, target_id, act_text));
         }//end method AddStoryAct
 
         //Returns whether or not this story node contains the given story act.
         public bool HasStoryAct(string act_name)
         {
-            foreach (Tuple<string, int> story_act in story_acts)
+            foreach (Tuple<string, int, string> story_act in story_acts)
             {
                 if (story_act.Item1.Equals(act_name))
                     return true;

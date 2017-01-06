@@ -411,6 +411,7 @@ namespace Dialogue_Data_Entry
                 {
                     using (var client = new HttpClient())
                     {
+                        //string url = "http://storytelling.hass.rpi.edu:5000/check_file";
                         string url = "http://localhost:5000/check_file";
 
                         client.BaseAddress = new Uri(url);

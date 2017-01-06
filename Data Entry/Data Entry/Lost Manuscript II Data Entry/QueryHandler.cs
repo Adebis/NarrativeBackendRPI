@@ -276,17 +276,73 @@ namespace Dialogue_Data_Entry
 			return return_message;
 		}//end function MessageToServer
 
-        public string ParseInputJSON(string input)
+        private string MakeAnalogy(int id_1, int id_2)
         {
-            int story_section_size = 3;
-            string json_string = "";
+            string analogy_string = "";
+            string feature_name_1 = graph.getFeature(id_1).Name;
+            string feature_name_2 = graph.getFeature(id_2).Name;
 
-            //First, do an initial pass for any commands.
-            String[] split_input = input.Trim().Split(':');
-            json_string = ParseInputJSON(split_input);
-            if (!json_string.Equals(""))
+            try
             {
-                return json_string;
+                using (var client = new HttpClient())
+                {
+                    string url = "http://localhost:5000/get_analogy";
+                    //string url = "http://storytelling.hass.rpi.edu:5000/get_analogy";
+                    //string url_parameters = "?file=" + file_name;
+
+                    client.BaseAddress = new Uri(url);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    Dictionary<string, string> content = new Dictionary<string, string>
+                    {
+                        {"file1", graph.file_name},
+                        {"file2", graph.file_name},
+                        {"feature1", feature_name_1},
+                        {"feature2", feature_name_2}
+                    };
+
+                    var http_content = new FormUrlEncodedContent(content);
+                    HttpResponseMessage response = client.PostAsync(url, http_content).Result;
+
+                    //Read the jsons tring from the http response
+                    Task<string> read_string_task = response.Content.ReadAsStringAsync();
+                    read_string_task.Wait(100000);
+
+                    string content_string = read_string_task.Result;
+                    analogy_string = content_string;
+                }//end using
+            }//end try
+            catch (Exception e)
+            {
+                Console.WriteLine("Error contacting analogy server: " + e.Message);
+            }//end catch
+
+            return analogy_string;
+        }//end function MakeAnalogy
+
+        bool json_mode = true;
+        bool user_interest_mode = false;
+		//Form2 calls this function
+		//input is the input to be parsed.
+		//messageToServer indicates whether or not we are preparing a response to the front-end.
+		//forLog indicates whether or not we are preparing a response for a log output.
+		//outOfTopic indicates whether or not we are continuing out-of-topic handling.
+		//projectAsTopic true means we use forward projection to choose the next node to traverse to based on
+		//  how well the nodes in the n-length path from the current node relate to the current node.
+		public string ParseInput(string input, bool messageToServer = false, bool forLog = false, bool outOfTopic = false, bool projectAsTopic = false)
+		{
+            int story_section_size = 3;
+            string return_string = "";
+
+            // Respond to any commands.
+            String[] split_input = input.Trim().Split(':');
+            return_string = ParseCommand(split_input);
+            // If there was a command in the input, ParseCommand would have
+            // returned a non-empty string. If so, return the string as the response.
+            if (!return_string.Equals("")) 
+            {
+                return return_string;
             }//end if
 
             //Next, try to start or continue the chronology.
@@ -295,14 +351,6 @@ namespace Dialogue_Data_Entry
             if (input_feature != null)
             {
                 //If we have found a feature, then there is an explicitly requested anchor node for the next storyline.
-                //Update user interest values.
-                if (user_interest_mode)
-                {
-                    if (this.main_story == null)
-                        this.graph.UpdateInterestInternal(input_feature.Id, 0);
-                    else
-                        this.graph.UpdateInterestInternal(input_feature.Id, this.main_story.current_turn);
-                }//end if
                 //Generate the next section of the chronology.
                 input = "CHRONOLOGY:" + input + ":" + story_section_size;
             }//end if
@@ -314,211 +362,57 @@ namespace Dialogue_Data_Entry
             }//end else
 
             split_input = input.Trim().Split(':');
-            json_string = ParseInputJSON(split_input);
+            return_string = ParseCommand(split_input);
 
-            return json_string;
-        }//end method ParseInputJSON
-        public string ParseInputJSON(string[] split_input)
-        {
+            return return_string;
+		}//end ParseInput
+
+		//PARSE INPUT UTILITY FUNCTIONS
+		/// <summary>
+		/// ParseInput utility function. Looks for an explicit command word in the given input and tries to carry
+		/// out the command. Returns the result of the command if any valid command is found.
+		/// </summary>
+		/// <param name="split_input">A string of input split into an array by the character ":"</param>
+		private string ParseCommand(string[] split_input)
+		{
             string json_string = "";
 
             if (split_input[0].ToLower().Equals("chronology"))
             {
-                Feature anchor_node = null;
-                //TODO: Remove later; only for demo in November 2016
-                if (graph.file_name.Equals("roman_ww2_analogy.xml") || graph.file_name.Equals("roman_ww2_analogy_2.xml"))
+                // Command takes two inputs:
+                // 1. Node name for chronology
+                // 2. Turn limit for chronology
+                // Check the inputs.
+                string topic = "";
+                int turn_limit = 5;
+                if (split_input.Length > 1 && split_input[1] != null)
                 {
-                    Console.Out.WriteLine("Roman ww2 analogy");
-                    List<Feature> story_features = new List<Feature>();
-                    int node_id = 0;
-                    Feature node = null;
-                    for (int i = 1; i < split_input.Length; i++)
-                    {
-                        bool parse_success = int.TryParse(split_input[i], out node_id);
-                        if (parse_success)
-                        {
-                            node = graph.getFeature(node_id);
-                            story_features.Add(node);
-                        }//end if
-                    }//end for
-                    story_features.Add(graph.getFeature(6));
-                    story_features.Add(graph.getFeature(992));
-                    if (story_features.Count > 0)
-                    {
-                        //Make a story using the nodes given in the input.
-                        string make_story_text = "make_story";
-                        foreach (Feature n in story_features)
-                        {
-                            make_story_text = make_story_text + ":" + n.Id;
-                        }//end foreach
-                        ParseInputJSON(make_story_text);
-
-                        //Grab the story that was just made
-                        Story new_story = stories[stories.Count - 1];
-                        //Add an analogy to the end of the second node
-                        //1. First, make the analogy.
-                        //string analogy = MakeAnalogy(node_id_1, node_id_2);
-                        //2. Add an analogy event to the second node.
-                        //new_story.GetLastNode().AddStoryAct(Constant.ANALOGY, node_id_1);
-                        //3. Append the analogy description to the text of the second node.
-                        //JObject json_response = JObject.Parse(analogy);
-                        string analogy_json = "{'asserts': {'combatant': 'place of military conflict', 'event': 'partof', 'commander': 'commander', 'battle': 'is part of military conflict', 'battles': 'battle'}, 'confidence': 1.0, 'explanation': '', 'mapping': {('OUTGOING', 'combatant', 'Ptolemaic Kingdom'): ('place of military conflict', 'World War II', 1.0, 1.0),('OUTGOING', 'event', 'Roman Republic'): ('partof', 'World War II', 1.0, 1.0),('OUTGOING', 'commander', 'Marcus Vipsanius Agrippa'): ('commander', 'Benito Mussolini', 1.0, 1.0),('OUTGOING', 'battle', 'Legio XI Claudia'): ('is part of military conflict', 'North African Campaign', 1.0, 1.0),('OUTGOING', 'battles', 'Legio XI Fretensis'): ('battle', 'Charles Crombie', 1.0, 1.0)}, 'rating': 1.0, 'src': 'Battle of Actium', 'target': 'Mediterranean and Middle East theatre of World War II', 'total_score': 1.0}";
-                        //string analogy_text = "Remember the Battle of Actium? Well, the Mediterranean and Middle East theatre of World War II is like the Battle of Actium. This is because Battle of Actium combatant Ptolemaic Kingdom in the same way that World War II place of military conflict Mediterranean and Middle East theatre of World War II, Roman Republic event Battle of Actium in the same way that Mediterranean and Middle East theatre of World War II part of World War II, Battle of Actium commander Marcus Vipsanius Agrippa in the same way that Mediterranean and Middle East theatre of World War II commander Benito Mussolini, Legio XI Claudia battle Battle of Actium in the same way that North African Campaign is part of military conflict Mediterranean and Middle East theatre of World War II, and Legio X Fretensis battles Battle of Actium in the same way that Charles Crombie battle Mediterranean and Middle East theatre of World War II.";
-                        string analogy_text = "Let’s compare the Battle of Actium to the Mediterranean and Middle East theatre. Marcus Vipsanius Agrippa was a commander in the Battle of Actium; similarly, Benito Mussolini was a commander in the Mediterranean and Middle East theatre. And, like how the Battle of Actium was an important event in the Roman Republic, the Mediterranean and Middle East theatre was an important part of World War II.";
-						
-                        //ParseInputJSON("read_story:" + (stories.Count - 1));
-                        new_story.GetLastNode().text = "<color=#228b22ff>" + analogy_text + "</color> " + new_story.GetLastNode().text;
-                        new_story.GetLastNode().analogy = analogy_json;
-
-                        if (json_mode)
-                            json_string = JsonConvert.SerializeObject(new_story);
-                        else
-                        {
-                            json_string = JsonConvert.SerializeObject(new_story);
-                        }//end else
-                    }//end if
+                    topic = split_input[1];
                 }//end if
-                //Get the anchor node specified in this command 
-                else if (split_input[1] != null)
+                if (split_input.Length > 2 && split_input[2] != null)
                 {
-                    String string_topic = split_input[1];
-                    //First, check if the topic is the empty string.
-                    //If so, try the "default" anchor node.
-                    if (string_topic.Equals(""))
+                    int temp = 0;
+                    bool parse_success = int.TryParse(split_input[2], out temp);
+                    if (parse_success)
                     {
-                        //If there is not yet a story, get the root node as the anchor node.
-                        if (main_story == null)
-                        {
-                            anchor_node = graph.Root;
-                        }//end if
-                        //If there is an ongoing story, get the next best topic based on the story.
-                        else
-                        {
-                            anchor_node = narration_manager.getNextBestStoryTopic(main_story);
-                        }//end else
+                        turn_limit = temp;
+                        Console.Out.WriteLine("Turn limit set to " + temp);
                     }//end if
                     else
-                    {
-                        //Try to convert the topic to an int to check if it's an id.
-                        int int_topic = -1;
-                        bool parse_success = int.TryParse(string_topic, out int_topic);
-                        if (parse_success)
-                        {
-                            //Check that the new integer topic is a valid id.
-                            anchor_node = graph.getFeature(int_topic);
-                        }//end if
-                        else
-                        {
-                            anchor_node = FindFeature(string_topic);
-                        }//end else
-                    }//end else
-                    if (anchor_node != null)
-                    {
-                        //If we found an anchor node, check to see if there's an existing story. If not, make a new one.
-                        if (main_story == null)
-                        {
-                            //Get the turn limit
-                            int turn_limit = 0;
-                            if (split_input[2] != null)
-                            {
-                                bool parse_success = int.TryParse(split_input[2], out turn_limit);
-                                if (parse_success)
-                                {
-                                    Console.Out.WriteLine("Turn limit set to " + turn_limit);
-                                }//end if
-                                else
-                                    Console.Out.WriteLine("Could not set turn limit.");
-                            }//end if
-
-                            //Make a temporary graph to create the chronology's order before presenting it.
-                            //FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(graph);
-
-                            json_string = "";
-
-                            NarrationManager temp_manager = new NarrationManager(graph, temporalConstraintList);
-                            Story chronology = temp_manager.GenerateChronology(anchor_node, turn_limit);
-
-                            //The chronology is generated in segments, separated by user turns.
-                            //Create its text.
-                            //SpeakTransform t = new SpeakTransform(graph);
-                            //t.SpeakStorySegment(last_segment);
-                            //Story temp_story = new Story(chronology.GetLastSegment());
-
-                            if (json_mode)
-                                json_string = JsonConvert.SerializeObject(chronology);
-                            else
-                            {
-                                json_string = JsonConvert.SerializeObject(chronology);
-                            }//end else
-
-                            main_story = chronology;
-                        }//end if
-                        else
-                        {
-                            //Get the turn limit
-                            int turn_limit = 0;
-                            if (split_input[2] != null)
-                            {
-                                bool parse_success = int.TryParse(split_input[2], out turn_limit);
-                                if (parse_success)
-                                {
-                                    Console.Out.WriteLine("Turn limit set to " + turn_limit);
-                                }//end if
-                                else
-                                    Console.Out.WriteLine("Could not set turn limit.");
-                            }//end if
-
-                            NarrationManager temp_manager = new NarrationManager(graph, temporalConstraintList);
-                            Story chronology = temp_manager.GenerateChronology(anchor_node, 5, starting_story: main_story, user_story: true);
-                            if (json_mode)
-                                json_string = JsonConvert.SerializeObject(chronology);
-                            else
-                            {
-                                json_string = JsonConvert.SerializeObject(chronology);
-                            }//end else
-                        }//end else
-                    }//end if
+                        Console.Out.WriteLine("Could not set turn limit.");
                 }//end if
+
+                return Chronology(topic, turn_limit);
             }//end if
             //Make a story using a list of nodes, identified by node ID or node name.
             if (split_input[0].ToLower().Equals("make_story"))
             {
-                Feature anchor_node = null;
-                List<Feature> input_features = new List<Feature>();
-                //Resolve the node IDs or names, and get the list of their corresponding features.
-                foreach (string split_input_item in split_input)
+                if (split_input.Length > 1)
                 {
-                    if (split_input_item.Equals("make_story"))
-                        continue;
-
-                    int input_id = -1;
-                    bool parse_success = int.TryParse(split_input_item, out input_id);
-                    if (parse_success)
-                        input_features.Add(graph.getFeature(input_id));
-                    else
-                        input_features.Add(FindFeature(split_input_item));
-                }//end foreach
-                if (input_features.Count > 0)
-                    anchor_node = input_features[0];
-                if (anchor_node != null)
-                {
-                    //Assemble the story.
-                    FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(graph);
-
-                    json_string = "";
-
-                    NarrationManager temp_manager = new NarrationManager(temp_graph, temporalConstraintList);
-
-                    Story result_story = temp_manager.MakeStoryFromList(input_features);
-                    
-                    stories.Add(result_story);
-
-                    if (json_mode)
-                        json_string = JsonConvert.SerializeObject(result_story);
-                    else
-                    {
-                        json_string = JsonConvert.SerializeObject(result_story);
-                    }//end else
+                    List<string> input_list = new List<string>();
+                    for (int i = 1; i < split_input.Length - 1; i++)
+                        input_list.Add(split_input[i]);
+                    return MakeStory(input_list);
                 }//end if
             }//end if
             //List the anchor node of each story in the list of stories
@@ -579,21 +473,6 @@ namespace Dialogue_Data_Entry
                 }//end if
                 else
                     json_string = "No valid story at given indices.";
-            }//end if
-            if (split_input[0].ToLower().Equals("test_sequence"))
-            {
-                ParseInputJSON("make_story:13:552:576:531:551");
-                ParseInputJSON("make_story:582:583:584:585:408");
-                ParseInputJSON("interweave_stories:0:1");
-                json_string = ParseInputJSON("read_last_story_no_acts");
-            }//end if
-            if (split_input[0].ToLower().Equals("read_last_story_no_acts"))
-            {
-                Story last_story = stories[stories.Count - 1];
-                SpeakTransform temp_transform = new SpeakTransform(graph);
-                json_string = temp_transform.SpeakStoryNoActs(last_story);
-                if (json_mode)
-                    json_string = JsonConvert.SerializeObject(last_story);
             }//end if
             //Load an XML by file name
             else if (split_input[0].ToLower().Equals("load_xml"))
@@ -905,838 +784,122 @@ namespace Dialogue_Data_Entry
             }//end if
 
             return json_string;
-        }//end method ParseInputJSON
+		}//end function CommandResponse
 
-        private string MakeAnalogy(int id_1, int id_2)
+        private string Chronology(string topic, int turn_limit)
         {
-            string analogy_string = "";
-            string feature_name_1 = graph.getFeature(id_1).Name;
-            string feature_name_2 = graph.getFeature(id_2).Name;
+            string return_string = "";
 
-            try
+            Feature anchor_node = null;
+            //Get the anchor node specified in this command 
+            String string_topic = topic;
+            //First, check if the topic is the empty string.
+            //If so, try the "default" anchor node.
+            if (string_topic.Equals(""))
             {
-                using (var client = new HttpClient())
+                //If there is not yet a story, get the root node as the anchor node.
+                if (main_story == null)
                 {
-                    string url = "http://localhost:5000/get_analogy";
-                    //string url_parameters = "?file=" + file_name;
-
-                    client.BaseAddress = new Uri(url);
-                    client.DefaultRequestHeaders.Accept.Clear();
-                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-                    Dictionary<string, string> content = new Dictionary<string, string>
-                    {
-                        {"file1", graph.file_name},
-                        {"file2", graph.file_name},
-                        {"feature1", feature_name_1},
-                        {"feature2", feature_name_2}
-                    };
-
-                    var http_content = new FormUrlEncodedContent(content);
-                    HttpResponseMessage response = client.PostAsync(url, http_content).Result;
-
-                    //Read the jsons tring from the http response
-                    Task<string> read_string_task = response.Content.ReadAsStringAsync();
-                    read_string_task.Wait(100000);
-
-                    string content_string = read_string_task.Result;
-                    analogy_string = content_string;
-                }//end using
-            }//end try
-            catch (Exception e)
+                    anchor_node = graph.Root;
+                }//end if
+                //If there is an ongoing story, get the next best topic based on the story.
+                else
+                {
+                    anchor_node = narration_manager.getNextBestStoryTopic(main_story);
+                }//end else
+            }//end if
+            else
             {
-                Console.WriteLine("Error contacting analogy server: " + e.Message);
-            }//end catch
-
-            return analogy_string;
-        }//end function MakeAnalogy
-
-        bool json_mode = true;
-        bool user_interest_mode = false;
-		//Form2 calls this function
-		//input is the input to be parsed.
-		//messageToServer indicates whether or not we are preparing a response to the front-end.
-		//forLog indicates whether or not we are preparing a response for a log output.
-		//outOfTopic indicates whether or not we are continuing out-of-topic handling.
-		//projectAsTopic true means we use forward projection to choose the next node to traverse to based on
-		//  how well the nodes in the n-length path from the current node relate to the current node.
-		public string ParseInput(string input, bool messageToServer = false, bool forLog = false, bool outOfTopic = false, bool projectAsTopic = false)
-		{
-            return ParseInputJSON(input);
-
-			string answer = IDK;
-			string noveltyInfo = "";
-			// Pre-processing
-
-			//Console.WriteLine("parse input " + input);
-
-			//The input may be delimited by colons. Try to split it.
-			String[] split_input = input.Trim().Split(':');
-			//Console.WriteLine("split input " + split_input[0]);
-
-			// Lowercase for comparisons
-			input = input.Trim().ToLower();
-			//Console.WriteLine("trimmed lowered input " + input);
-
-			//Check for an explicit command in the input.
-			if (split_input.Length != 0 || messageToServer)
-			{
-				string command_result = CommandResponse(split_input);
-				//Only stop and return the result of a command here if there
-				//is a command result to return.
-				if (!command_result.Equals(""))
-					return command_result;
-			}//end else if
-
-			// Check to see if the AIML Bot has anything to say.
-			if (!string.IsNullOrEmpty(input))
-			{
-				//Call the AIML Chat Bot in NarrationManager and give it the input ParseInput was given.
-				string output = narration_manager.TellChatBot(input);
-				
-				//If the chatbot has a feedback response, it will begin its
-				//response with "FORMAT"
-				if (output.Length > 0)
-				{
-					//If the word "FORMAT" is not found, the response from the chatbot
-					//is not a feedback response. Return it.
-					if (!output.StartsWith(FORMAT))
-						return output;
-					
-					//MessageBox.Show("Converted output reads: " + output);
-					//Otherwise, remove the word FORMAT and continue with
-					//the chatbot's output as the new input.
-					input = output.Replace(FORMAT, "").ToLower();
-				}//end if
-			}//end if
-
-			// Remove punctuation
-			input = RemovePunctuation(input);
-
-			// CASE: Nothing / Move on to next topic
-			if (string.IsNullOrEmpty(input))
-			{
-				answer = narration_manager.NextTopicResponse();
-			}//end if
-			// CASE: Tell me more / Continue speaking
-			else if (input.Contains("more") && input.Contains("tell"))
-			{
-				answer = narration_manager.TalkMoreAboutTopic();
-			}//end else if
-			// CASE: New topic/question
-			//If the input was neither the empty string nor "Tell me more," assume it
-			//is an entirely new topic/question that requires a Query
-			else
-			{
-				//Construct a query using the input.
-				Query query = BuildQuery(input);
-				//Find what to say with it.
-				answer = narration_manager.TalkFromQuery(query);
-			}//end else
-
-			//Gets the first noveltyAmount number of nodes with the highest novelty.
-			noveltyInfo = narration_manager.ListMostNovelFeatures(narration_manager.Topic, noveltyAmount);
-			//Gets the first noveltyAmount number of nodes with the highest score.
-			string proximal_info = narration_manager.ListMostProximalFeatures(narration_manager.Topic, noveltyAmount);
-			//Increment conversation turn
-			narration_manager.Turn += 1;
-
-			//At this point, we have either automatically moved on (blank input),
-			//talked more about the current topic ("tell me more"),
-			//or built and parsed a query out of the input.
-			//answer holds the result of one of these three.
-
-			//If there is no answer, then return the I Don't Know response
-			if (answer.Length == 0)
-			{
-				return IDK;
-			}//end if
-			else
-			{
-				//If this was a message from the front-end to the back-end, send the
-				//answer through additional formatting before returning it to the front-end.
-				if (messageToServer)
-				{
-					//Return message to Unity front-end with both novel and proximal nodes
-					return MessageToServer(narration_manager.Topic, answer, noveltyInfo, proximal_info, forLog, outOfTopic);
-				}//end if
-
-				if (outOfTopic)
-					answer += ParseInput("", false, false);
-
-				if (forLog)
-					return answer;
-				else
-				{
-					return answer;
-				}//end else
-			}//end else
-		}//end if
-
-		//PARSE INPUT UTILITY FUNCTIONS
-
-		/// <summary>
-		/// ParseInput utility function. Looks for an explicit command word in the given input and tries to carry
-		/// out the command. Returns the result of the command if any valid command is found.
-		/// </summary>
-		/// <param name="split_input">A string of input split into an array by the character ":"</param>
-		private string CommandResponse(string[] split_input)
-		{
-			string return_string = "";
-
-				//LIST_COMMANDS command from query window
-				//  Lists the commands that can be typed in to the query window
-				if (split_input[0].Equals("LIST_COMMANDS"))
-				{
-
-				}//end if
-				//Step-through command from Query window.
-				// Calls ParseInput with the empty string several times, stepping
-				// through with default responses.
-				else if (split_input[0].Equals("STEP"))
-				{
-					//Step through the program with blank inputs a certain number of times, 
-					//specified by the second argument in the command
-					//Console.WriteLine("step_count " + split_input[1]);
-					int step_count = int.Parse(split_input[1]);
-
-					//Create a response by calling the ParseInput function step_count times.
-					for (int s = 0; s < step_count; s++)
-					{
-						return_string += ParseInput("", true, true, false, false);
-						return_string += "\n";
-					}//end for
-				}//end if
-				// GET_NODE_VALUES command from Unity front-end
-				// Uses NarrationCalculator to calculate the score between two nodes, specified
-				// by the input. Returns individual components of that score.
-				else if (split_input[0].Equals("GET_NODE_VALUES"))
-				{
-					Console.WriteLine("In get node values");
-					//Get the node we wish to get a set of values for, by id.
-					//"id" is represented by each node's data field in the XML.
-					//In the split input string, index 1 is the id of the node we want
-					//to get values for.
-					//Index 2 is the id of the node we are getting values relative to.
-					string current_node_id = split_input[1];
-					string old_node_id = split_input[2];
-					//Get the features for these two nodes
-					Feature current_feature = this.graph.getFeature(current_node_id);
-					Feature old_feature = this.graph.getFeature(old_node_id);
-					//If EITHER feature is null, return an error message.
-					if (current_feature == null || old_feature == null)
-						return "no feature found";
-					double[] return_node_values = narration_manager.GetScoreComponents(current_feature, old_feature);
-					//Turn them into a colon-separated string, headed by
-					//the key-phrase "RETURN_NODE_VALUES"
-					return_string = return_node_values[Constant.ScoreArrayScoreIndex] + ":"
-						+ return_node_values[Constant.ScoreArrayNoveltyIndex] + ":" 
-						+ return_node_values[Constant.ScoreArrayDiscussedAmountIndex] + ":"
-						+ return_node_values[Constant.ScoreArrayExpectedDramaticIndex] + ":" 
-						+ return_node_values[Constant.ScoreArraySpatialIndex] + ":"
-						+ return_node_values[Constant.ScoreArrayHierarchyIndex] + ":";
-				}//end if
-				// GET_WEIGHT command from Unity front-end
-				// Returns the value of each weight from the feature graph
-				else if (split_input[0].Equals("GET_WEIGHT"))
-				{
-					//Return a colon-separated string of every weight value
-					return_string = "Weights: ";
-					double[] weight_array = this.graph.getWeightArray();
-					for (int i = 0; i < weight_array.Length; i++)
-					{
-						if (i != 0)
-							return_string += ":";
-						return_string += weight_array[i];
-					}//end for
-				}//end else if
-				// SET_WEIGHT command from Unity front-end
-				// Sets the value of each weight in the feature graph, specified
-				// in the input array, then returns each weight.
-				else if (split_input[0].Equals("SET_WEIGHT"))
-				{
-					//For each pair,
-					//Index 1 is the index of the weight we wish to adjust.
-					//Index 2 is the new weight value.
-					for (int m = 1; m < split_input.Length; m += 2)
-					{
-						this.graph.setWeight(int.Parse(split_input[m]), double.Parse(split_input[m + 1]));
-					}//end for
-
-					//Return the new weight values right away.
-					return_string = "Weights: ";
-					double[] weight_array = this.graph.getWeightArray();
-					for (int i = 0; i < weight_array.Length; i++)
-					{
-						if (i != 0)
-							return_string += ":";
-						return_string += weight_array[i];
-					}//end for
-				}//end else if
-				//GET_RELATED command from Unity front-end.
-				//Returns a message containing a list of most novel and most proximal nodes.
-				else if (split_input[0].Equals("GET_RELATED"))
-				{
-					//GET_RELATED only gets related nodes for the current topic.
-					string noveltyInfo = narration_manager.ListMostNovelFeatures(narration_manager.Topic, noveltyAmount);
-					string proximalInfo = narration_manager.ListMostProximalFeatures(narration_manager.Topic, noveltyAmount);
-					return_string = "Novelty:" + noveltyInfo + ":Proximal:" + proximalInfo;
-				}//end else if
-				//SET_LANGUAGE command from Unity front-end.
-				//Sets which language text and TTS will be in, according to values
-				// in the input array.
-				else if (split_input[0].Equals("SET_LANGUAGE"))
-				{
-					//Index 1 is the new language display mode.
-					language_mode_display = int.Parse(split_input[1]);
-					//Index 2 is the new language TTS mode.
-					language_mode_tts = int.Parse(split_input[2]);
-					return_string = "Language to display set to " + language_mode_display + ": Language of TTS set to " + language_mode_tts;
-				}//end else if
-				//BEGIN_TTS command from Unity front-end.
-				// Returns the string to be spoken by TTS that has been buffered, if any.
-				// Also appends TTS_COMPLETE to signal TTS to start on the string, then
-				// resets the TTS buffer.
-				else if (split_input[0].Equals("BEGIN_TTS"))
-				{
-					if (buffered_tts.Equals(""))
-					{
-						return_string = "-1";
-					}//end if
-					else
-					{
-						return_string = "TTS_COMPLETE##" + buffered_tts;
-						buffered_tts = "";
-					}//end else
-				}//end else if
-				//GET_TTS command from Unity front-end.
-				// Returns the buffered TTS string, if any, without
-				// triggering TTS.
-				else if (split_input[0].Equals("GET_TTS"))
-				{
-					if (buffered_tts.Equals(""))
-					{
-						return_string = "-1";
-					}//end if
-					else
-					{
-						return_string = buffered_tts;
-					}//end else
-				}//end else if
-				//FORWARD_PROJECTION command.
-				// Returns the names of the sequence of topics
-				// found by Forward Projection.
-				else if (split_input[0].Equals("FORWARD_PROJECTION"))
-				{
-					//The second index of the command is the number of turns to
-					//perform forward projection with.
-					List<Feature> result_list = narration_manager.ForwardProjection(narration_manager.Topic, int.Parse(split_input[1]));
-					return_string = "Forward Projection result:";
-					foreach (Feature temp_feature in result_list)
-					{
-						return_string = return_string + " --> " + temp_feature.Name;
-					}//end foreach
-				}//end else if
-				//ADD_ANCHOR command.
-				// Add a set of anchor nodes to the narration manager by either feature name or ID.
-				else if (split_input[0].Equals("ADD_ANCHOR"))
-				{
-					Feature new_anchor_node = null;
-					return_string = "Added anchor nodes: ";
-
-					for (int i = 1; i < split_input.Length; i++)
-					{
-						String string_topic = split_input[i];
-						//Try to convert the topic to an int to check if it's an id.
-						int int_topic = -1;
-						bool parse_success = int.TryParse(string_topic, out int_topic);
-						if (parse_success)
-						{
-							//Check that the new integer topic is a valid id.
-							new_anchor_node = graph.getFeature(int_topic);
-						}//end if
-						else
-						{
-							new_anchor_node = FindFeature(string_topic);
-						}//end else
-						if (new_anchor_node != null)
-						{
-							narration_manager.AddAnchorNode(new_anchor_node);
-							return_string += new_anchor_node.Name + " (" + new_anchor_node.Id + ")" + ", ";
-						}//end if
-
-					}//end for
-
-				}//end else if
-				//LIST_ANCHORS command.
-				//  Returns the list of anchor nodes, by name, to the chat window.
-				else if (split_input[0].Equals("LIST_ANCHORS"))
-				{
-					return_string = "Anchor nodes: ";
-					foreach (Feature anchor_node in narration_manager.anchor_nodes)
-					{
-						return_string += anchor_node.Name += " (" + anchor_node.Id + "), ";
-					}//end foreach
-				}//end else if
-				//SET_TURN_LIMIT command.
-				//  Sets the maximum number of turns the conversation can go for.
-				else if (split_input[0].Equals("SET_TURN_LIMIT"))
-				{
-					return_string = "";
-
-					int turn_limit = 0;
-					bool parse_success = int.TryParse(split_input[1], out turn_limit);
-					if (parse_success)
-					{
-						narration_manager.SetTurnLimit(turn_limit);
-						return_string = "Turn limit set to " + turn_limit;
-					}//end if
-					else
-						return_string = "Could not set turn limit.";
-				}//end else if
-				//CHRONOLOGY_PLANNED command.
-				//  Generates a story based on a single anchor node.
-				//  The story should be chronological, but can start at the anchor node.
-				//  Generating a chronology leaves no changes in the feature graph.
-				//  To change the feature graph, the UPDATE command should be called
-				//  each time a chronology node is presented in the front-end.
-				else if (split_input[0].Equals("CHRONOLOGY_PLANNED"))
-				{
-					return_string = "Chronology for: ";
-
-					Feature anchor_node = null;
-					//Get the anchor node specified in this command 
-					if (split_input[1] != null)
-					{
-						String string_topic = split_input[1];
-						//Try to convert the topic to an int to check if it's an id.
-						int int_topic = -1;
-						bool parse_success = int.TryParse(string_topic, out int_topic);
-						if (parse_success)
-						{
-							//Check that the new integer topic is a valid id.
-							anchor_node = graph.getFeature(int_topic);
-						}//end if
-						else
-						{
-							anchor_node = FindFeature(string_topic);
-						}//end else
-						if (anchor_node != null)
-						{
-							//If we found an anchor node with this command, assemble the chronology.
-
-							//For certain story roles, relationships match up with start and end dates.
-							//For characters, transfer start and end dates to birth and death places.
-							if (anchor_node.story_role == 1)
-							{
-								//Look for a birth place by looking for the word "birth" in any neighbor relationship
-								Feature birth_place = null;
-								foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
-								{
-									if (neighbor_tuple.Item3.Contains("birth"))
-									{
-										birth_place = neighbor_tuple.Item1;
-										break;
-									}//end if
-								}//end foreach
-								//If the birth place is not null, update its date
-								if (birth_place != null)
-								{
-									birth_place.start_date = anchor_node.start_date;
-									birth_place.end_date = anchor_node.start_date;
-								}//end if
-								//Look for a death place by looking for the word "death" in any neighbor relationship
-								Feature death_place = null;
-								foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
-								{
-									if (neighbor_tuple.Item3.Contains("death"))
-									{
-										death_place = neighbor_tuple.Item1;
-										break;
-									}//end if
-								}//end foreach
-								//If the death place is not null, update its date
-								if (death_place != null)
-								{
-									death_place.start_date = anchor_node.end_date;
-									death_place.end_date = anchor_node.end_date;
-								}//end if
-							}//end if
-
-							//Find the neighboring node whose date most closely matches the anchor node's start date.
-							Feature closest_start_neighbor = null;
-							TimeSpan closest_time_difference = TimeSpan.MaxValue;
-							foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
-							{
-								TimeSpan time_difference = neighbor_tuple.Item1.start_date - anchor_node.start_date;
-								TimeSpan time_difference_2 = neighbor_tuple.Item1.end_date - anchor_node.start_date;
-
-								if (time_difference_2.Duration() < time_difference.Duration())
-									time_difference = time_difference_2;
-
-								if (time_difference.Duration() < closest_time_difference.Duration())
-								{
-									closest_start_neighbor = neighbor_tuple.Item1;
-									closest_time_difference = time_difference;
-								}//end if
-							}//end foreach
-
-							//Find the neighboring node whose date most closely matches the anchor node's end date.
-							Feature closest_end_neighbor = null;
-							closest_time_difference = TimeSpan.MaxValue;
-							foreach (Tuple<Feature, double, string> neighbor_tuple in anchor_node.Neighbors)
-							{
-								TimeSpan time_difference = neighbor_tuple.Item1.end_date - anchor_node.end_date;
-								TimeSpan time_difference_2 = neighbor_tuple.Item1.start_date - anchor_node.end_date;
-
-								if (time_difference_2.Duration() < time_difference.Duration())
-									time_difference = time_difference_2;
-
-								if (time_difference.Duration() < closest_time_difference.Duration())
-								{
-									closest_end_neighbor = neighbor_tuple.Item1;
-									closest_time_difference = time_difference;
-								}//end if
-							}//end foreach
-
-							//Get the turn limit
-							int turn_limit = 0;
-							if (split_input[2] != null)
-							{
-								parse_success = int.TryParse(split_input[2], out turn_limit);
-								if (parse_success)
-								{
-									Console.Out.WriteLine("Turn limit set to " + turn_limit);
-								}//end if
-								else
-									Console.Out.WriteLine("Could not set turn limit.");
-							}//end if
-
-							//Make a temporary graph to create the chronology's order before presenting it.
-							FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(graph);
-
-							//Calculate the effective date of every other feature relative to the anchor node.
-							foreach (Feature temp_feat in temp_graph.Features)
-							{
-								temp_feat.calculateEffectiveDate(anchor_node.start_date, anchor_node.end_date);
-							}//end foreach
-
-							return_string = "";
-
-							//Turns should be spent talking about nodes between the start and end dates of the anchor node.
-							NarrationManager temp_manager = new NarrationManager(temp_graph, temporalConstraintList);
-
-							//The manager's history will be used as the order of narration.
-							//Talk about the anchor node first.
-							temp_manager.TopicHistory.Add(anchor_node);
-							//Talk about the start neighbor second.
-							temp_manager.TopicHistory.Add(closest_start_neighbor);
-							//Plan for the remaining turns.
-							temp_manager.Turn = 2;
-
-
-							Feature last_feature = closest_start_neighbor;
-							Feature current_feature = closest_start_neighbor;
-
-							//Take up the rest of the turns talking about items in between the start and end dates.
-							while (temp_manager.Turn < turn_limit)
-							{
-								//Determine the next feature from the previous one
-								//current_feature = temp_manager.getNextChronologicalTopic(last_feature, anchor_node.start_date, anchor_node.end_date);
-								//Determine the next feature from the anchor node every time
-								current_feature = temp_manager.getNextChronologicalTopic(anchor_node, anchor_node.start_date, anchor_node.end_date);
-								//Present it
-								return_string += temp_manager.PresentFeature(current_feature);
-								//Update last feature
-								last_feature = current_feature;
-							}//end while
-							//When we have reached the turn limit, present the ending node.
-
-							return_string += temp_manager.PresentFeature(closest_end_neighbor);
-							//return_string += anchor_node.Name + " (" + anchor_node.Id + ")" + ", ";
-
-							//7/6/2016: For integration, send back a double-colon delineated list of node names consisting of the nodes given here.
-							List<Feature> chronology = temp_manager.TopicHistory;
-							if (split_input.Length < 4 || split_input[3] == null) {
-								return_string = "";
-								foreach (Feature feat in chronology)
-								{
-									return_string += feat.Name + "::";
-								}//end foreach
-							}//end if
-						}//end if
-					}//end if
-				}//end else if
-				//CHRONOLOGY command. Uses greedy method and does not do planning for optimal path.
-				//  Generates a story based on a single anchor node.
-				//  The story should be chronological, but can start at the anchor node.
-				//  Generating a chronology leaves no changes in the feature graph.
-				//  To change the feature graph, the UPDATE command should be called
-				//  each time a chronology node is presented in the front-end.
-				else if (split_input[0].Equals("CHRONOLOGY"))
-				{
-                    return ParseInputJSON(split_input);
-				}//end else if
-				//UPDATE command.
-				//  Update the feature graph by telling the narration manager
-				//  to blankly present a node. Should be called each time a node
-				//  is presented in the front end from a chronology.
-				else if (split_input[0].Equals("UPDATE"))
-				{
-					return_string = "";
-
-					if (split_input[1] != null)
-					{
-						int node_id = -1;
-						bool parse_success = int.TryParse(split_input[1], out node_id);
-						if (parse_success)
-						{
-							string result = narration_manager.PresentFeature(graph.getFeature(node_id));
-							Console.Out.WriteLine("Updating: " + result);
-						}//end if
-						else
-							Console.Out.WriteLine("No valid node given to update");
-					}//end if
-				}//end else if
-				//START_NARRATION command.
-				//  Makes the system narrate. A turn limit may be specified after the command.
-				//  It tries to visit all anchor nodes within the turn limit. 
-				else if (split_input[0].Equals("START_NARRATION"))
-				{
-					return_string = "";
-
-					if (split_input[1] != null)
-					{
-						int turn_limit = 0;
-						bool parse_success = int.TryParse(split_input[1], out turn_limit);
-						if (parse_success)
-						{
-							narration_manager.SetTurnLimit(turn_limit);
-							Console.Out.WriteLine("Turn limit set to " + turn_limit);
-						}//end if
-						else
-							Console.Out.WriteLine("Could not set turn limit.");
-					}//end if
-
-					//Check if the narration manager has any anchor nodes.
-					if (narration_manager.anchor_nodes.Count <= 0)
-					{
-						//If not, initialize some default anchor nodes.
-						string temp_input = "";
-						temp_input = "ADD_ANCHOR:78:1:117:115";
-						ParseInput(temp_input);
-					}//end if
-
-					bool start_success = narration_manager.StartNarration();
-					if (start_success)
-						return_string = "Narration started.";
-					else
-						return_string = "Failed to start narration.";
-				}//end else if
-
-				//INTERWEAVE command.
-				// Creates two interwoven storylines.
-				else if (split_input[0].Equals("INTERWEAVE"))
-				{
-					List<String> return_string_1_components = new List<String>();
-					List<String> return_string_2_components = new List<String>();
-					string return_string_1 = "";
-					string return_string_2 = "";
-
-					int storyline_length = 10;
-					//1 Arctic exploration, 20 Desert exploration
-					int story_1_root = 200;
-					int story_2_root = 1;
-
-					//Create the first story in its entirety
-					//Set the node that the story will start at
-					graph.Root = graph.getFeature(story_1_root);
-					NarrationManager manager_1 = new NarrationManager(graph, temporalConstraintList);
-					for (int i = 0; i < storyline_length; i++)
-					{
-						return_string_1_components.Add(" " + manager_1.DefaultNextTopicResponse() + "\n");
-						manager_1.Turn += 1;
-					}//end for
-					//Get the topic history from the first narration as the reference list for the second narration.
-					List<Feature> storyline_1 = manager_1.TopicHistory;
-					//Remove 1st node, it is a duplicate.
-					storyline_1.RemoveAt(0);
-
-					//Ask the manager for the first narration which node would be best as a switch point.
-					Feature switch_point = manager_1.IdentifySwitchPoint(storyline_1);
-
-
-					//Create the reference list from the first storyline up through the switch point.
-					List<Feature> reference_list = new List<Feature>();
-					foreach (Feature story_feature in storyline_1)
-					{
-						reference_list.Add(story_feature);
-						if (story_feature.Id.Equals(switch_point.Id))
-							break;
-					}//end foreach
-
-					//Create the second story in its entirety
-					//Set the node that the story will start at
-					graph.Root = graph.getFeature(story_2_root);
-					NarrationManager manager_2 = new NarrationManager(graph, temporalConstraintList);
-					for (int i = 0; i < storyline_length; i++)
-					{
-						return_string_2_components.Add(" " + manager_2.DefaultNextTopicResponse(reference_list) + "\n");
-						manager_2.Turn += 1;
-					}//end for
-					List<Feature> storyline_2 = manager_2.TopicHistory;
-					//Remove 1st node, it is a duplicate
-					storyline_2.RemoveAt(0);
-
-					bool after_switch_point = false;
-					//Compile both return strings from their components
-					int switch_point_index = storyline_1.IndexOf(switch_point);
-					//Get the part of storyline 1 up to the switch point
-					List<Feature> storyline_1_first_half = storyline_1.GetRange(0, switch_point_index + 1);
-					//Get part of storyline 1 after the switch point
-					List<Feature> storyline_1_second_half = storyline_1.GetRange(switch_point_index + 1, storyline_1.Count - switch_point_index - 1);
-					foreach (string component_1 in return_string_1_components)
-					{
-						//At the switch point, add all of the second storyline.
-						int component_index = return_string_1_components.IndexOf(component_1);
-						if (component_index == switch_point_index)
-						{
-							//Foreshadow future switch point information.
-							foreach (Feature first_half_node in storyline_1_first_half)
-							{
-								return_string += " " + manager_1.Foreshadow(first_half_node, storyline_1_second_half) + "\n";
-							}//end foreach
-							//return_string += " " + manager_1.Foreshadow(switch_point, storyline_1_second_half) + "\n";
-
-							return_string += " SWITCH TO STORYLINE 2 \n {But now, let's talk about something else.}";
-							foreach (string component_2 in return_string_2_components)
-							{
-								return_string += component_2;
-							}//end foreach
-							return_string += " SWITCH TO STORYLINE 1 \n";
-							after_switch_point = true;
-						}//end if
-						return_string += component_1;
-						if (after_switch_point && component_index < storyline_1.Count)
-						{
-							//List<Feature> temp_list = new List<Feature>();
-							//temp_list.Add(switch_point);
-							return_string += " " + manager_1.TieBack(storyline_1.ElementAt(component_index), storyline_1_first_half, storyline_1.ElementAt(component_index - 1)) + "\n";
-						}//end if
-					}//end foreach
-
-					return_string += " : switch point: " + switch_point.Name + " \n";
-				}//end else if
-				else if (split_input[0].Equals("COUNT_CONNECTIONS"))
-				{
-					//Count the total number of edges in the graph.
-					//Count pairs of forward and backward edges as one.
-
-					//Nodes that have already been checked
-					List<Feature> features_checked = new List<Feature>();
-					//Relationships that have been seen
-					List<string> relationships = new List<string>();
-					int connection_count = 0;
-					foreach (Feature feat_to_check in graph.Features)
-					{
-						features_checked.Add(feat_to_check);
-						foreach (Tuple<Feature, double, string> temp_neighbor in feat_to_check.Neighbors)
-						{
-							//If this neighbor has already been checked, don't count the connection.
-							if (features_checked.Contains(temp_neighbor.Item1))
-							{
-								continue;
-							}//end if
-							//If the relationship has not been seen, add it to the list of relationships
-							if (!relationships.Contains(temp_neighbor.Item3))
-							{
-								relationships.Add(temp_neighbor.Item3);
-							}//end if
-							connection_count += 1;
-						}//end foreach
-					}//end foreach
-
-					return_string = "Number of connections: " + connection_count + ", unique relationships: " + relationships.Count;
-				}//end else if
-				else if (split_input[0].Equals("FIND_WELL_CONNECTED_ROOTS"))
-				{
-					FeatureGraph original_feature_graph = graph;
-
-					//Root node, root node id, switch point, switch point id.
-					List<Tuple<Feature, int, Feature, int>> interesting_roots = new List<Tuple<Feature, int, Feature, int>>();
-					foreach (Feature feat_to_check in original_feature_graph.Features)
-					{
-						//Make a deep copy of the original feature graph so we can make changes
-						//without changing the original.
-						FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(original_feature_graph);
-						NarrationManager temp_manager = new NarrationManager(temp_graph, temporalConstraintList);
-
-						//Create the first story in its entirety
-						//Set the node that the story will start at
-						graph.Root = graph.getFeature(feat_to_check.Id);
-						NarrationManager manager_1 = new NarrationManager(graph, temporalConstraintList);
-						for (int i = 0; i < 10; i++)
-						{
-							manager_1.DefaultNextTopicResponse();
-							manager_1.Turn += 1;
-						}//end for
-						//Get the topic history from the first narration as the refernce list for the second narration.
-						List<Feature> storyline_1 = manager_1.TopicHistory;
-						//Remove 1st node, it is a duplicate.
-						storyline_1.RemoveAt(0);
-
-						//Ask the manager for the first narration which node would be best as a switch point.
-						Feature switch_point = manager_1.IdentifySwitchPoint(storyline_1);
-
-						//If switch point is neither the first nor last nodes, mark this as an interesting root.
-						if (!(switch_point.Id == storyline_1[0].Id) && !(switch_point.Id == storyline_1[storyline_1.Count - 1].Id))
-						{
-							interesting_roots.Add(new Tuple<Feature, int, Feature, int>(feat_to_check, feat_to_check.Id, switch_point, switch_point.Id));
-						}//end if
-					}//end foreach
-
-					//return_string = "Number of connections: " + connection_count + ", unique relationships: " + relationships.Count;
-				}//end else if
-				else if (split_input[0].Equals("VALID_TIME_GEO"))
-				{
-					List<Feature> valid_nodes = new List<Feature>();
-					return_string = "Valid next nodes: ";
-
-					String string_topic = split_input[1];
-
-					Feature source_node = FindFeature(string_topic);
-
-					foreach (Tuple<Feature, double, string> neighbor in source_node.Neighbors)
-					{
-						if (neighbor.Item1.Timedata.Count > 0 && neighbor.Item1.Geodata.Count > 0)
-							valid_nodes.Add(neighbor.Item1);
-					}//end foreach
-					foreach (Feature valid_node in valid_nodes)
-					{
-						return_string += source_node.getRelationshipNeighbor(valid_node.Name) + " " + valid_node.Name + " (" + valid_node.Id + ") " + " : ";
-					}//end foreach
-				}//end else if
-				else if (split_input[0].Equals("RESPONSE"))
-				{
-
-				}//end else if
-                //Toggle JSON response outputs on or off.
-                else if (split_input[0].Equals("TOGGLE_JSON"))
+                //Try to convert the topic to an int to check if it's an id.
+                int int_topic = -1;
+                bool parse_success = int.TryParse(string_topic, out int_topic);
+                if (parse_success)
                 {
+                    //Check that the new integer topic is a valid id.
+                    anchor_node = graph.getFeature(int_topic);
+                }//end if
+                else
+                {
+                    anchor_node = FindFeature(string_topic);
+                }//end else
+            }//end else
+            if (anchor_node != null)
+            {
+                //If we found an anchor node, check to see if there's an existing story. If not, make a new one.
+                if (main_story == null)
+                {
+                    return_string = "";
+
+                    NarrationManager temp_manager = new NarrationManager(graph, temporalConstraintList);
+                    Story chronology = temp_manager.GenerateChronology(anchor_node, turn_limit);
+
                     if (json_mode)
-                    {
-                        json_mode = false;
-                        return_string = "JSON responses toggled off";
-                    }//end if
+                        return_string = JsonConvert.SerializeObject(chronology);
                     else
                     {
-                        json_mode = true;
-                        return_string = "JSON responses toggled on";
-                    }//end elses
-                }//end else if
+                        return_string = JsonConvert.SerializeObject(chronology);
+                    }//end else
 
-			return return_string;
-		}//end function CommandResponse
+                    main_story = chronology;
+                }//end if
+                else
+                {
+                    // Continue the existing story
+                    NarrationManager temp_manager = new NarrationManager(graph, temporalConstraintList);
+                    Story chronology = temp_manager.GenerateChronology(anchor_node, turn_limit, starting_story: main_story, user_story: true);
+                    if (json_mode)
+                        return_string = JsonConvert.SerializeObject(chronology);
+                    else
+                    {
+                        return_string = JsonConvert.SerializeObject(chronology);
+                    }//end else
+                }//end else
+            }//end if
+
+            return return_string;
+        }//end function Chronology
+
+        private string MakeStory(List<string> feature_name_list)
+        {
+            Feature anchor_node = null;
+            string return_string = "";
+            List<Feature> input_features = new List<Feature>();
+            //Resolve the node IDs or names, and get the list of their corresponding features.
+            foreach (string item in feature_name_list)
+            {
+                int input_id = -1;
+                bool parse_success = int.TryParse(item, out input_id);
+                if (parse_success)
+                    input_features.Add(graph.getFeature(input_id));
+                else
+                    input_features.Add(FindFeature(item));
+            }//end foreach
+            if (input_features.Count > 0)
+                anchor_node = input_features[0];
+            if (anchor_node != null)
+            {
+                //Assemble the story.
+                FeatureGraph temp_graph = DeepClone.DeepCopy<FeatureGraph>(graph);
+
+                return_string = "";
+
+                NarrationManager temp_manager = new NarrationManager(temp_graph, temporalConstraintList);
+
+                Story result_story = temp_manager.MakeStoryFromList(input_features);
+
+                stories.Add(result_story);
+
+                if (json_mode)
+                    return_string = JsonConvert.SerializeObject(result_story);
+                else
+                {
+                    return_string = JsonConvert.SerializeObject(result_story);
+                }//end else
+            }//end if
+
+            return return_string;
+        }//end method MakeStory
+
 
 		//END OF PARSE INPUT UTILITY FUNCTIONS
 

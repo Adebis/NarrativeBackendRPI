@@ -134,7 +134,7 @@ namespace Dialogue_Data_Entry
                 //Decide whether to state the relationship between this node and the previous one.
                 if (graph_node.getNeighbor(previous_node.Id) != null)
                 {
-                    new_story_node.story_acts.Add(new Tuple<string, int>(Constant.RELATIONSHIP, previous_node.Id));
+                    new_story_node.story_acts.Add(new Tuple<string, int, string>(Constant.RELATIONSHIP, previous_node.Id, Relationship(graph_node, previous_node)));
                     introduction_handled = true;
                 }//end if
 
@@ -147,7 +147,7 @@ namespace Dialogue_Data_Entry
                         double geo_threshold = 0.0;
                         if (Math.Abs(graph_node.Geodata[0].Item1 - last_location_info.Item1) + Math.Abs(graph_node.Geodata[0].Item2 - last_location_info.Item2) > geo_threshold)
                         {
-                            new_story_node.story_acts.Add(new Tuple<string, int>(Constant.LOCATIONCHANGE, last_location_info.Item3));
+                            new_story_node.story_acts.Add(new Tuple<string, int, string>(Constant.LOCATIONCHANGE, last_location_info.Item3, ""));
                             introduction_handled = true;
                         }//end if
                     }//end if
@@ -156,7 +156,7 @@ namespace Dialogue_Data_Entry
                 //If there is nothing introducing this node, add a generic lead-in
                 if (!introduction_handled)
                 {
-                    new_story_node.story_acts.Add(new Tuple<string, int>(Constant.LEADIN, graph_node.Id));
+                    new_story_node.story_acts.Add(new Tuple<string, int, string>(Constant.LEADIN, graph_node.Id, LeadIn(graph_node)));
                 }//end else
 
             }//end if
@@ -220,20 +220,25 @@ namespace Dialogue_Data_Entry
             if (!user_story)
             {
                 //2. Identify the switch point
-                //TODO: Hack for demo, change back to the commented out line later!
-                int switch_point_turn = 2; // calculator.IdentifySwitchPointTurn(chronology);
+                int switch_point_turn = calculator.IdentifySwitchPointTurn(chronology);
 
                 //3. Split the story at the switch point
                 chronology.SplitSegment(switch_point_turn);
 
                 //4. Place a user turn and switch-point narrative event at the last node of the first segment.
                 chronology.GetNodeAtTurn(switch_point_turn).AddStoryAct(Constant.SWITCHPOINT
-                    , chronology.GetNodeAtTurn(switch_point_turn).graph_node_id);
+                    , chronology.GetNodeAtTurn(switch_point_turn).graph_node_id, "");
                 chronology.GetNodeAtTurn(switch_point_turn).AddStoryAct(Constant.USERTURN
-                    , chronology.GetNodeAtTurn(switch_point_turn).graph_node_id);
+                    , chronology.GetNodeAtTurn(switch_point_turn).graph_node_id, "");
             }//end if
             else if (user_story)
             {
+                // Make an analogy between the first node of the user story
+                // and the first node of the starting story.
+                chronology.GetNodeSequence()[0].AddStoryAct(Constant.ANALOGY
+                    , starting_story.StorySequence[0].GetSequence()[0].graph_node_id
+                    , MakeAnalogy(chronology.GetNodeSequence()[0].graph_node_id, starting_story.StorySequence[0].GetSequence()[0].graph_node_id));
+
                 foreach (StoryNode temp_node in chronology.GetNodeSequence())
                 {
                     Feature temp_feat = feature_graph.getFeature(temp_node.graph_node_id);
@@ -244,7 +249,7 @@ namespace Dialogue_Data_Entry
                         {
                             //If the node in the secondary storyline is related to a node in the
                             //first half of the primary storyline, make a tie back.
-                            temp_node.AddStoryAct(Constant.TIEBACK, prev_feat.Id);
+                            temp_node.AddStoryAct(Constant.TIEBACK, prev_feat.Id, TieBack(temp_feat, prev_feat));
                             //Add only the first one of these instances per secondary story node.
                             break;
                         }//end if
@@ -270,7 +275,7 @@ namespace Dialogue_Data_Entry
                 {
                     graph_node = feature_graph.getFeature(temp_node.graph_node_id);
                     node_text = graph_node.getSpeak(0);
-                    foreach (Tuple<string, int> story_act in temp_node.story_acts)
+                    foreach (Tuple<string, int, string> story_act in temp_node.story_acts)
                     {
                         target_node = feature_graph.getFeature(story_act.Item2);
                         if (story_act.Item1.Equals(Constant.LEADIN))
@@ -279,7 +284,7 @@ namespace Dialogue_Data_Entry
                         }//end if
                         else if (story_act.Item1.Equals(Constant.RELATIONSHIP))
                         {
-                            node_text = "<color=#0000ffff>" + Relationship(graph_node, target_node) + "</color>" + node_text;
+                            node_text = "<color=#0000ffff>" + story_act.Item3 + "</color>" + node_text;
                         }//end else if
                         else if (story_act.Item1.Equals(Constant.SWITCHPOINT))
                         {
@@ -329,7 +334,7 @@ namespace Dialogue_Data_Entry
 
                                 //Make sure the node in the second half of the storyline resolves back to the node
                                 //in the first half of the storyline.
-                                story_in.GetNodeByGraphId(s_feature.Id).AddStoryAct(Constant.RESOLVE, f_feature.Id);
+                                story_in.GetNodeByGraphId(s_feature.Id).AddStoryAct(Constant.RESOLVE, f_feature.Id, Resolve(graph_node, f_feature));
                             }//end for
                             node_text = node_text + " later. But for now, let's talk about something else.</color> ";
                         }//end else if
@@ -339,11 +344,15 @@ namespace Dialogue_Data_Entry
                         }//end else if
                         else if (story_act.Item1.Equals(Constant.RESOLVE))
                         {
-                            node_text = node_text + "<color=#ff00ffff>" + Resolve(graph_node, target_node) + "</color>";
+                            node_text = node_text + "<color=#ff00ffff>" + story_act.Item3 + "</color>";
                         }//end else if
                         else if (story_act.Item1.Equals(Constant.TIEBACK))
                         {
-                            node_text = node_text + "<color=#b8860bff>" + TieBack(graph_node, target_node) + "</color>";
+                            node_text = node_text + "<color=#b8860bff>" + story_act.Item3 + "</color>";
+                        }//end else if
+                        else if (story_act.Item1.Equals(Constant.ANALOGY))
+                        {
+                            node_text = node_text + "[A] " + story_act.Item3 + "[/A]";
                         }//end else if
                     }//end foreach
                     temp_node.text = node_text;
@@ -438,6 +447,51 @@ namespace Dialogue_Data_Entry
 
             return relationship_statement;
         }//end method Relationship
+
+        private string MakeAnalogy(int id_1, int id_2)
+        {
+            string analogy_string = "";
+            string feature_name_1 = feature_graph.getFeature(id_1).Name;
+            string feature_name_2 = feature_graph.getFeature(id_2).Name;
+
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    string url = "http://localhost:5000/get_analogy";
+                    //string url = "http://storytelling.hass.rpi.edu:5000/get_analogy";
+                    //string url_parameters = "?file=" + file_name;
+
+                    client.BaseAddress = new Uri(url);
+                    client.DefaultRequestHeaders.Accept.Clear();
+                    client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+                    Dictionary<string, string> content = new Dictionary<string, string>
+                    {
+                        {"file1", feature_graph.file_name},
+                        {"file2", feature_graph.file_name},
+                        {"feature1", feature_name_1},
+                        {"feature2", feature_name_2}
+                    };
+
+                    var http_content = new FormUrlEncodedContent(content);
+                    HttpResponseMessage response = client.PostAsync(url, http_content).Result;
+
+                    //Read the json string from the http response
+                    Task<string> read_string_task = response.Content.ReadAsStringAsync();
+                    read_string_task.Wait(100000);
+
+                    string content_string = read_string_task.Result;
+                    analogy_string = content_string;
+                }//end using
+            }//end try
+            catch (Exception e)
+            {
+                Console.WriteLine("Error contacting analogy server: " + e.Message);
+            }//end catch
+
+            return analogy_string;
+        }//end function MakeAnalogy
 
 
         public Feature getNextChronologicalTopic(Story story_in, DateTime start_date, DateTime end_date)
@@ -1277,7 +1331,7 @@ namespace Dialogue_Data_Entry
             StorySegment story_1_part_2 = new StorySegment();
             int switchpoint_turn = IdentifySwitchPointTurn(story_1);
             StoryNode switchpoint_node = story_1.GetNodeAtTurn(switchpoint_turn);
-            switchpoint_node.AddStoryAct(Constant.SWITCHPOINT, switchpoint_node.graph_node_id);
+            switchpoint_node.AddStoryAct(Constant.SWITCHPOINT, switchpoint_node.graph_node_id, "");
             Feature switchpoint_feature = feature_graph.getFeature(switchpoint_node.graph_node_id);
 
             for (int i = 0; i <= switchpoint_turn; i++)
@@ -1300,14 +1354,14 @@ namespace Dialogue_Data_Entry
                     if ((!temp_node_feature.getRelationshipNeighbor(compare_node_feature.Id).Equals("")
                         && !(temp_node_feature.getRelationshipNeighbor(compare_node_feature.Id) == null)))
                     {
-                        temp_node.AddStoryAct(Constant.HINTAT, compare_node.graph_node_id);
-                        compare_node.AddStoryAct(Constant.RESOLVE, temp_node.graph_node_id);
+                        temp_node.AddStoryAct(Constant.HINTAT, compare_node.graph_node_id, "");
+                        compare_node.AddStoryAct(Constant.RESOLVE, temp_node.graph_node_id, "");
                     }//end if
                     else if (!compare_node_feature.getRelationshipNeighbor(temp_node_feature.Id).Equals("")
                         && !(compare_node_feature.getRelationshipNeighbor(temp_node_feature.Id) == null))
                     {
-                        temp_node.AddStoryAct(Constant.HINTAT, compare_node.graph_node_id);
-                        compare_node.AddStoryAct(Constant.RESOLVE, temp_node.graph_node_id);
+                        temp_node.AddStoryAct(Constant.HINTAT, compare_node.graph_node_id, "");
+                        compare_node.AddStoryAct(Constant.RESOLVE, temp_node.graph_node_id, "");
                     }//end else if
                 }//end foreach
             }//end foreach
@@ -1323,12 +1377,12 @@ namespace Dialogue_Data_Entry
                     if ((!temp_node_feature.getRelationshipNeighbor(compare_node_feature.Id).Equals("")
                         && !(temp_node_feature.getRelationshipNeighbor(compare_node_feature.Id) == null)))
                     {
-                        temp_node.AddStoryAct(Constant.TIEBACK, compare_node.graph_node_id);
+                        temp_node.AddStoryAct(Constant.TIEBACK, compare_node.graph_node_id, TieBack(temp_node_feature, compare_node_feature));
                     }//end if
                     else if (!compare_node_feature.getRelationshipNeighbor(temp_node_feature.Id).Equals("")
                         && !(compare_node_feature.getRelationshipNeighbor(temp_node_feature.Id) == null))
                     {
-                        temp_node.AddStoryAct(Constant.TIEBACK, compare_node.graph_node_id);
+                        temp_node.AddStoryAct(Constant.TIEBACK, compare_node.graph_node_id, TieBack(temp_node_feature, compare_node_feature));
                     }//end else if
                 }//end foreach
             }//end foreach

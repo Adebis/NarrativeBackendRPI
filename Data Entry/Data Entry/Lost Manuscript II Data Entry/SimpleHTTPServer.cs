@@ -204,7 +204,7 @@ class SimpleHTTPServer
 				chatBoxCallback("<CHRONOLOGY REQUEST: " + context.Request.RemoteEndPoint + ">\n");
 
 				string query = "CHRONOLOGY:" + data.id + ":" + data.turns;
-				response = handler.ParseInputJSON(query);
+				response = handler.ParseInput(query);
 
 				//dynamic response = new JObject();
 				//split and ignore last empty one
@@ -222,7 +222,7 @@ class SimpleHTTPServer
 
 			case "/chronology/reset":
 				chatBoxCallback("<NARRATION RESET: " + context.Request.RemoteEndPoint + ">\n");
-				handler.ParseInputJSON("RESTART_NARRATION");
+				handler.ParseInput("RESTART_NARRATION");
 				b = Encoding.UTF8.GetBytes("null");
 				context.Response.StatusCode = (int)HttpStatusCode.OK;
 				context.Response.KeepAlive = false;
@@ -246,7 +246,7 @@ class SimpleHTTPServer
 				break;
 
 			case "/test":
-				response = handler.ParseInputJSON("test_sequence");
+                response = handler.ParseInput("test_sequence");
 
 				//write response
 				b = Encoding.UTF8.GetBytes(response.ToString());
@@ -263,7 +263,7 @@ class SimpleHTTPServer
                 
                 chatBoxCallback("<LOAD XML REQUEST: " + context.Request.RemoteEndPoint + ">\n");
                 query = "load_xml:" + data.url;
-                response = handler.ParseInputJSON(query);
+                response = handler.ParseInput(query);
                 string command_file_name = data.url;
                 this.form1loadcallback(command_file_name);
                 //handler.parent_form1.OpenXML(command_file_name);
