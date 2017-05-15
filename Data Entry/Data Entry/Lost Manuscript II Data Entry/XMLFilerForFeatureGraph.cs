@@ -208,9 +208,15 @@ namespace Dialogue_Data_Entry
 						foreach (XmlNode coordinates in geodata)
 						{
                             //Console.Out.WriteLine("lat:" + coordinates.Attributes["lat"].Value + ":lon:" + coordinates.Attributes["lon"].Value);
-							double lat = Convert.ToDouble(coordinates.Attributes["lat"].Value);
-							double lon = Convert.ToDouble(coordinates.Attributes["lon"].Value);
-							tmp.addGeoData(lat, lon);
+                            double lat = 0;
+                            double lon = 0;
+                            bool parse_success = double.TryParse(coordinates.Attributes["lat"].Value, out lat);
+                            if (!parse_success)
+                                continue;
+                            parse_success = double.TryParse(coordinates.Attributes["lon"].Value, out lon);
+                            if (!parse_success)
+                                continue;
+                            tmp.addGeoData(lat, lon);
 						}//end foreach
 					}//end if
 

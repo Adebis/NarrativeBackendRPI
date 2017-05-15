@@ -55,7 +55,7 @@ namespace Dialogue_Data_Entry
         //public string defaultFilename = @"/roman_empire_1000_10_21_16.xml";
         //private string defaultFilename = @"/roman_empire_1000_v3.xml";
         //private string defaultFilename = @"/roman_empire_1000_v3_AIMind.xml";
-        private string defaultFilename = @"/rpi_history.xml";
+        private string defaultFilename = @"/rpi_history_domain.xml";
 
 		private string constraintFilename = @"/constraint.txt";
 

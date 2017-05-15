@@ -81,8 +81,8 @@ namespace Dialogue_Data_Entry
 			calculator = new NarrationCalculator(feature_graph, tcl);
 
 			//The first topic should be the root node of the feature graph
-			/*if (this.topic == null)
-				SetNextTopic(this.feature_graph.Root);*/
+			if (this.topic == null)
+				SetNextTopic(this.feature_graph.Root);
 		}//end method DialogueManager
 
 		//ACCESSIBLE FUNCTIONS 
@@ -308,6 +308,7 @@ namespace Dialogue_Data_Entry
 
                             int max_hit_ats = 4;
                             node_text = node_text + "<color=#800080ff> We'll hear more about";
+                            List<string> hint_at_text = new List<string>();
                             //Pick node pairs to hint at until we run out or we reach the maximum.
                             for (int i = 0; i < Math.Min(max_hit_ats, hint_ats.Count); i++)
                             {
@@ -325,11 +326,27 @@ namespace Dialogue_Data_Entry
                                 {
                                     rel = s_feature.getRelationshipNeighbor(f_feature.Id);
                                 }//end else if
-                                node_text = node_text + ", " + f_feature.Name + " " + rel;
+                                hint_at_text.Add(f_feature.Name + " " + rel);
 
                                 //Make sure the node in the second half of the storyline resolves back to the node
                                 //in the first half of the storyline.
                                 story_in.GetNodeByGraphId(s_feature.Id).AddStoryAct(Constant.RESOLVE, f_feature.Id);
+                            }//end for
+                            for (int i = 0; i < hint_at_text.Count; i++)
+                            {
+                                if (i == hint_at_text.Count - 1
+                                    && hint_at_text.Count > 1)
+                                {
+                                    node_text = node_text + ", and " + hint_at_text[i];
+                                }//end if
+                                else if (i == 0)
+                                {
+                                    node_text = node_text + " " + hint_at_text[i];
+                                }//end else if
+                                else
+                                {
+                                    node_text = node_text + ", " + hint_at_text[i];
+                                }//end else
                             }//end for
                             node_text = node_text + " later. But for now, let's talk about something else.</color> ";
                         }//end else if
