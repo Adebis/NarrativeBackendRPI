@@ -46,6 +46,8 @@ namespace Dialogue_Data_Entry
         private int level, dist;
         public bool flag;                                // This is a public general use flag that can be used for things like traversals and stuff like that
 
+        public List<Tuple<int, string, int>> constraints;
+
         public Feature(string name)
         {
             this.interest_value = 0;
@@ -70,6 +72,8 @@ namespace Dialogue_Data_Entry
             this.entity_type = new List<string>();
 
             this.local_history_list = new List<Feature>();
+
+            this.constraints = new List<Tuple<int, string, int>>();
         }//end constructor Feature
         public Feature(string name, int id)
         {
@@ -95,6 +99,8 @@ namespace Dialogue_Data_Entry
             this.entity_type = new List<string>();
 
             this.local_history_list = new List<Feature>();
+
+            this.constraints = new List<Tuple<int, string, int>>();
         }//end constructor Feature
 
         //Calculate start and end dates for this feature, and, if possible, assign it

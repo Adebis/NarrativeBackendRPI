@@ -305,6 +305,158 @@ namespace Dialogue_Data_Entry
             }//end else if
             return null;
         }//end function GetNextTopic
+
+        //Gets the next topic taking the current target node into consideration.
+        public Feature GetNextTopicWithTarget(Feature previous_topic, int turn, List<Feature> topic_history, Feature current_target, List<int> target_ids)
+        {
+            if (turn == 0)
+            {
+                //initial case
+                return previous_topic;
+            }
+            else if (turn > 0)
+            {
+                //next topic case
+                /*if (currentNovelty == null)
+                {
+                    currentNovelty = new double[feature_graph.Features.Count()];
+                }*/
+                //int height = -1;
+                bool[] checkEntry = new bool[feature_graph.Count]; //checkEntry is to check that it won't check the same node again
+                //getHeight(featGraph.Root, oldTopic, 0, checkEntry, ref height);
+                checkEntry = new bool[feature_graph.Count];
+                //search the next topic
+
+                List<Tuple<Feature, double>> listScore = new List<Tuple<Feature, double>>();
+                //Get a list of each feature's score calculated against previous_topic.
+                //List order is based on the traveling (DFS) order.
+                TravelGraphWithTargets(feature_graph.Root, previous_topic, 0, true, checkEntry, turn, topic_history, ref listScore, current_target);
+
+                //find max score
+                if (listScore.Count == 0)
+                {
+                    return null;
+                }
+                double maxScore = listScore[0].Item2;
+                int maxIndex = 0;
+                for (int x = 1; x < listScore.Count; x++)
+                {
+                    if (listScore[x].Item2 > maxScore)
+                    {
+                        //FILTERING:
+                        //If the item in this list is one of the filter nodes,
+                        //do not include it in max score determination.
+                        //Check for filter nodes.
+                        if (filter_nodes.Contains(listScore[x].Item1.Name))
+                        {
+                            //If it is a filter node, take another step.
+                            Console.WriteLine("Filtering out " + listScore[x].Item1.Id);
+                            continue;
+                        }//end if
+
+                        // If this is a target node, check its constraints. If they are not met, do not
+                        // include this node.
+                        if (target_ids.Contains(listScore[x].Item1.Id))
+                            if (!ConstraintsMet(listScore[x].Item1.Id, topic_history))
+                            {
+                                continue;
+                            }//end if
+
+                        maxScore = listScore[x].Item2;
+                        maxIndex = x;
+                    }//end if
+                }//end for
+                //If the next item has been visited before, calculate again without time range constraints.
+                //Also, filter out all previously visited nodes.
+                if (listScore[maxIndex].Item1.DiscussedAmount > 0)
+                {
+                    maxScore = listScore[0].Item2;
+                    maxIndex = 0;
+                    for (int x = 1; x < listScore.Count; x++)
+                    {
+                        if (listScore[x].Item2 > maxScore)
+                        {
+                            //FILTERING:
+                            //If the item in this list is one of the filter nodes,
+                            //do not include it in max score determination.
+                            //Check for filter nodes.
+                            if (filter_nodes.Contains(listScore[x].Item1.Name))
+                            {
+                                //If it is a filter node, take another step.
+                                Console.WriteLine("Filtering out " + listScore[x].Item1.Id);
+                                continue;
+                            }//end if
+                            //If it has been visited before, do not count this node.
+                            if (listScore[x].Item1.DiscussedAmount > 0)
+                                continue;
+
+                            maxScore = listScore[x].Item2;
+                            maxIndex = x;
+                        }//end if
+                    }//end for
+                }//end if
+                if (print_calculation)
+                {
+                    System.Console.WriteLine("\n\nMax score: " + maxScore);
+                    //System.Console.WriteLine("Novelty: " + currentTopicNovelty);
+                    System.Console.WriteLine("Node: " + listScore[maxIndex].Item1.Id);
+                    System.Console.WriteLine("==========================================");
+                }
+                return listScore[maxIndex].Item1;
+            }//end else if
+            return null;
+        }//end function GetNextTopicWithTarget
+
+        private bool ConstraintsMet(int target_node_id, List<Feature> topic_history)
+        {
+            int node_id = target_node_id;
+            Feature target_feature = feature_graph.getFeature(target_node_id);
+            // Check that the node does not appear in the story already.
+            bool constraints_satisfied = true;
+            if (topic_history.Contains(target_feature))
+            {
+                constraints_satisfied = false;
+                return false;
+            }//end if
+            else if (!topic_history.Contains(target_feature))
+            {
+                // Go through its constraints and make sure they are satisfied.
+                foreach (Tuple<int, string, int> constraint in feature_graph.getFeature(node_id).constraints)
+                {
+                    int source_id = constraint.Item1;
+                    Feature source_feature = feature_graph.getFeature(source_id);
+                    string op = constraint.Item2;
+                    int dest_id = constraint.Item3;
+                    Feature dest_feature = feature_graph.getFeature(dest_id);
+
+                    // For the less-than operator, if this node is the source then the dest must
+                    // not appear in the story. If this node is the dest then the source must
+                    // appear in the story.
+                    if (op.Equals("<") || op.Equals("=>"))
+                    {
+                        if (source_id == node_id)
+                        {
+                            if (topic_history.Contains(dest_feature))
+                            {
+                                constraints_satisfied = false;
+                                return false;
+                            }//end if
+                        }//end if
+                        else if (dest_id == node_id)
+                        {
+                            if (!topic_history.Contains(source_feature))
+                            {
+                                constraints_satisfied = false;
+                                return false;
+                            }//end if
+                        }//end else if
+                    }//end if
+                }//end foreach
+            }//end if
+
+            return constraints_satisfied;
+        }//end method ConstraintsMet
+
         public List<Feature> GetNextBestTopics(Feature previous_topic, int turn, List<Feature> topic_history, int top_number)
         {
             //The return list will be sorted in descending order of score.
@@ -401,6 +553,7 @@ namespace Dialogue_Data_Entry
             }//end else
             return return_list;
         }//end method GetNextBestTopics
+
         public List<Feature> GetNextInterestingTopics(List<Feature> topic_history, int top_number)
         {
             List<Feature> return_list = new List<Feature>();
@@ -580,6 +733,104 @@ namespace Dialogue_Data_Entry
             score += spatialConstraintValue * spatialConstraintW;
             score += (hierachyConstraintValue * hierachyConstraintW);
             score += (temporalConstraintValue * temporalConstraintW);
+
+            //If this is a filter node, or the same node as the focus node, artificially set its score low
+            if (filter_nodes.Contains(current_feature.Name.Split(new string[] { "##" }, StringSplitOptions.None)[0])
+                || (last_feature != null && current_feature.Id.Equals(last_feature.Id)))
+            {
+                //Console.WriteLine("Filtering out node " + current.Id);
+                score = -1000000;
+            }//end if
+
+            //if (hierachyConstraintValue > 0)
+            //  Console.WriteLine("hierarchy constraint for " + current.Id + " from " + oldTopic.Id + ": " + hierachyConstraintValue);
+
+            if (print_calculation)
+            //if (true)
+            {
+                Console.WriteLine("Have been addressed before: " + DiscussedAmount);
+                Console.WriteLine("Spatial Constraint Satisfied: " + spatialConstraintValue);
+                Console.WriteLine("Hierachy Constraint Satisfied: " + hierachyConstraintValue);
+                Console.WriteLine("Temporal Constraint Satisfied: " + temporalConstraintValue);
+                Console.WriteLine("Temporal Calculation: " + temporalConstraintValue * temporalConstraintW);
+                string scoreFormula = "";
+                scoreFormula += "score = Have Been Addressed * " + discussAmountW + " + abs(expectedDramaticV[" + turn_count + "] - dramaticValue)*" + noveltyW;
+                scoreFormula += " + spatialConstraint*" + spatialConstraintW;
+                scoreFormula += " + hierachyConstraint*" + hierachyConstraintW;
+                scoreFormula += " + temporalConstraint*" + temporalConstraintW;
+                scoreFormula += " = " + score;
+                System.Console.WriteLine(scoreFormula);
+            }
+            return score;
+        }//end function CalculateScore
+
+        // Calculate score with target node.
+        private double CalculateScoreWithTarget(Feature current_feature, Feature last_feature, int turn_count, List<Feature> topic_history, Feature current_target)
+        {
+            double score = 0;
+
+            int currentIndex = feature_graph.getFeatureIndex(current_feature.Id);
+
+            //set of Weight (W == Weight)
+            //Get the weights from the graph.
+            double[] weight_array = feature_graph.getWeightArray();
+            double discussAmountW = weight_array[Constant.DiscussAmountWeightIndex];
+            double noveltyW = weight_array[Constant.NoveltyWeightIndex];
+            double spatialConstraintW = weight_array[Constant.SpatialWeightIndex] * 10;
+            double hierachyConstraintW = weight_array[Constant.HierarchyWeightIndex];
+            double temporalConstraintW = weight_array[Constant.TemporalWeightIndex];
+
+            double targetConstraintW = weight_array[Constant.AnchorWeightIndex];
+
+            // novelty
+
+            double noveltyValue = CalculateNovelty(current_feature, last_feature);
+
+            //getting novelty information
+            /*if (currentNovelty != null)
+            {
+                currentNovelty[currentIndex] = noveltyValue;
+            }*/
+
+            //spatial Constraint
+            double spatialConstraintValue = 0.0;
+            if (SpatialConstraint(current_feature, last_feature, topic_history))
+            {
+                spatialConstraintValue = 1.0;
+            }
+            //hierachy Constraint
+            double hierachyConstraintValue = 0.0;
+            if (HierachyConstraint(current_feature, last_feature))
+            {
+                hierachyConstraintValue = 1.0;
+            }
+
+            //Temporal Constraint
+            double temporalConstraintValue = TemporalConstraint(current_feature, turn_count, topic_history).Count();
+
+            //check mentionCount
+            float DiscussedAmount = current_feature.DiscussedAmount;
+
+            // Target constraint
+            //double distance_to_target = current_feature.ShortestDistance[current_target.Id] / feature_graph.MaxDistance;
+            // If there is no target, set value to 0.
+            double targetConstraintValue = 0;
+            if (!(current_target == null))
+            {
+                double distance_to_target = current_feature.ShortestDistance[current_target.Id];
+                if (distance_to_target == 0)
+                {
+                    distance_to_target = 0.5;
+                }//end if
+                targetConstraintValue = 1 / distance_to_target;
+            }//end if
+
+            score += (DiscussedAmount * discussAmountW);
+            score += (Math.Abs(expected_dramatic_value[turn_count % expected_dramatic_value.Count()] - noveltyValue) * noveltyW);
+            score += spatialConstraintValue * spatialConstraintW;
+            score += (hierachyConstraintValue * hierachyConstraintW);
+            score += (temporalConstraintValue * temporalConstraintW);
+            score += (targetConstraintValue * targetConstraintW);
 
             //If this is a filter node, or the same node as the focus node, artificially set its score low
             if (filter_nodes.Contains(current_feature.Name.Split(new string[] { "##" }, StringSplitOptions.None)[0])
@@ -1246,6 +1497,47 @@ namespace Dialogue_Data_Entry
             for (int x = 0; x < current_feature.Parents.Count; x++)
             {
                 TravelGraph(current_feature.Parents[x].Item1, previous_feature, h + 1, isCalculatedScore, checkEntry, turn_count, topic_history, ref listScore);
+            }//end for
+        }//end method TravelGraph
+
+        private void TravelGraphWithTargets(Feature current_feature, Feature previous_feature, int h, bool isCalculatedScore,
+            bool[] checkEntry, int turn_count, List<Feature> topic_history, ref List<Tuple<Feature, double>> listScore, Feature current_target)
+        {
+            //current's height is higher than the limit
+            if (h >= height_limit)
+            {
+                return;
+            }//end if
+            int index = feature_graph.getFeatureIndex(current_feature.Id);
+            if (checkEntry[index])
+            {
+                return;
+            }//end if
+            checkEntry[index] = true;
+
+            if (print_calculation)
+            {
+                System.Console.WriteLine("\nNode: " + current_feature.Id);
+            }//end if
+
+            //Calculate score of choice and add to list
+            if (isCalculatedScore)
+            {
+                listScore.Add(new Tuple<Feature, double>(current_feature, CalculateScoreWithTarget(current_feature, previous_feature, turn_count, topic_history, current_target)));
+            }//end if
+            else
+            {
+                listScore.Add(new Tuple<Feature, double>(current_feature, CalculateNovelty(current_feature, previous_feature)));
+            }//end else
+
+            //search children of current node
+            for (int x = 0; x < current_feature.Neighbors.Count; x++)
+            {
+                TravelGraphWithTargets(current_feature.Neighbors[x].Item1, previous_feature, h + 1, isCalculatedScore, checkEntry, turn_count, topic_history, ref listScore, current_target);
+            }//end for
+            for (int x = 0; x < current_feature.Parents.Count; x++)
+            {
+                TravelGraphWithTargets(current_feature.Parents[x].Item1, previous_feature, h + 1, isCalculatedScore, checkEntry, turn_count, topic_history, ref listScore, current_target);
             }//end for
         }//end method TravelGraph
 

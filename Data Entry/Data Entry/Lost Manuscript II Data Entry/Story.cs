@@ -217,6 +217,7 @@ namespace Dialogue_Data_Entry
             return GetNodeSequence()[turn];
         }//end method GetNodeAtTurn
 
+        // Returns null if node w/ id is not in story.
         public StoryNode GetNodeByGraphId(int graph_id)
         {
             foreach (StoryNode temp_node in GetNodeSequence())
@@ -227,6 +228,16 @@ namespace Dialogue_Data_Entry
             return null;
         }//end method GetNodeByGraphId
 
+        public bool HasNode(int graph_id)
+        {
+            foreach (StoryNode temp_node in GetNodeSequence())
+            {
+                if (temp_node.graph_node_id == graph_id)
+                    return true;
+            }//end foreach
+            return false;
+        }//end method HasNode
+
         public List<StorySegment> StorySequence
         {
             get
@@ -234,5 +245,19 @@ namespace Dialogue_Data_Entry
                 return this.story_sequence;
             }//end get
         }
+
+        // Return the contents of the story as a string.
+        public string ToString(FeatureGraph feature_graph)
+        {
+            string story_string = "";
+
+            // Just place the text of each node in sequence. 
+            foreach (StoryNode story_node in this.GetNodeSequence())
+            {
+                story_string += "Node (" + story_node.graph_node_id + ") " + feature_graph.getFeature(story_node.graph_node_id).Name + ": " + story_node.text + "\n";
+            }//end foreach
+
+            return story_string;
+        }//end method ToString
     }
 }

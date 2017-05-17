@@ -30,6 +30,11 @@ namespace Dialogue_Data_Entry
         private double current_transition_score;
         private int turns_per_anchor;           //The maximum number of turns we can talk about a single anchor node.
 
+        // Target node variables
+        private int current_target_id;
+        private List<int> target_node_ids;
+        private List<Tuple<int, string, int>> target_node_constraints;
+
         private int turn_limit;                 //The maximum number of turns this narration is allowed to go for.
                                                 //If maximum_turn_count <= 0, then assume no turn limit.
 
@@ -84,6 +89,80 @@ namespace Dialogue_Data_Entry
 			if (this.topic == null)
 				SetNextTopic(this.feature_graph.Root);
 		}//end method DialogueManager
+        public NarrationManager(FeatureGraph fg, List<int> target_id_list, List<Tuple<int, string, int>> target_constraint_list)
+        {
+            feature_graph = fg;
+
+            //Initialize the AIML chat bot
+            this.aiml_bot = new Bot();
+            aiml_bot.loadSettings();
+            aiml_bot.isAcceptingUserInput = false;
+            aiml_bot.loadAIMLFromFiles();
+            aiml_bot.isAcceptingUserInput = true;
+            this.user = new User("user", this.aiml_bot);
+
+            //Default initializations
+            topic = null;
+            turn = 1;
+            topic_history = new List<Feature>();
+            temporal_constraint_list = new List<TemporalConstraint>();
+
+            //Anchor node initializations
+            anchor_nodes = new List<Feature>();
+            anchor_nodes_visited = new List<Feature>();
+            current_anchor_node = null;
+            current_anchor_turn_count = 0;
+            turns_per_anchor = 0;
+            turn_limit = 0;
+
+            narrating = false;
+
+            target_node_ids = target_id_list;
+            target_node_constraints = target_constraint_list;
+
+            calculator = new NarrationCalculator(feature_graph, temporal_constraint_list);
+
+            // The default first node is the feature graph's root node.
+            int first_node_id = feature_graph.Root.Id;
+            // The first topic should be a node from the target list.
+            foreach (int node_id in target_node_ids)
+            {
+                // Check if this node should be after any other node. If so, it cannot be the first node.
+                bool clear_for_first = true;
+                foreach (Tuple<int, string, int> constraint in target_node_constraints)
+                {
+                    int source = constraint.Item1;
+                    string op = constraint.Item2;
+                    int target = constraint.Item3;
+                    if (node_id == source)
+                    {
+                        // Check for the greater-than operator.
+                        if (op.Equals(">"))
+                        {
+                            clear_for_first = false;
+                            break;
+                        }//end if
+                    }//end if
+                    else if (node_id == target)
+                    {
+                        //Check for the less-than operator.
+                        if (op.Equals("<"))
+                        {
+                            clear_for_first = false;
+                            break;
+                        }//end if
+                    }//end if
+                }//end foreach
+                if (clear_for_first)
+                {
+                    first_node_id = node_id;
+                    break;
+                }//end if
+            }//end for
+            current_target_id = first_node_id;
+            SetNextTopic(this.feature_graph.getFeature(first_node_id));
+
+        }//end method DialogueManager
 
 		//ACCESSIBLE FUNCTIONS 
         //Present the given feature
@@ -258,6 +337,168 @@ namespace Dialogue_Data_Entry
 
             return chronology;
         }//end method GenerateChronology
+
+        // Generate a story using the target nodes.
+        public Story GenerateTargetStory(int turn_limit, Story starting_story = null, bool user_story = false)
+        {
+            Story chronology = new Story();
+            /*if (starting_story != null)
+            {
+                chronology = starting_story;
+            }//end if*/
+
+            //1. Create the entire story as one segment.
+            //Add the anchor node to the story.
+            Feature current_target = feature_graph.getFeature(current_target_id);
+            AddNodeToStory(current_target, chronology);
+            Feature last_node = current_target;
+
+            // Change the current target
+            current_target_id = DetermineNextTarget(chronology, current_target);
+            if (feature_graph.hasNode(current_target_id))
+                current_target = feature_graph.getFeature(current_target_id);
+            else
+                current_target = null;
+
+            Feature current_feature = null;
+            int local_turn = 0;
+            while (local_turn < turn_limit - 1)
+            {
+                //Find the next best topic for the chronology.
+                current_feature = getNextTargetTopic(last_node, current_target, target_node_ids);
+                //Add it to the story.
+                if (current_feature != null)
+                {
+                    AddNodeToStory(current_feature, chronology);
+                    last_node = current_feature;
+                    // Was this node the next target?
+                    if (current_feature.Id == current_target_id)
+                    {
+                        // Change the current target
+                        current_target_id = DetermineNextTarget(chronology, current_target);
+                        current_target = feature_graph.getFeature(current_target_id);
+                    }//end if
+                }//end if
+                local_turn += 1;
+            }//end while
+
+            if (!user_story)
+            {
+                //2. Identify the switch point
+                //TODO: Hack for demo, change back to the commented out line later!
+                int switch_point_turn = 2; // calculator.IdentifySwitchPointTurn(chronology);
+
+                //3. Split the story at the switch point
+                chronology.SplitSegment(switch_point_turn);
+
+                //4. Place a user turn and switch-point narrative event at the last node of the first segment.
+                chronology.GetNodeAtTurn(switch_point_turn).AddStoryAct(Constant.SWITCHPOINT
+                    , chronology.GetNodeAtTurn(switch_point_turn).graph_node_id);
+                chronology.GetNodeAtTurn(switch_point_turn).AddStoryAct(Constant.USERTURN
+                    , chronology.GetNodeAtTurn(switch_point_turn).graph_node_id);
+            }//end if
+            else if (user_story)
+            {
+                foreach (StoryNode temp_node in chronology.GetNodeSequence())
+                {
+                    Feature temp_feat = feature_graph.getFeature(temp_node.graph_node_id);
+                    foreach (StoryNode prev_node in starting_story.StorySequence[0].GetSequence())
+                    {
+                        Feature prev_feat = feature_graph.getFeature(prev_node.graph_node_id);
+                        if (temp_feat.getNeighbor(prev_feat.Id) != null)
+                        {
+                            //If the node in the secondary storyline is related to a node in the
+                            //first half of the primary storyline, make a tie back.
+                            temp_node.AddStoryAct(Constant.TIEBACK, prev_feat.Id);
+                            //Add only the first one of these instances per secondary story node.
+                            break;
+                        }//end if
+                    }//end foreach
+                }//end foreach
+                chronology.AppendStorySegment(starting_story.GetLastSegment());
+            }//end else if
+
+            //5. Go through each node and generate text.
+            chronology = GenerateStoryText(chronology);
+
+            return chronology;
+        }//end method GenerateTargetStory
+
+        // Determine the next target based on the story and the previous target.
+        private int DetermineNextTarget(Story current_story, Feature previous_target)
+        {
+            int next_target_id = -1;
+            bool next_target_found = false;
+
+            // First, start at the previous target. Check for any hard constraints.
+            foreach (Tuple<int, string, int> constraint in previous_target.constraints)
+            {
+                // If the previous target is the source and it is a hard constraint, follow it.
+                if (constraint.Item1 == previous_target.Id && constraint.Item2.Equals("=>"))
+                {
+                    next_target_id = constraint.Item3;
+                    next_target_found = true;
+                }//end if
+            }//end foreach
+
+            // Look for a target node whose constraints are met and which hasn't been already mentioned.
+            if (!next_target_found)
+            {
+                foreach (int node_id in target_node_ids)
+                {
+                    // Check that the node does not appear in the story already.
+                    bool constraints_satisfied = true;
+                    if (current_story.HasNode(node_id))
+                    {
+                        constraints_satisfied = false;
+                        continue;
+                    }//end if
+                    if (!current_story.HasNode(node_id))
+                    {
+
+                        // Go through its constraints and make sure they are satisfied.
+                        foreach (Tuple<int, string, int> constraint in feature_graph.getFeature(node_id).constraints)
+                        {
+                            int source_id = constraint.Item1;
+                            string op = constraint.Item2;
+                            int target_id = constraint.Item3;
+
+                            // For the less-than operator, if this node is the source then the target must
+                            // not appear in the story. If this node is the target then the source must
+                            // appear in the story.
+                            if (op.Equals("<"))
+                            {
+                                if (source_id == node_id)
+                                {
+                                    if (current_story.HasNode(target_id))
+                                    {
+                                        constraints_satisfied = false;
+                                        continue;
+                                    }//end if
+                                }//end if
+                                else if (target_id == node_id)
+                                {
+                                    if (!current_story.HasNode(source_id))
+                                    {
+                                        constraints_satisfied = false;
+                                        continue;
+                                    }//end if
+                                }//end else if
+                            }//end if
+                        }//end foreach
+                    }//end if
+
+                    if (constraints_satisfied)
+                    {
+                        next_target_id = node_id;
+                        next_target_found = true;
+                    }//end if
+
+                }//end foreach
+            }//end if
+
+            return next_target_id;
+        }//end method DetermineNextTarget
 
         private Story GenerateStoryText(Story story_in)
         {
@@ -473,6 +714,12 @@ namespace Dialogue_Data_Entry
         {
             //Gets the next topic that should be visited whose date lies between the given start and end dates.
             return calculator.GetNextTopic(previous_topic, this.turn, this.topic_history, start_date, end_date);
+        }//end method getNextChronologicalTopic
+
+        // Get the next best topic while generating a target-constrained story.
+        public Feature getNextTargetTopic(Feature previous_topic, Feature current_target, List<int> target_ids)
+        {
+            return calculator.GetNextTopicWithTarget(previous_topic, this.turn, this.topic_history, current_target, target_ids);
         }//end method getNextChronologicalTopic
 
         public Feature getNextBestStoryTopic(Story story_in)

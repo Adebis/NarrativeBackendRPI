@@ -61,6 +61,8 @@ namespace Dialogue_Data_Entry
 			weight_array[Constant.TemporalWeightIndex] = 0.2;
 			//joint weight relates to mentioning nodes together
 			weight_array[Constant.JointWeightIndex] = 100.0f;
+            // How much do we weight following anchor nodes?
+            weight_array[Constant.AnchorWeightIndex] = 50.0f;
 
 			relationMap = new Dictionary<string, HashSet<Tuple<string, string>>>();
 			inverse_relationMap = new Dictionary<string, HashSet<Tuple<string, string>>>();

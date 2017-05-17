@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -145,12 +146,18 @@ namespace Dialogue_Data_Entry
         public Story main_story;
         public List<Story> stories;
 
+        // The file where the constraints are encoded
+        private string constraint_list_filename = "constraints.txt";
+        private List<int> target_id_list = new List<int>();
+        List<Tuple<int, string, int>> target_constraint_list;
+
 		/// <summary>
 		/// Create a converter for the specified XML file
 		/// </summary>
 		/// <param name="xmlFilename"></param>
 		public QueryHandler(FeatureGraph graph, List<TemporalConstraint> myTemporalConstraintList, Form1 parent_f1)
 		{
+            File.Delete("output.txt");
             parent_form1 = parent_f1;
 			// Load the AIML Bot
 			//this.bot = new Bot();
@@ -169,8 +176,78 @@ namespace Dialogue_Data_Entry
 			// Feature Names, with which to index the graph
 			this.features = graph.getFeatureNames();
 
+            // Read the constraint list.
+            System.IO.StreamReader file = new System.IO.StreamReader(constraint_list_filename);
+            string file_line = "";
+            target_id_list = new List<int>();
+            // The constraint list consists of constraints; tuples of source node id, operator, target node id.
+            target_constraint_list = new List<Tuple<int, string, int>>();
+            while ((file_line = file.ReadLine()) != null)
+            {
+                // Separate this line by spaces.
+                string[] separated_file_line = file_line.Split(' ');
+                int current_index = 0;
+                string current_item = separated_file_line[0];
+                // Check if the first item is an integer.
+                int node_id = -1;
+                bool parse_success = false;
+                parse_success = int.TryParse(current_item, out node_id);
+                // If it is an integer, then this is a node id.
+                if (parse_success)
+                {
+                    // We need to find out if there is an operator following this node.
+                    // Peak at the next two items in the line.
+                    if (current_index + 1 < separated_file_line.Length)
+                    {
+                        // There is at least an operator following the current node.
+                        string next_item = separated_file_line[current_index + 1];
+
+                        // Check if there is another node ID following the operator.
+                        if (current_index + 2 < separated_file_line.Length)
+                        {
+                            int next_node_id = -1;
+                            string next_next_item = separated_file_line[current_index + 2];
+                            parse_success = int.TryParse(next_next_item, out next_node_id);
+
+                            // Two items down is a node id.
+                            if (parse_success)
+                            {
+                                // Since we have a node id, an operator, and a node id, add it
+                                // to the list of constraints.
+                                target_constraint_list.Add(new Tuple<int, string, int>(node_id, next_item, next_node_id));
+                            }//end if
+                        }//end if
+                    }//end if
+                    // If there is no next item, then this node id only item in the line
+                    else
+                    {
+                        // Add it to the target id list.
+                        target_id_list.Add(node_id);
+                    }//end else
+                }//end if
+            }//end while
+            file.Close();
+
 			//Initialize the dialogue manager
-			narration_manager = new NarrationManager(this.graph, myTemporalConstraintList);
+			//narration_manager = new NarrationManager(this.graph, myTemporalConstraintList);
+            // Make sure the constraints are added to each feature in the feature graph.
+
+            // If the node appears in the target id list, add a constraint with the node id as the 
+            // source, the empty string as the operand, and -1 as the target.
+            foreach (int node_id in target_id_list)
+            {
+                this.graph.getFeature(node_id).constraints.Add(new Tuple<int, string, int>(node_id, "", -1));
+            }//end foreach
+            // All other constraints should be added as-is, for both the source and target nodes
+            foreach (Tuple<int, string, int> constraint in target_constraint_list)
+            {
+                if (this.graph.hasNode(constraint.Item1))
+                    this.graph.getFeature(constraint.Item1).constraints.Add(constraint);
+                if (this.graph.hasNode(constraint.Item3))
+                    this.graph.getFeature(constraint.Item3).constraints.Add(constraint);
+            }//end foreach
+
+            narration_manager = new NarrationManager(this.graph, target_id_list, target_constraint_list);
 
             main_story = null;
             stories = new List<Story>();
@@ -435,8 +512,9 @@ namespace Dialogue_Data_Entry
 
                             json_string = "";
 
-                            NarrationManager temp_manager = new NarrationManager(graph, temporalConstraintList);
-                            Story chronology = temp_manager.GenerateChronology(anchor_node, turn_limit);
+                            NarrationManager temp_manager = new NarrationManager(this.graph, target_id_list, target_constraint_list);
+                            //Story chronology = temp_manager.GenerateChronology(anchor_node, turn_limit);
+                            Story chronology = temp_manager.GenerateTargetStory(turn_limit);
 
                             //The chronology is generated in segments, separated by user turns.
                             //Create its text.
@@ -450,6 +528,17 @@ namespace Dialogue_Data_Entry
                             {
                                 json_string = JsonConvert.SerializeObject(chronology);
                             }//end else
+
+                            // Write out this story segment to file.
+
+                            string lines = chronology.ToString(this.graph);
+
+                            // Write the string to a file.
+                            System.IO.StreamWriter file = new System.IO.StreamWriter("output.txt");
+                            //file = File.AppendText("output.txt");
+                            //File.AppendAllText(lines, "output.txt");
+                            file.WriteLine(lines);
+                            file.Close();
 
                             main_story = chronology;
                         }//end if
@@ -468,14 +557,25 @@ namespace Dialogue_Data_Entry
                                     Console.Out.WriteLine("Could not set turn limit.");
                             }//end if
 
-                            NarrationManager temp_manager = new NarrationManager(graph, temporalConstraintList);
-                            Story chronology = temp_manager.GenerateChronology(anchor_node, 5, starting_story: main_story, user_story: true);
+                            NarrationManager temp_manager = new NarrationManager(this.graph, target_id_list, target_constraint_list);
+                            Story chronology = temp_manager.GenerateChronology(anchor_node, 3, starting_story: main_story, user_story: true);
                             if (json_mode)
                                 json_string = JsonConvert.SerializeObject(chronology);
                             else
                             {
                                 json_string = JsonConvert.SerializeObject(chronology);
                             }//end else
+                            
+                            // Write out this story segment to file.
+                            string lines = chronology.ToString(this.graph);
+
+                            // Write the string to a file.
+                            //File.AppendAllText(lines, "output.txt");
+                            System.IO.StreamWriter file = new System.IO.StreamWriter("output.txt");
+                            //file = File.AppendText("output.txt");
+                            file.WriteLine(lines);
+                            file.Close();
+
                         }//end else
                     }//end if
                 }//end if
