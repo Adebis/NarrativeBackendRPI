@@ -187,7 +187,14 @@ namespace Dialogue_Data_Entry
 					//Timedata
 					XmlNodeList timedata = node.SelectNodes("timedata");
                     XmlNode timedata_node = node.SelectSingleNode("timedata");
-                    tmp.timesource = timedata_node.Attributes["source"].Value;
+                    try
+                    {
+                        tmp.timesource = timedata_node.Attributes["source"].Value;
+                    }
+                    catch (Exception e)
+                    {
+                        tmp.timesource = "original";
+                    }
                     if (timedata.Count != 0)
 					{
 						timedata = timedata[0].SelectNodes("timeobj");
@@ -205,7 +212,14 @@ namespace Dialogue_Data_Entry
 					//Geodata
 					XmlNodeList geodata = node.SelectNodes("geodata");
                     XmlNode geodata_node = node.SelectSingleNode("geodata");
-                    tmp.geosource = geodata_node.Attributes["source"].Value;
+                    try
+                    {
+                        tmp.geosource = geodata_node.Attributes["source"].Value;
+                    }
+                    catch (Exception e)
+                    {
+                        tmp.geosource = "original";
+                    }
                     if (geodata.Count != 0)
 					{
 						geodata = geodata[0].SelectNodes("coordinates");
@@ -366,7 +380,7 @@ namespace Dialogue_Data_Entry
                     if (temp_feature.Geodata.Count > 0 
                         && !temp_feature.HasEntityType(Constant.EVENT)
                         && !temp_feature.HasEntityType(Constant.CHARACTER)
-                        && !(temp_feature.geosource == "original"))
+                        && (temp_feature.geosource == "original"))
                         temp_feature.AddEntityType(Constant.LOCATION);
 
                     //Check for sub-categories.
