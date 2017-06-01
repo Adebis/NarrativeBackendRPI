@@ -187,7 +187,14 @@ namespace Dialogue_Data_Entry
 					//Timedata
 					XmlNodeList timedata = node.SelectNodes("timedata");
                     XmlNode timedata_node = node.SelectSingleNode("timedata");
-                    tmp.timesource = timedata_node.Attributes["source"].Value;
+                    try
+                    {
+                        tmp.timesource = timedata_node.Attributes["source"].Value;
+                    }
+                    catch (Exception e)
+                    {
+                        tmp.timesource = "original";
+                    }
                     if (timedata.Count != 0)
 					{
 						timedata = timedata[0].SelectNodes("timeobj");
@@ -205,7 +212,14 @@ namespace Dialogue_Data_Entry
 					//Geodata
 					XmlNodeList geodata = node.SelectNodes("geodata");
                     XmlNode geodata_node = node.SelectSingleNode("geodata");
-                    tmp.geosource = geodata_node.Attributes["source"].Value;
+                    try
+                    {
+                        tmp.geosource = geodata_node.Attributes["source"].Value;
+                    }
+                    catch (Exception e)
+                    {
+                        tmp.geosource = "original";
+                    }
                     if (geodata.Count != 0)
 					{
 						geodata = geodata[0].SelectNodes("coordinates");
@@ -327,7 +341,7 @@ namespace Dialogue_Data_Entry
                             temp_feature.AddEntityType(Constant.CHARACTER);
                             break;
                         }//end if
-                        if (temp_time_data.Item1.ToLower().Contains("date opened"))
+                        if (temp_time_data.Item1.ToLower().Contains("date opened") && (temp_feature.geosource == "original"))
                         {
                             temp_feature.AddEntityType(Constant.LOCATION);
                             break;
@@ -354,20 +368,22 @@ namespace Dialogue_Data_Entry
                         {
                             temp_feature.AddEntityType(Constant.EVENT);
                         }//end if
-                        if (outgoing_location_relationships.Contains(temp_neighbor.Item3))
+                        if (outgoing_location_relationships.Contains(temp_neighbor.Item3) && (temp_feature.geosource == "original"))
                         {
                             temp_neighbor.Item1.AddEntityType(Constant.LOCATION);
                         }//end if
-                        if (inner_location_relationships.Contains(temp_neighbor.Item3))
+                        if (inner_location_relationships.Contains(temp_neighbor.Item3) && (temp_feature.geosource == "original"))
+                        {
                             temp_feature.AddEntityType(Constant.LOCATION);
+                        }
                     }//end foreach
 
-                    //Check geodata. If there is any, and this is not another entity type, this is a location.
-                    if (temp_feature.Geodata.Count > 0 
-                        && !temp_feature.HasEntityType(Constant.EVENT)
-                        && !temp_feature.HasEntityType(Constant.CHARACTER)
-                        && !(temp_feature.geosource == "original"))
+                    //Check geodata. If there is any, and this is not another entity type, and this geodata is not reconstructed, this is a location.
+                    if ((temp_feature.Geodata.Count > 0) && !temp_feature.HasEntityType(Constant.EVENT) 
+                        && !temp_feature.HasEntityType(Constant.CHARACTER) && (temp_feature.geosource == "original"))
+                    {
                         temp_feature.AddEntityType(Constant.LOCATION);
+                    }
 
                     //Check for sub-categories.
                     //Capitals

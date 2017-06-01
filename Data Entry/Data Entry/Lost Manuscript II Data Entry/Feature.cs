@@ -63,7 +63,9 @@ namespace Dialogue_Data_Entry
             this.dist = 0;
             this.shortestDistance = new Dictionary<double, double>();
             this.timedata = new List<Tuple<string, string>>();
+            this.timesource = "";
             this.geodata = new List<Tuple<double, double>>();
+            this.geosource = "";
 
             this.start_date = new DateTime();
             this.end_date = new DateTime();
@@ -88,7 +90,9 @@ namespace Dialogue_Data_Entry
             this.dist = 0;
             this.shortestDistance = new Dictionary<double, double>();
             this.timedata = new List<Tuple<string, string>>();
+            this.timesource = "";
             this.geodata = new List<Tuple<double, double>>();
+            this.geosource = "";
 
             this.start_date = new DateTime();
             this.end_date = new DateTime();
