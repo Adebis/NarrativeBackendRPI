@@ -501,10 +501,10 @@ namespace Dialogue_Data_Entry
                     Console.Out.WriteLine("Previous node: " + previous_node.Name);
                 }//end if
                 // Get the story up to the last occurrence of the previous node.
-                main_story.TrimAfter(previous_node_id);
+                this.main_story.TrimAfter(previous_node_id);
                 // Pass it into the normal chronology maker.
                 NarrationManager temp_manager = new NarrationManager(graph, temporalConstraintList);
-                Story chronology = temp_manager.GenerateChronology(node_to_add, 5, starting_story: main_story, user_story: true);
+                Story chronology = temp_manager.GenerateChronology(node_to_add, 5, starting_story: this.main_story, user_story: true);
                 if (json_mode)
                     json_string = JsonConvert.SerializeObject(chronology);
                 else
