@@ -219,8 +219,27 @@ class SimpleHTTPServer
 				context.Response.OutputStream.Close();
 
 				break;
+            case "/add_to_chronology":
+                // Get the data from the HTTP stream
 
-			case "/chronology/reset":
+                chatBoxCallback("<ADD TO CHRONOLOGY REQUEST: " + context.Request.RemoteEndPoint + ">\n");
+
+                query = "ADD_TO_CHRONOLOGY:" + data.id + ":" + data.turns;
+                response = handler.ParseInputJSON(query);
+
+                //dynamic response = new JObject();
+                //split and ignore last empty one
+                //response.sequence = new JArray(result.Split(new string[] { "::" }, StringSplitOptions.None).Reverse().Skip(1).Reverse().ToArray());
+
+                //write response
+                b = Encoding.UTF8.GetBytes(response.ToString());
+                context.Response.StatusCode = (int)HttpStatusCode.OK;
+                context.Response.KeepAlive = false;
+                context.Response.ContentLength64 = b.Length;
+                context.Response.OutputStream.Write(b, 0, b.Length);
+                context.Response.OutputStream.Close();
+                break;
+            case "/chronology/reset":
 				chatBoxCallback("<NARRATION RESET: " + context.Request.RemoteEndPoint + ">\n");
 				handler.ParseInputJSON("RESTART_NARRATION");
 				b = Encoding.UTF8.GetBytes("null");

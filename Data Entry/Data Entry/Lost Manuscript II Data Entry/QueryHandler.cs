@@ -476,9 +476,42 @@ namespace Dialogue_Data_Entry
                             {
                                 json_string = JsonConvert.SerializeObject(chronology);
                             }//end else
+                            main_story = chronology;
                         }//end else
                     }//end if
                 }//end if
+            }//end if
+            if (split_input[0].ToLower().Equals("add_to_chronology"))
+            {
+                int node_to_add_id = -1;
+                int previous_node_id = -1;
+                Feature node_to_add = null;
+                Feature previous_node = null;
+
+                bool parse_success = int.TryParse(split_input[1], out node_to_add_id);
+                if (parse_success)
+                {
+                    node_to_add = graph.getFeature(node_to_add_id);
+                    Console.Out.WriteLine("Node to add: " + node_to_add.Name);
+                }//end if
+                parse_success = int.TryParse(split_input[2], out previous_node_id);
+                if (parse_success)
+                {
+                    previous_node = graph.getFeature(previous_node_id);
+                    Console.Out.WriteLine("Previous node: " + previous_node.Name);
+                }//end if
+                // Get the story up to the last occurrence of the previous node.
+                main_story.TrimAfter(previous_node_id);
+                // Pass it into the normal chronology maker.
+                NarrationManager temp_manager = new NarrationManager(graph, temporalConstraintList);
+                Story chronology = temp_manager.GenerateChronology(node_to_add, 5, starting_story: main_story, user_story: true);
+                if (json_mode)
+                    json_string = JsonConvert.SerializeObject(chronology);
+                else
+                {
+                    json_string = JsonConvert.SerializeObject(chronology);
+                }//end else
+
             }//end if
             //Make a story using a list of nodes, identified by node ID or node name.
             if (split_input[0].ToLower().Equals("make_story"))

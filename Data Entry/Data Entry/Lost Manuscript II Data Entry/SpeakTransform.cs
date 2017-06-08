@@ -353,13 +353,29 @@ namespace Dialogue_Data_Entry
 
             //Use all hint-ats
             return_string = "{We'll hear more about ";
+            List<string> hint_ats_to_add = new List<string>();
             foreach (StoryNode temp_node in current_segment.Sequence)
             {
                 foreach (Tuple<string, int> story_act in temp_node.story_acts)
                     if (story_act.Item1.Equals(Constant.HINTAT))
-                        return_string = return_string + HintAt(graph.getFeature(temp_node.graph_node_id)
-                            , graph.getFeature(story_act.Item2));
+                    {
+                        hint_ats_to_add.Add(HintAt(graph.getFeature(temp_node.graph_node_id)
+                            , graph.getFeature(story_act.Item2)));
+                    }//end if
             }//end foreach
+            // Add all hint-ats found.
+            for (int i = 0; i < hint_ats_to_add.Count; i++)
+            {
+                if (i == hint_ats_to_add.Count - 1
+                    && hint_ats_to_add.Count > 1)
+                {
+                    return_string += " and " + hint_ats_to_add[i] + " ";
+                }//end if
+                else
+                {
+                    return_string += hint_ats_to_add[i];
+                }//end else
+            }//end for
             return_string = return_string + "soon. For now, let's talk about something else.}";
 
             return return_string;
