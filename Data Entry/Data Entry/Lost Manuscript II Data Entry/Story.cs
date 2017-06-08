@@ -227,6 +227,47 @@ namespace Dialogue_Data_Entry
             return null;
         }//end method GetNodeByGraphId
 
+        // Remove all story turns after the last occurrence of
+        // the given node (by graph id)
+        public void TrimStoryAtNode(int graph_id_in)
+        {
+            bool node_found = false;
+            List<StorySegment> story_sequence_remade = new List<StorySegment>();
+            // First, find the last segment that has the given graph node id.
+            for (int i = story_sequence.Count - 1; i >= 0; i--)
+            {
+                List<StoryNode> segment_node_list_remade = new List<StoryNode>();
+                StorySegment temp_segment = story_sequence[i];
+                if (temp_segment.HasNode(graph_id_in))
+                {
+                    // Next, find the last occurrence of this node.
+                    for (int j = temp_segment.Sequence.Count - 1; j >= 0; j--)
+                    {
+                        StoryNode temp_node = temp_segment.Sequence[j];
+                        if (temp_node.graph_node_id == graph_id_in)
+                        {
+                            node_found = true;
+                        }//end if
+                        // Once we've found the node, start adding nodes to the segment remade list.
+                        if (node_found)
+                        {
+                            segment_node_list_remade.Add(temp_node);
+                        }//end if
+                    }//end for
+                    // Reverse the segment node list.
+                    segment_node_list_remade.Reverse();
+                    // Replace it.
+                    StorySegment segment_remade = new StorySegment(segment_node_list_remade, temp_segment.starting_turn);
+                    story_sequence[i] = segment_remade;
+                }//end if
+                if (node_found)
+                    story_sequence_remade.Add(story_sequence[i]);
+            }//end for
+            // Replace the story sequence
+            story_sequence_remade.Reverse();
+            this.story_sequence = story_sequence_remade;
+        }//end method TrimStoryAtNode
+
         public List<StorySegment> StorySequence
         {
             get
