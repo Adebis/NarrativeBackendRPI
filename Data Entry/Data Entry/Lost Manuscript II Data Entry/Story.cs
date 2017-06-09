@@ -200,6 +200,89 @@ namespace Dialogue_Data_Entry
             return last_location_info;
         }//end method GetLastLocation
 
+        // Remove all story nodes after the last occurrence of the last node id.
+        public void TrimAfter(int last_node_id)
+        {
+            List<StoryNode> node_list = this.GetNodeSequence();
+            // Get the starting turn of each segment.
+            // The first node is at turn 0. Thus, the start turn
+            // of each segment after the first (which is 0) is equal
+            // to the length of the previous segment + the start turn
+            // of the previous segment.
+            // E.g., first segment is (0, 1, 2). Length = 3. Start turn 0.
+            // Second segment is (3, 4, 5). Length = 3. Start turn = 3 + 0 = 3.
+            // Third segment is (6, 7, 8). Length = 3. Start turn = 3 + 3 = 6.
+            List<int> segment_start_turns = new List<int>();
+            StorySegment last_segment = null;
+            foreach (StorySegment temp_segment in this.story_sequence)
+            {
+                // The first segment always starts at 0.
+                if (segment_start_turns.Count < 1)
+                {
+                    segment_start_turns.Add(0);
+                }//end if
+                else
+                {
+                    segment_start_turns.Add(last_segment.length + segment_start_turns[segment_start_turns.Count - 1]);
+                }//end else
+                last_segment = temp_segment;
+            }//end foreach
+
+            // Go backwards through the list and find the index of the node that has the given graph node id.
+            int last_index = -1;
+            for (int i = node_list.Count - 1; i >= 0; i--)
+            {
+                if (node_list[i].graph_node_id == last_node_id)
+                {
+                    last_index = i;
+                    break;
+                }//end if
+            }//end for
+
+            // Remove all nodes after the last node.
+            // E.g., (0, 1, 2, 3, 4, 5, 6, 7)
+            // We find the last node at the 4th index, which is #4.
+            // The length of the list is 8.
+            // We remove range starting from 5, after the last index, and going for 8 - 4 - 1 = 3 nodes.
+            // This removes 5, 6, and 7.
+            node_list.RemoveRange(last_index + 1, node_list.Count - last_index - 1);
+            // Begin reconstituting the segments.
+            List<StorySegment> new_sequence = new List<StorySegment>();
+            // If there is only one segment, simply add all nodes to that.
+            if (segment_start_turns.Count == 1)
+            {
+                new_sequence.Add(new StorySegment(node_list, 0));
+            }//end if
+            else
+            {
+                List<StoryNode> temp_node_list = new List<StoryNode>();
+                int next_segment_start_index = -1;
+                for (int i = 0; i < segment_start_turns.Count; i++)
+                {
+                    if (i < segment_start_turns.Count - 1)
+                    {
+                        next_segment_start_index = segment_start_turns[i + 1];
+                        for (int j = segment_start_turns[i]; j < next_segment_start_index; j++)
+                        {
+                            if (j > node_list.Count - 1)
+                                break;
+                            temp_node_list.Add(node_list[j]);
+                        }//end for
+                    }//end if
+                    else
+                    {
+                        for (int j = segment_start_turns[i]; j < node_list.Count; j++)
+                        {
+                            temp_node_list.Add(node_list[j]);
+                        }//end for
+                    }//end else
+                    new_sequence.Add(new StorySegment(node_list, segment_start_turns[i]));
+                }//end for
+            }//end else
+
+            this.story_sequence = new_sequence;
+        }//end method TrimAfter
+
         /*public StoryNode GetNodeAtTurn(int turn)
         {
             StoryNode return_node = null;
