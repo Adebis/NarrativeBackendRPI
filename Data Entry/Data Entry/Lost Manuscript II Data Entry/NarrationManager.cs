@@ -568,10 +568,27 @@ namespace Dialogue_Data_Entry
                                     rel = s_feature.getRelationshipNeighbor(f_feature.Id);
                                 }//end else if
                                 hint_at_text.Add(f_feature.Name + " " + rel);
+                                //node_text = node_text + ", " + f_feature.Name + " " + rel;
 
                                 //Make sure the node in the second half of the storyline resolves back to the node
                                 //in the first half of the storyline.
                                 story_in.GetNodeByGraphId(s_feature.Id).AddStoryAct(Constant.RESOLVE, f_feature.Id);
+                            }//end for
+                            for (int i = 0; i < hint_at_text.Count; i++)
+                            {
+                                if (i == hint_at_text.Count - 1
+                                    && hint_at_text.Count > 1)
+                                {
+                                    node_text = node_text + ", and " + hint_at_text[i];
+                                }//end if
+                                else if (i == 0)
+                                {
+                                    node_text = node_text + " " + hint_at_text[i];
+                                }//end else if
+                                else
+                                {
+                                    node_text = node_text + ", " + hint_at_text[i];
+                                }//end else
                             }//end for
                             for (int i = 0; i < hint_at_text.Count; i++)
                             {
