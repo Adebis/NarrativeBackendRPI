@@ -187,18 +187,17 @@ namespace Dialogue_Data_Entry
             return null;
         }//end method GenerateStory
 
-        public Story GenerateChronology(Feature anchor_node, int turn_limit, Story starting_story = null, bool user_story = false, Story first_half = null)
+        public Story GenerateChronology(Feature anchor_node, int turn_limit, Story starting_story = null, bool user_story = false)
         {
             Story chronology = new Story();
-            if (starting_story != null)
+            /*if (starting_story != null)
             {
                 chronology = starting_story;
-            }//end if
+            }//end if*/
 
             //1. Create the entire story as one segment.
             //Add the anchor node to the story.
-            if (anchor_node != null)
-                AddNodeToStory(anchor_node, chronology);
+            AddNodeToStory(anchor_node, chronology);
             //Add the closest start neighbor to the story.
             //AddNodeToStory(closest_start_neighbor, chronology);
 
@@ -238,7 +237,7 @@ namespace Dialogue_Data_Entry
                 foreach (StoryNode temp_node in chronology.GetNodeSequence())
                 {
                     Feature temp_feat = feature_graph.getFeature(temp_node.graph_node_id);
-                    foreach (StoryNode prev_node in first_half.StorySequence[0].GetSequence())
+                    foreach (StoryNode prev_node in starting_story.StorySequence[0].GetSequence())
                     {
                         Feature prev_feat = feature_graph.getFeature(prev_node.graph_node_id);
                         if (temp_feat.getNeighbor(prev_feat.Id) != null)
@@ -251,7 +250,7 @@ namespace Dialogue_Data_Entry
                         }//end if
                     }//end foreach
                 }//end foreach
-                chronology.AppendStorySegment(first_half.GetLastSegment());
+                chronology.AppendStorySegment(starting_story.GetLastSegment());
             }//end else if
 
             //5. Go through each node and generate text.

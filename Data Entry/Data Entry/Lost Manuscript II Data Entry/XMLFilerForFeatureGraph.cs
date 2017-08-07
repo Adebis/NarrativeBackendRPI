@@ -186,16 +186,7 @@ namespace Dialogue_Data_Entry
 					}
 					//Timedata
 					XmlNodeList timedata = node.SelectNodes("timedata");
-                    XmlNode timedata_node = node.SelectSingleNode("timedata");
-                    try
-                    {
-                        tmp.timesource = timedata_node.Attributes["source"].Value;
-                    }
-                    catch (Exception e)
-                    {
-                        tmp.timesource = "original";
-                    }
-                    if (timedata.Count != 0)
+					if (timedata.Count != 0)
 					{
 						timedata = timedata[0].SelectNodes("timeobj");
 						foreach (XmlNode timeobj in timedata)
@@ -211,16 +202,7 @@ namespace Dialogue_Data_Entry
 					}//end if
 					//Geodata
 					XmlNodeList geodata = node.SelectNodes("geodata");
-                    XmlNode geodata_node = node.SelectSingleNode("geodata");
-                    try
-                    {
-                        tmp.geosource = geodata_node.Attributes["source"].Value;
-                    }
-                    catch (Exception e)
-                    {
-                        tmp.geosource = "original";
-                    }
-                    if (geodata.Count != 0)
+					if (geodata.Count != 0)
 					{
 						geodata = geodata[0].SelectNodes("coordinates");
 						foreach (XmlNode coordinates in geodata)
@@ -379,8 +361,7 @@ namespace Dialogue_Data_Entry
                     //Check geodata. If there is any, and this is not another entity type, this is a location.
                     if (temp_feature.Geodata.Count > 0 
                         && !temp_feature.HasEntityType(Constant.EVENT)
-                        && !temp_feature.HasEntityType(Constant.CHARACTER)
-                        && (temp_feature.geosource == "original"))
+                        && !temp_feature.HasEntityType(Constant.CHARACTER))
                         temp_feature.AddEntityType(Constant.LOCATION);
 
                     //Check for sub-categories.

@@ -60,17 +60,6 @@ namespace Dialogue_Data_Entry
                 return sequence[turn - starting_turn];
         }//end method GetNodeAtTurn
 
-        public bool HasNode(int graph_node_id)
-        {
-            foreach (StoryNode temp_node in this.sequence)
-            {
-                if (temp_node.graph_node_id == graph_node_id)
-                    return true;
-            }//end foreach
-
-            return false;
-        }//end method HasNode
-
         public List<StoryNode> Sequence
         {
             get

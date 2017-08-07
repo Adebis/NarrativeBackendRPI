@@ -326,8 +326,10 @@ namespace Dialogue_Data_Entry
             {
                 Feature anchor_node = null;
                 //TODO: Remove later; only for demo in November 2016
-                if (graph.file_name.Equals("roman_ww2_analogy.xml") || graph.file_name.Equals("roman_ww2_analogy_2.xml"))
+                //TODO: Anology hack enable again for Augest 2017
+                if (graph.file_name.Equals("roman_ww2_analogy.xml") || graph.file_name.Equals("roman_ww2_analogy_2.xml") || graph.file_name.Equals("roman_ww2_analogy_2_reconstruction.xml"))
                 {
+                    Console.WriteLine("Hello");
                     Console.Out.WriteLine("Roman ww2 analogy");
                     List<Feature> story_features = new List<Feature>();
                     int node_id = 0;
@@ -469,8 +471,7 @@ namespace Dialogue_Data_Entry
                             }//end if
 
                             NarrationManager temp_manager = new NarrationManager(graph, temporalConstraintList);
-                            Story chronology = temp_manager.GenerateChronology(anchor_node, 5, first_half: main_story, user_story: true);
-                            main_story = chronology;
+                            Story chronology = temp_manager.GenerateChronology(anchor_node, 5, starting_story: main_story, user_story: true);
                             if (json_mode)
                                 json_string = JsonConvert.SerializeObject(chronology);
                             else
@@ -480,39 +481,6 @@ namespace Dialogue_Data_Entry
                         }//end else
                     }//end if
                 }//end if
-            }//end if
-            // Add the specified node by id to the existing chronology after the
-            // last occurrence of the specified previous node by id.
-            if (split_input[0].ToLower().Equals("add_to_chronology"))
-            {
-                // Get the node to add and the previous node.
-                int node_id_to_add = -1;
-                int previous_node_id = -1;
-                Feature node_to_add = null;
-                Feature previous_node = null;
-                bool parse_success = int.TryParse(split_input[1], out node_id_to_add);
-                if (parse_success)
-                {
-                    node_to_add = graph.getFeature(node_id_to_add);
-                }//end if
-                parse_success = int.TryParse(split_input[2], out previous_node_id);
-                if (parse_success)
-                {
-                    previous_node = graph.getFeature(previous_node_id);
-                }//end if
-
-                // Trim the main story up through the last occurrence of the previous node.
-                main_story.TrimStoryAtNode(previous_node_id);
-                
-                NarrationManager temp_manager = new NarrationManager(graph, temporalConstraintList);
-                Story chronology = temp_manager.GenerateChronology(node_to_add, 3, starting_story: main_story, user_story: false);
-                main_story = chronology;
-                if (json_mode)
-                    json_string = JsonConvert.SerializeObject(chronology);
-                else
-                {
-                    json_string = JsonConvert.SerializeObject(chronology);
-                }//end else
             }//end if
             //Make a story using a list of nodes, identified by node ID or node name.
             if (split_input[0].ToLower().Equals("make_story"))

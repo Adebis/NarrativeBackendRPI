@@ -23,10 +23,8 @@ namespace Dialogue_Data_Entry
 
         private List<Tuple<string, string>> timedata;       //A node's time data is a list of timeobj tags in the xml.
                                                             //timeobj is a string relationship and a string value.
-        public string timesource;
         private List<Tuple<double, double>> geodata;        //A node's geospatial data is a list of coordinates.
                                                             //First member of tuple is latitude, second is longitude.
-        public string geosource;                           //Whether the geodata is original or reconstructed
         public DateTime start_date;                         //Start date for this feature if it has time data.
         public DateTime end_date;                           //End date for this feature if it has time data.
                                                             //If the feature only has a single date, start and end dates will be equal.
@@ -63,9 +61,7 @@ namespace Dialogue_Data_Entry
             this.dist = 0;
             this.shortestDistance = new Dictionary<double, double>();
             this.timedata = new List<Tuple<string, string>>();
-            this.timesource = "";
             this.geodata = new List<Tuple<double, double>>();
-            this.geosource = "";
 
             this.start_date = new DateTime();
             this.end_date = new DateTime();
@@ -90,9 +86,7 @@ namespace Dialogue_Data_Entry
             this.dist = 0;
             this.shortestDistance = new Dictionary<double, double>();
             this.timedata = new List<Tuple<string, string>>();
-            this.timesource = "";
             this.geodata = new List<Tuple<double, double>>();
-            this.geosource = "";
 
             this.start_date = new DateTime();
             this.end_date = new DateTime();
@@ -934,14 +928,6 @@ namespace Dialogue_Data_Entry
             get
             {
                 return this.geodata;
-            }
-        }
-
-        public string Geosource
-        {
-            get
-            {
-                return this.geosource;
             }
         }
 
